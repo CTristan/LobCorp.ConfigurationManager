@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+    <name>Configuration Manager</name>
+    <descs>
+        <desc>In-game configuration manager for LMM and BepInEx mods. Press F1 to open.</desc>
+    </descs>
+</info>
