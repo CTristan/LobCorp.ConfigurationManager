@@ -11,7 +11,8 @@ namespace ConfigurationManager.Config
     /// </summary>
     public class LmmConfigFile
     {
-        private readonly Dictionary<LmmConfigDefinition, LmmConfigEntryBase> _entries = new Dictionary<LmmConfigDefinition, LmmConfigEntryBase>();
+        private readonly Dictionary<LmmConfigDefinition, LmmConfigEntryBase> _entries =
+            new Dictionary<LmmConfigDefinition, LmmConfigEntryBase>();
         private bool _disableSaving;
 
         public string ConfigFilePath { get; private set; }
@@ -24,15 +25,30 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Bind a config entry, creating it if it doesn't exist, or reading its value from the config file.
         /// </summary>
-        public LmmConfigEntry<T> Bind<T>(string section, string key, T defaultValue, string description = null)
+        public LmmConfigEntry<T> Bind<T>(
+            string section,
+            string key,
+            T defaultValue,
+            string description = null
+        )
         {
-            return Bind(section, key, defaultValue, new LmmConfigDescription(description ?? string.Empty));
+            return Bind(
+                section,
+                key,
+                defaultValue,
+                new LmmConfigDescription(description ?? string.Empty)
+            );
         }
 
         /// <summary>
         /// Bind a config entry with a full description.
         /// </summary>
-        public LmmConfigEntry<T> Bind<T>(string section, string key, T defaultValue, LmmConfigDescription description)
+        public LmmConfigEntry<T> Bind<T>(
+            string section,
+            string key,
+            T defaultValue,
+            LmmConfigDescription description
+        )
         {
             var definition = new LmmConfigDefinition(section, key);
 
@@ -68,7 +84,9 @@ namespace ConfigurationManager.Config
                 }
                 catch (Exception ex)
                 {
-                    SimpleLogger.LogWarning("Failed to read config value for " + definition + ": " + ex.Message);
+                    SimpleLogger.LogWarning(
+                        "Failed to read config value for " + definition + ": " + ex.Message
+                    );
                 }
             }
 
@@ -88,7 +106,8 @@ namespace ConfigurationManager.Config
         /// </summary>
         public void Save()
         {
-            if (_disableSaving) return;
+            if (_disableSaving)
+                return;
 
             try
             {
@@ -116,13 +135,22 @@ namespace ConfigurationManager.Config
                         currentSection = def.Section;
                     }
 
-                    if (entry.Description != null && !string.IsNullOrEmpty(entry.Description.Description))
+                    if (
+                        entry.Description != null
+                        && !string.IsNullOrEmpty(entry.Description.Description)
+                    )
                         sb.AppendLine("## " + entry.Description.Description);
 
                     sb.AppendLine("## Setting type: " + entry.SettingType.Name);
-                    sb.AppendLine("## Default value: " + ConfigConverter.ConvertToString(entry.DefaultValue, entry.SettingType));
+                    sb.AppendLine(
+                        "## Default value: "
+                            + ConfigConverter.ConvertToString(entry.DefaultValue, entry.SettingType)
+                    );
 
-                    var value = ConfigConverter.ConvertToString(entry.BoxedValue, entry.SettingType);
+                    var value = ConfigConverter.ConvertToString(
+                        entry.BoxedValue,
+                        entry.SettingType
+                    );
                     sb.AppendLine(def.Key + " = " + value);
                     sb.AppendLine();
                 }
@@ -140,7 +168,8 @@ namespace ConfigurationManager.Config
         /// </summary>
         public void Reload()
         {
-            if (!File.Exists(ConfigFilePath)) return;
+            if (!File.Exists(ConfigFilePath))
+                return;
 
             _disableSaving = true;
             try
@@ -152,7 +181,10 @@ namespace ConfigurationManager.Config
                     {
                         var converter = ConfigConverter.GetConverter(kvp.Value.SettingType);
                         if (converter != null)
-                            kvp.Value.BoxedValue = converter.ConvertToObject(savedValue, kvp.Value.SettingType);
+                            kvp.Value.BoxedValue = converter.ConvertToObject(
+                                savedValue,
+                                kvp.Value.SettingType
+                            );
                     }
                 }
             }
@@ -168,7 +200,8 @@ namespace ConfigurationManager.Config
 
         private string ReadValueFromFile(string section, string key)
         {
-            if (!File.Exists(ConfigFilePath)) return null;
+            if (!File.Exists(ConfigFilePath))
+                return null;
 
             var lines = File.ReadAllLines(ConfigFilePath, Encoding.UTF8);
             string currentSection = null;
@@ -190,7 +223,8 @@ namespace ConfigurationManager.Config
                     continue;
 
                 var eqIndex = line.IndexOf('=');
-                if (eqIndex < 0) continue;
+                if (eqIndex < 0)
+                    continue;
 
                 var lineKey = line.Substring(0, eqIndex).Trim();
                 if (lineKey == key)

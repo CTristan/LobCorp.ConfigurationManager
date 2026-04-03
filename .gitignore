@@ -331,4 +331,7 @@ ASALocalRun/
 .mfractor/
 
 # Game DLL references
-lib/
+external/
+
+# Local NuGet packages
+nupkg/

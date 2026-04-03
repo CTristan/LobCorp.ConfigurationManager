@@ -25,7 +25,9 @@ namespace ConfigurationManager.Patches
             }
             catch (Exception ex)
             {
-                Debug.LogError("[ConfigurationManager] Failed to inject ConfigManagerBehaviour: " + ex);
+                Debug.LogError(
+                    "[ConfigurationManager] Failed to inject ConfigManagerBehaviour: " + ex
+                );
             }
         }
     }

@@ -17,7 +17,8 @@ namespace ConfigurationManager.Config
         public override bool Equals(object obj)
         {
             var other = obj as LmmConfigDefinition;
-            if (other == null) return false;
+            if (other == null)
+                return false;
             return Section == other.Section && Key == other.Key;
         }
 

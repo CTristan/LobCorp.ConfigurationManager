@@ -9,7 +9,12 @@ namespace ConfigurationManager.Config
     {
         private T _value;
 
-        internal LmmConfigEntry(LmmConfigFile configFile, LmmConfigDefinition definition, T defaultValue, LmmConfigDescription description)
+        internal LmmConfigEntry(
+            LmmConfigFile configFile,
+            LmmConfigDefinition definition,
+            T defaultValue,
+            LmmConfigDescription description
+        )
             : base(configFile, definition, description)
         {
             DefaultValue = defaultValue;
@@ -26,7 +31,8 @@ namespace ConfigurationManager.Config
             get { return _value; }
             set
             {
-                if (Equals(_value, value)) return;
+                if (Equals(_value, value))
+                    return;
                 _value = value;
                 OnSettingChanged();
                 if (ConfigFile != null)

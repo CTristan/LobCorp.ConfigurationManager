@@ -18,7 +18,11 @@ namespace ConfigurationManager.Config
 
         internal LmmConfigFile ConfigFile { get; set; }
 
-        protected LmmConfigEntryBase(LmmConfigFile configFile, LmmConfigDefinition definition, LmmConfigDescription description)
+        protected LmmConfigEntryBase(
+            LmmConfigFile configFile,
+            LmmConfigDefinition definition,
+            LmmConfigDescription description
+        )
         {
             ConfigFile = configFile;
             Definition = definition;

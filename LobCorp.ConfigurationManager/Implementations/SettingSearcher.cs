@@ -11,7 +11,11 @@ namespace ConfigurationManager
 {
     internal static class SettingSearcher
     {
-        public static void CollectSettings(out IEnumerable<SettingEntryBase> results, out List<string> modsWithoutSettings, bool showDebug)
+        public static void CollectSettings(
+            out IEnumerable<SettingEntryBase> results,
+            out List<string> modsWithoutSettings,
+            bool showDebug
+        )
         {
             modsWithoutSettings = new List<string>();
             results = Enumerable.Empty<SettingEntryBase>();
@@ -51,7 +55,8 @@ namespace ConfigurationManager
                     foreach (var modDir in Directory.GetDirectories(baseModsPath))
                     {
                         var configPath = Path.Combine(modDir, "config.cfg");
-                        if (!File.Exists(configPath)) continue;
+                        if (!File.Exists(configPath))
+                            continue;
 
                         var modName = Path.GetFileName(modDir);
 
@@ -65,7 +70,8 @@ namespace ConfigurationManager
                                 break;
                             }
                         }
-                        if (alreadyRegistered) continue;
+                        if (alreadyRegistered)
+                            continue;
 
                         try
                         {
@@ -77,7 +83,9 @@ namespace ConfigurationManager
                         }
                         catch (Exception ex)
                         {
-                            SimpleLogger.LogWarning("Failed to parse config file for " + modName + ": " + ex.Message);
+                            SimpleLogger.LogWarning(
+                                "Failed to parse config file for " + modName + ": " + ex.Message
+                            );
                         }
                     }
                 }
@@ -151,16 +159,23 @@ namespace ConfigurationManager
                 if (line.StartsWith("#") || string.IsNullOrEmpty(line))
                     continue;
 
-                if (currentSection == null) continue;
+                if (currentSection == null)
+                    continue;
 
                 var eqIndex = line.IndexOf('=');
-                if (eqIndex < 0) continue;
+                if (eqIndex < 0)
+                    continue;
 
                 var key = line.Substring(0, eqIndex).Trim();
                 var value = line.Substring(eqIndex + 1).Trim();
 
                 // Bind as string by default for auto-discovered entries
-                var entry = configFile.Bind(currentSection, key, value, currentDescription ?? string.Empty);
+                var entry = configFile.Bind(
+                    currentSection,
+                    key,
+                    value,
+                    currentDescription ?? string.Empty
+                );
                 var settingEntry = new LmmSettingEntry(entry, pluginInfo, null);
                 entries.Add(settingEntry);
 

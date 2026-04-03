@@ -49,12 +49,14 @@ namespace ConfigurationManager
 
         private static void Initialize()
         {
-            if (_initialized) return;
+            if (_initialized)
+                return;
             _initialized = true;
 
             try
             {
-                _bepInExAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                _bepInExAssembly = AppDomain
+                    .CurrentDomain.GetAssemblies()
                     .FirstOrDefault(a => a.GetName().Name == "BepInEx");
 
                 if (_bepInExAssembly == null)
@@ -70,7 +72,10 @@ namespace ConfigurationManager
                     return;
                 }
 
-                _pluginInfosProperty = _chainloaderType.GetProperty("PluginInfos", BindingFlags.Static | BindingFlags.Public);
+                _pluginInfosProperty = _chainloaderType.GetProperty(
+                    "PluginInfos",
+                    BindingFlags.Static | BindingFlags.Public
+                );
 
                 _pluginInfoType = _bepInExAssembly.GetType("BepInEx.PluginInfo");
                 if (_pluginInfoType != null)
@@ -96,28 +101,42 @@ namespace ConfigurationManager
 
                 var configAssembly = _bepInExAssembly;
                 _configFileType = configAssembly.GetType("BepInEx.Configuration.ConfigFile");
-                _configEntryBaseType = configAssembly.GetType("BepInEx.Configuration.ConfigEntryBase");
+                _configEntryBaseType = configAssembly.GetType(
+                    "BepInEx.Configuration.ConfigEntryBase"
+                );
 
                 if (_configEntryBaseType != null)
                 {
                     _configEntryDefinitionProperty = _configEntryBaseType.GetProperty("Definition");
-                    _configEntrySettingTypeProperty = _configEntryBaseType.GetProperty("SettingType");
+                    _configEntrySettingTypeProperty = _configEntryBaseType.GetProperty(
+                        "SettingType"
+                    );
                     _configEntryBoxedValueProperty = _configEntryBaseType.GetProperty("BoxedValue");
-                    _configEntryDefaultValueProperty = _configEntryBaseType.GetProperty("DefaultValue");
-                    _configEntryDescriptionProperty = _configEntryBaseType.GetProperty("Description");
+                    _configEntryDefaultValueProperty = _configEntryBaseType.GetProperty(
+                        "DefaultValue"
+                    );
+                    _configEntryDescriptionProperty = _configEntryBaseType.GetProperty(
+                        "Description"
+                    );
                 }
 
-                _configDefinitionType = configAssembly.GetType("BepInEx.Configuration.ConfigDefinition");
+                _configDefinitionType = configAssembly.GetType(
+                    "BepInEx.Configuration.ConfigDefinition"
+                );
                 if (_configDefinitionType != null)
                 {
                     _configDefinitionSectionProperty = _configDefinitionType.GetProperty("Section");
                     _configDefinitionKeyProperty = _configDefinitionType.GetProperty("Key");
                 }
 
-                _configDescriptionType = configAssembly.GetType("BepInEx.Configuration.ConfigDescription");
+                _configDescriptionType = configAssembly.GetType(
+                    "BepInEx.Configuration.ConfigDescription"
+                );
                 if (_configDescriptionType != null)
                 {
-                    _configDescriptionDescriptionProperty = _configDescriptionType.GetProperty("Description");
+                    _configDescriptionDescriptionProperty = _configDescriptionType.GetProperty(
+                        "Description"
+                    );
                 }
 
                 _bepInExAvailable = _pluginInfosProperty != null;
@@ -145,11 +164,13 @@ namespace ConfigurationManager
             try
             {
                 var pluginInfos = _pluginInfosProperty.GetValue(null, null);
-                if (pluginInfos == null) return results;
+                if (pluginInfos == null)
+                    return results;
 
                 // PluginInfos is Dictionary<string, PluginInfo>
                 var valuesProperty = pluginInfos.GetType().GetProperty("Values");
-                if (valuesProperty == null) return results;
+                if (valuesProperty == null)
+                    return results;
 
                 var values = (IEnumerable)valuesProperty.GetValue(pluginInfos, null);
 
@@ -157,16 +178,27 @@ namespace ConfigurationManager
                 {
                     try
                     {
-                        var instance = _pluginInfoInstanceProperty != null ? _pluginInfoInstanceProperty.GetValue(pluginInfoObj, null) : null;
-                        if (instance == null) continue;
+                        var instance =
+                            _pluginInfoInstanceProperty != null
+                                ? _pluginInfoInstanceProperty.GetValue(pluginInfoObj, null)
+                                : null;
+                        if (instance == null)
+                            continue;
 
                         // Get plugin metadata
-                        var metadata = _pluginInfoMetadataProperty != null ? _pluginInfoMetadataProperty.GetValue(pluginInfoObj, null) : null;
+                        var metadata =
+                            _pluginInfoMetadataProperty != null
+                                ? _pluginInfoMetadataProperty.GetValue(pluginInfoObj, null)
+                                : null;
                         var pluginInfo = CreatePluginInfo(metadata);
 
                         // Get config file
-                        var config = _configProperty != null ? _configProperty.GetValue(instance, null) : null;
-                        if (config == null) continue;
+                        var config =
+                            _configProperty != null
+                                ? _configProperty.GetValue(instance, null)
+                                : null;
+                        if (config == null)
+                            continue;
 
                         // Enumerate config entries
                         var configEntries = GetConfigEntries(config);
@@ -180,7 +212,9 @@ namespace ConfigurationManager
                             }
                             catch (Exception ex)
                             {
-                                SimpleLogger.LogWarning("Failed to read BepInEx config entry: " + ex.Message);
+                                SimpleLogger.LogWarning(
+                                    "Failed to read BepInEx config entry: " + ex.Message
+                                );
                             }
                         }
                     }
@@ -203,9 +237,18 @@ namespace ConfigurationManager
             if (metadata == null)
                 return new PluginInfo("unknown", "Unknown Plugin", "");
 
-            var guid = _bepInPluginGuidProperty != null ? _bepInPluginGuidProperty.GetValue(metadata, null) as string : "unknown";
-            var name = _bepInPluginNameProperty != null ? _bepInPluginNameProperty.GetValue(metadata, null) as string : "Unknown";
-            var version = _bepInPluginVersionProperty != null ? (_bepInPluginVersionProperty.GetValue(metadata, null) ?? "").ToString() : "";
+            var guid =
+                _bepInPluginGuidProperty != null
+                    ? _bepInPluginGuidProperty.GetValue(metadata, null) as string
+                    : "unknown";
+            var name =
+                _bepInPluginNameProperty != null
+                    ? _bepInPluginNameProperty.GetValue(metadata, null) as string
+                    : "Unknown";
+            var version =
+                _bepInPluginVersionProperty != null
+                    ? (_bepInPluginVersionProperty.GetValue(metadata, null) ?? "").ToString()
+                    : "";
 
             return new PluginInfo(guid ?? "unknown", name ?? "Unknown", version ?? "");
         }
@@ -232,24 +275,55 @@ namespace ConfigurationManager
             return result;
         }
 
-        private static SettingEntryBase CreateBepInExSettingEntry(object configEntryBase, PluginInfo pluginInfo)
+        private static SettingEntryBase CreateBepInExSettingEntry(
+            object configEntryBase,
+            PluginInfo pluginInfo
+        )
         {
-            var definition = _configEntryDefinitionProperty != null ? _configEntryDefinitionProperty.GetValue(configEntryBase, null) : null;
-            var settingType = _configEntrySettingTypeProperty != null ? _configEntrySettingTypeProperty.GetValue(configEntryBase, null) as Type : null;
-            var defaultValue = _configEntryDefaultValueProperty != null ? _configEntryDefaultValueProperty.GetValue(configEntryBase, null) : null;
+            var definition =
+                _configEntryDefinitionProperty != null
+                    ? _configEntryDefinitionProperty.GetValue(configEntryBase, null)
+                    : null;
+            var settingType =
+                _configEntrySettingTypeProperty != null
+                    ? _configEntrySettingTypeProperty.GetValue(configEntryBase, null) as Type
+                    : null;
+            var defaultValue =
+                _configEntryDefaultValueProperty != null
+                    ? _configEntryDefaultValueProperty.GetValue(configEntryBase, null)
+                    : null;
 
             if (definition == null || settingType == null)
                 return null;
 
-            var section = _configDefinitionSectionProperty != null ? _configDefinitionSectionProperty.GetValue(definition, null) as string : "";
-            var key = _configDefinitionKeyProperty != null ? _configDefinitionKeyProperty.GetValue(definition, null) as string : "";
+            var section =
+                _configDefinitionSectionProperty != null
+                    ? _configDefinitionSectionProperty.GetValue(definition, null) as string
+                    : "";
+            var key =
+                _configDefinitionKeyProperty != null
+                    ? _configDefinitionKeyProperty.GetValue(definition, null) as string
+                    : "";
 
-            var descriptionObj = _configEntryDescriptionProperty != null ? _configEntryDescriptionProperty.GetValue(configEntryBase, null) : null;
+            var descriptionObj =
+                _configEntryDescriptionProperty != null
+                    ? _configEntryDescriptionProperty.GetValue(configEntryBase, null)
+                    : null;
             var descriptionText = "";
             if (descriptionObj != null && _configDescriptionDescriptionProperty != null)
-                descriptionText = _configDescriptionDescriptionProperty.GetValue(descriptionObj, null) as string ?? "";
+                descriptionText =
+                    _configDescriptionDescriptionProperty.GetValue(descriptionObj, null) as string
+                    ?? "";
 
-            return new BepInExSettingEntry(configEntryBase, settingType, section, key, descriptionText, defaultValue, pluginInfo);
+            return new BepInExSettingEntry(
+                configEntryBase,
+                settingType,
+                section,
+                key,
+                descriptionText,
+                defaultValue,
+                pluginInfo
+            );
         }
     }
 
@@ -262,7 +336,15 @@ namespace ConfigurationManager
         private readonly Type _settingType;
         private readonly PropertyInfo _boxedValueProperty;
 
-        public BepInExSettingEntry(object configEntry, Type settingType, string section, string key, string description, object defaultValue, PluginInfo pluginInfo)
+        public BepInExSettingEntry(
+            object configEntry,
+            Type settingType,
+            string section,
+            string key,
+            string description,
+            object defaultValue,
+            PluginInfo pluginInfo
+        )
         {
             _configEntry = configEntry;
             _settingType = settingType;
@@ -282,7 +364,9 @@ namespace ConfigurationManager
 
         public override object Get()
         {
-            return _boxedValueProperty != null ? _boxedValueProperty.GetValue(_configEntry, null) : null;
+            return _boxedValueProperty != null
+                ? _boxedValueProperty.GetValue(_configEntry, null)
+                : null;
         }
 
         protected override void SetValue(object newVal)

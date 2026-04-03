@@ -1,7 +1,6 @@
 // Made by MarC0 / ManlyMarco
 // Copyright 2018 GNU General Public License v3.0
 
-using ConfigurationManager.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using ConfigurationManager.Config;
+using ConfigurationManager.Utilities;
 using UnityEngine;
 
 namespace ConfigurationManager
@@ -16,10 +16,16 @@ namespace ConfigurationManager
     internal class SettingFieldDrawer
     {
         private static IEnumerable<KeyCode> _keysToCheck;
-        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers { get; private set; }
+        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers
+        {
+            get;
+            private set;
+        }
 
-        private static readonly Dictionary<SettingEntryBase, ComboBox> _comboBoxCache = new Dictionary<SettingEntryBase, ComboBox>();
-        private static readonly Dictionary<SettingEntryBase, ColorCacheEntry> _colorCache = new Dictionary<SettingEntryBase, ColorCacheEntry>();
+        private static readonly Dictionary<SettingEntryBase, ComboBox> _comboBoxCache =
+            new Dictionary<SettingEntryBase, ComboBox>();
+        private static readonly Dictionary<SettingEntryBase, ColorCacheEntry> _colorCache =
+            new Dictionary<SettingEntryBase, ColorCacheEntry>();
 
         private static ConfigurationManager _instance;
 
@@ -98,6 +104,7 @@ namespace ConfigurationManager
         }
 
         private static GUIStyle _categoryHeaderSkin;
+
         public static void DrawCategoryHeader(string text)
         {
             if (_categoryHeaderSkin == null)
@@ -113,6 +120,7 @@ namespace ConfigurationManager
         }
 
         private static GUIStyle _pluginHeaderSkin;
+
         public static bool DrawPluginHeader(GUIContent content, bool isCollapsed)
         {
             if (_pluginHeaderSkin == null)
@@ -124,7 +132,8 @@ namespace ConfigurationManager
                 _pluginHeaderSkin.fontSize = 15;
             }
 
-            if (isCollapsed) content.text += "\n...";
+            if (isCollapsed)
+                content.text += "\n...";
             return GUILayout.Button(content, _pluginHeaderSkin, GUILayout.ExpandWidth(true));
         }
 
@@ -143,10 +152,18 @@ namespace ConfigurationManager
         {
             var acceptableValues = setting.AcceptableValues;
             if (acceptableValues.Length == 0)
-                throw new ArgumentException("AcceptableValueListAttribute returned an empty list of acceptable values. You need to supply at least 1 option.");
+                throw new ArgumentException(
+                    "AcceptableValueListAttribute returned an empty list of acceptable values. You need to supply at least 1 option."
+                );
 
-            if (!setting.SettingType.IsInstanceOfType(acceptableValues.FirstOrDefault(x => x != null)))
-                throw new ArgumentException("AcceptableValueListAttribute returned a list with items of type other than the setting type itself.");
+            if (
+                !setting.SettingType.IsInstanceOfType(
+                    acceptableValues.FirstOrDefault(x => x != null)
+                )
+            )
+                throw new ArgumentException(
+                    "AcceptableValueListAttribute returned a list with items of type other than the setting type itself."
+                );
 
             if (setting.SettingType == typeof(KeyCode))
                 DrawKeyCode(setting);
@@ -168,7 +185,11 @@ namespace ConfigurationManager
         private static void DrawBoolField(SettingEntryBase setting)
         {
             var boolVal = (bool)setting.Get();
-            var result = GUILayout.Toggle(boolVal, boolVal ? "Enabled" : "Disabled", GUILayout.ExpandWidth(true));
+            var result = GUILayout.Toggle(
+                boolVal,
+                boolVal ? "Enabled" : "Disabled",
+                GUILayout.ExpandWidth(true)
+            );
             if (result != boolVal)
                 setting.Set(result);
         }
@@ -176,19 +197,30 @@ namespace ConfigurationManager
         private static void DrawEnumField(SettingEntryBase setting)
         {
             if (setting.SettingType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
-                DrawFlagsField(setting, Enum.GetValues(setting.SettingType), _instance.RightColumnWidth);
+                DrawFlagsField(
+                    setting,
+                    Enum.GetValues(setting.SettingType),
+                    _instance.RightColumnWidth
+                );
             else
-                DrawComboboxField(setting, Enum.GetValues(setting.SettingType), _instance.SettingWindowRect.yMax);
+                DrawComboboxField(
+                    setting,
+                    Enum.GetValues(setting.SettingType),
+                    _instance.SettingWindowRect.yMax
+                );
         }
 
         private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
         {
             var currentValue = Convert.ToInt64(setting.Get());
-            var allValues = enumValues.Cast<Enum>().Select(x => new { name = x.ToString(), val = Convert.ToInt64(x) }).ToArray();
+            var allValues = enumValues
+                .Cast<Enum>()
+                .Select(x => new { name = x.ToString(), val = Convert.ToInt64(x) })
+                .ToArray();
 
             GUILayout.BeginVertical(GUILayout.MaxWidth(maxWidth));
             {
-                for (var index = 0; index < allValues.Length;)
+                for (var index = 0; index < allValues.Length; )
                 {
                     GUILayout.BeginHorizontal();
                     {
@@ -199,17 +231,23 @@ namespace ConfigurationManager
 
                             if (value.val != 0)
                             {
-                                var textDimension = (int)GUI.skin.toggle.CalcSize(new GUIContent(value.name)).x;
+                                var textDimension = (int)
+                                    GUI.skin.toggle.CalcSize(new GUIContent(value.name)).x;
                                 currentWidth += textDimension;
                                 if (currentWidth > maxWidth)
                                     break;
 
                                 GUI.changed = false;
-                                var newVal = GUILayout.Toggle((currentValue & value.val) == value.val, value.name,
-                                    GUILayout.ExpandWidth(false));
+                                var newVal = GUILayout.Toggle(
+                                    (currentValue & value.val) == value.val,
+                                    value.name,
+                                    GUILayout.ExpandWidth(false)
+                                );
                                 if (GUI.changed)
                                 {
-                                    var newValue = newVal ? currentValue | value.val : currentValue & ~value.val;
+                                    var newValue = newVal
+                                        ? currentValue | value.val
+                                        : currentValue & ~value.val;
                                     setting.Set(Enum.ToObject(setting.SettingType, newValue));
                                 }
                             }
@@ -224,15 +262,29 @@ namespace ConfigurationManager
             GUILayout.FlexibleSpace();
         }
 
-        private static void DrawComboboxField(SettingEntryBase setting, IList list, float windowYmax)
+        private static void DrawComboboxField(
+            SettingEntryBase setting,
+            IList list,
+            float windowYmax
+        )
         {
             var buttonText = ObjectToGuiContent(setting.Get());
-            var dispRect = GUILayoutUtility.GetRect(buttonText, GUI.skin.button, GUILayout.ExpandWidth(true));
+            var dispRect = GUILayoutUtility.GetRect(
+                buttonText,
+                GUI.skin.button,
+                GUILayout.ExpandWidth(true)
+            );
 
             ComboBox box;
             if (!_comboBoxCache.TryGetValue(setting, out box))
             {
-                box = new ComboBox(dispRect, buttonText, list.Cast<object>().Select(ObjectToGuiContent).ToArray(), GUI.skin.button, windowYmax);
+                box = new ComboBox(
+                    dispRect,
+                    buttonText,
+                    list.Cast<object>().Select(ObjectToGuiContent).ToArray(),
+                    GUI.skin.button,
+                    windowYmax
+                );
                 _comboBoxCache[setting] = box;
             }
             else
@@ -254,7 +306,13 @@ namespace ConfigurationManager
             {
                 var enumType = x.GetType();
                 var enumMember = enumType.GetMember(x.ToString()).FirstOrDefault();
-                var attr = enumMember != null ? enumMember.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().FirstOrDefault() : null;
+                var attr =
+                    enumMember != null
+                        ? enumMember
+                            .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                            .Cast<DescriptionAttribute>()
+                            .FirstOrDefault()
+                        : null;
                 if (attr != null)
                     return new GUIContent(attr.Description);
                 return new GUIContent(x.ToString().ToProperCase());
@@ -266,37 +324,58 @@ namespace ConfigurationManager
         {
             var value = setting.Get();
             var converted = (float)Convert.ToDouble(value, CultureInfo.InvariantCulture);
-            var leftValue = (float)Convert.ToDouble(setting.AcceptableValueRange.Key, CultureInfo.InvariantCulture);
-            var rightValue = (float)Convert.ToDouble(setting.AcceptableValueRange.Value, CultureInfo.InvariantCulture);
+            var leftValue = (float)
+                Convert.ToDouble(setting.AcceptableValueRange.Key, CultureInfo.InvariantCulture);
+            var rightValue = (float)
+                Convert.ToDouble(setting.AcceptableValueRange.Value, CultureInfo.InvariantCulture);
 
-            var result = GUILayout.HorizontalSlider(converted, leftValue, rightValue, GUILayout.ExpandWidth(true));
+            var result = GUILayout.HorizontalSlider(
+                converted,
+                leftValue,
+                rightValue,
+                GUILayout.ExpandWidth(true)
+            );
             if (Math.Abs(result - converted) > Mathf.Abs(rightValue - leftValue) / 1000)
             {
-                var newValue = Convert.ChangeType(result, setting.SettingType, CultureInfo.InvariantCulture);
+                var newValue = Convert.ChangeType(
+                    result,
+                    setting.SettingType,
+                    CultureInfo.InvariantCulture
+                );
                 setting.Set(newValue);
             }
 
             if (setting.ShowRangeAsPercent == true)
             {
                 DrawCenteredLabel(
-                    Mathf.Round(100 * Mathf.Abs(result - leftValue) / Mathf.Abs(rightValue - leftValue)) + "%",
-                    GUILayout.Width(50));
+                    Mathf.Round(
+                        100 * Mathf.Abs(result - leftValue) / Mathf.Abs(rightValue - leftValue)
+                    ) + "%",
+                    GUILayout.Width(50)
+                );
             }
             else
             {
-                var strVal = Convert.ToString(value, CultureInfo.InvariantCulture).AppendZeroIfFloat(setting.SettingType);
+                var strVal = Convert
+                    .ToString(value, CultureInfo.InvariantCulture)
+                    .AppendZeroIfFloat(setting.SettingType);
                 var strResult = GUILayout.TextField(strVal, GUILayout.Width(50));
                 if (strResult != strVal)
                 {
                     try
                     {
-                        var resultVal = (float)Convert.ToDouble(strResult, CultureInfo.InvariantCulture);
+                        var resultVal = (float)
+                            Convert.ToDouble(strResult, CultureInfo.InvariantCulture);
                         var clampedResultVal = Mathf.Clamp(resultVal, leftValue, rightValue);
-                        setting.Set(Convert.ChangeType(clampedResultVal, setting.SettingType, CultureInfo.InvariantCulture));
+                        setting.Set(
+                            Convert.ChangeType(
+                                clampedResultVal,
+                                setting.SettingType,
+                                CultureInfo.InvariantCulture
+                            )
+                        );
                     }
-                    catch (FormatException)
-                    {
-                    }
+                    catch (FormatException) { }
                 }
             }
         }
@@ -306,7 +385,11 @@ namespace ConfigurationManager
             if (setting.ObjToStr != null && setting.StrToObj != null)
             {
                 var text = setting.ObjToStr(setting.Get()).AppendZeroIfFloat(setting.SettingType);
-                var result = GUILayout.TextField(text, GUILayout.Width(rightColumnWidth), GUILayout.MaxWidth(rightColumnWidth));
+                var result = GUILayout.TextField(
+                    text,
+                    GUILayout.Width(rightColumnWidth),
+                    GUILayout.MaxWidth(rightColumnWidth)
+                );
 
                 if (result != text)
                     setting.Set(setting.StrToObj(result));
@@ -314,12 +397,27 @@ namespace ConfigurationManager
             else
             {
                 var rawValue = setting.Get();
-                var value = rawValue == null ? "NULL" : Convert.ToString(rawValue, CultureInfo.InvariantCulture).AppendZeroIfFloat(setting.SettingType);
+                var value =
+                    rawValue == null
+                        ? "NULL"
+                        : Convert
+                            .ToString(rawValue, CultureInfo.InvariantCulture)
+                            .AppendZeroIfFloat(setting.SettingType);
                 if (CanCovert(value, setting.SettingType))
                 {
-                    var result = GUILayout.TextField(value, GUILayout.Width(rightColumnWidth), GUILayout.MaxWidth(rightColumnWidth));
+                    var result = GUILayout.TextField(
+                        value,
+                        GUILayout.Width(rightColumnWidth),
+                        GUILayout.MaxWidth(rightColumnWidth)
+                    );
                     if (result != value)
-                        setting.Set(Convert.ChangeType(result, setting.SettingType, CultureInfo.InvariantCulture));
+                        setting.Set(
+                            Convert.ChangeType(
+                                result,
+                                setting.SettingType,
+                                CultureInfo.InvariantCulture
+                            )
+                        );
                 }
                 else
                 {
@@ -331,6 +429,7 @@ namespace ConfigurationManager
         }
 
         private readonly Dictionary<Type, bool> _canCovertCache = new Dictionary<Type, bool>();
+
         private bool CanCovert(string value, Type type)
         {
             if (_canCovertCache.ContainsKey(type))
@@ -374,10 +473,22 @@ namespace ConfigurationManager
             }
             else
             {
-                var acceptableValues = setting.AcceptableValues != null && setting.AcceptableValues.Length > 1 ? setting.AcceptableValues : Enum.GetValues(setting.SettingType);
+                var acceptableValues =
+                    setting.AcceptableValues != null && setting.AcceptableValues.Length > 1
+                        ? setting.AcceptableValues
+                        : Enum.GetValues(setting.SettingType);
                 DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
 
-                if (GUILayout.Button(new GUIContent("Set...", null, "Set the key by pressing any key on your keyboard."), GUILayout.ExpandWidth(false)))
+                if (
+                    GUILayout.Button(
+                        new GUIContent(
+                            "Set...",
+                            null,
+                            "Set the key by pressing any key on your keyboard."
+                        ),
+                        GUILayout.ExpandWidth(false)
+                    )
+                )
                     _currentKeyboardShortcutToSet = setting;
             }
         }
@@ -396,7 +507,12 @@ namespace ConfigurationManager
                 {
                     if (Input.GetKeyUp(key))
                     {
-                        setting.Set(new KeyboardShortcut(key, _keysToCheck.Where(x => Input.GetKey(x)).ToArray()));
+                        setting.Set(
+                            new KeyboardShortcut(
+                                key,
+                                _keysToCheck.Where(x => Input.GetKey(x)).ToArray()
+                            )
+                        );
                         _currentKeyboardShortcutToSet = null;
                         break;
                     }
@@ -424,7 +540,8 @@ namespace ConfigurationManager
             var copy = setting;
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
-            if (setting != copy) obj.Set(setting);
+            if (setting != copy)
+                obj.Set(setting);
         }
 
         private static void DrawVector3(SettingEntryBase obj)
@@ -434,7 +551,8 @@ namespace ConfigurationManager
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
-            if (setting != copy) obj.Set(setting);
+            if (setting != copy)
+                obj.Set(setting);
         }
 
         private static void DrawVector4(SettingEntryBase obj)
@@ -445,7 +563,8 @@ namespace ConfigurationManager
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
             setting.w = DrawSingleVectorSlider(setting.w, "W");
-            if (setting != copy) obj.Set(setting);
+            if (setting != copy)
+                obj.Set(setting);
         }
 
         private static void DrawQuaternion(SettingEntryBase obj)
@@ -456,18 +575,28 @@ namespace ConfigurationManager
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
             setting.w = DrawSingleVectorSlider(setting.w, "W");
-            if (setting != copy) obj.Set(setting);
+            if (setting != copy)
+                obj.Set(setting);
         }
 
         private static float DrawSingleVectorSlider(float setting, string label)
         {
             GUILayout.Label(label, GUILayout.ExpandWidth(false));
             float x;
-            float.TryParse(GUILayout.TextField(setting.ToString("F", CultureInfo.InvariantCulture), GUILayout.ExpandWidth(true)), NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+            float.TryParse(
+                GUILayout.TextField(
+                    setting.ToString("F", CultureInfo.InvariantCulture),
+                    GUILayout.ExpandWidth(true)
+                ),
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture,
+                out x
+            );
             return x;
         }
 
         private static bool _drawColorHex;
+
         private static void DrawColor(SettingEntryBase obj)
         {
             var colorValue = (Color)obj.Get();
@@ -491,7 +620,14 @@ namespace ConfigurationManager
 
                     var colorStr = _drawColorHex
                         ? "#" + ColorUtility.ToHtmlStringRGBA(colorValue)
-                        : string.Format(CultureInfo.InvariantCulture, "{0:F2} {1:F2} {2:F2} {3:F2}", colorValue.r, colorValue.g, colorValue.b, colorValue.a);
+                        : string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{0:F2} {1:F2} {2:F2} {3:F2}",
+                            colorValue.r,
+                            colorValue.g,
+                            colorValue.b,
+                            colorValue.a
+                        );
                     var newColorStr = GUILayout.TextField(colorStr, GUILayout.ExpandWidth(true));
                     if (GUI.changed && colorStr != newColorStr)
                     {
@@ -504,25 +640,58 @@ namespace ConfigurationManager
                         else
                         {
                             var split = newColorStr.Split(' ');
-                            float r, g, b, a;
-                            if (split.Length == 4 && float.TryParse(split[0], out r) && float.TryParse(split[1], out g) && float.TryParse(split[2], out b) && float.TryParse(split[3], out a))
+                            float r,
+                                g,
+                                b,
+                                a;
+                            if (
+                                split.Length == 4
+                                && float.TryParse(split[0], out r)
+                                && float.TryParse(split[1], out g)
+                                && float.TryParse(split[2], out b)
+                                && float.TryParse(split[3], out a)
+                            )
                                 colorValue = new Color(r, g, b, a);
                         }
                     }
 
-                    _drawColorHex = GUILayout.Toggle(_drawColorHex, "Hex", GUILayout.ExpandWidth(false));
+                    _drawColorHex = GUILayout.Toggle(
+                        _drawColorHex,
+                        "Hex",
+                        GUILayout.ExpandWidth(false)
+                    );
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label("R", GUILayout.ExpandWidth(false));
-                    colorValue.r = GUILayout.HorizontalSlider(colorValue.r, 0f, 1f, GUILayout.ExpandWidth(true));
+                    colorValue.r = GUILayout.HorizontalSlider(
+                        colorValue.r,
+                        0f,
+                        1f,
+                        GUILayout.ExpandWidth(true)
+                    );
                     GUILayout.Label("G", GUILayout.ExpandWidth(false));
-                    colorValue.g = GUILayout.HorizontalSlider(colorValue.g, 0f, 1f, GUILayout.ExpandWidth(true));
+                    colorValue.g = GUILayout.HorizontalSlider(
+                        colorValue.g,
+                        0f,
+                        1f,
+                        GUILayout.ExpandWidth(true)
+                    );
                     GUILayout.Label("B", GUILayout.ExpandWidth(false));
-                    colorValue.b = GUILayout.HorizontalSlider(colorValue.b, 0f, 1f, GUILayout.ExpandWidth(true));
+                    colorValue.b = GUILayout.HorizontalSlider(
+                        colorValue.b,
+                        0f,
+                        1f,
+                        GUILayout.ExpandWidth(true)
+                    );
                     GUILayout.Label("A", GUILayout.ExpandWidth(false));
-                    colorValue.a = GUILayout.HorizontalSlider(colorValue.a, 0f, 1f, GUILayout.ExpandWidth(true));
+                    colorValue.a = GUILayout.HorizontalSlider(
+                        colorValue.a,
+                        0f,
+                        1f,
+                        GUILayout.ExpandWidth(true)
+                    );
                 }
                 GUILayout.EndHorizontal();
             }
@@ -538,7 +707,8 @@ namespace ConfigurationManager
 
         private static void FillTex(Color color, Texture2D tex)
         {
-            if (color.a < 1f) tex.FillTextureCheckerboard();
+            if (color.a < 1f)
+                tex.FillTextureCheckerboard();
             tex.FillTexture(color);
         }
 

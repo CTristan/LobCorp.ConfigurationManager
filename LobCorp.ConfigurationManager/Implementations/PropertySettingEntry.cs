@@ -7,10 +7,15 @@ namespace ConfigurationManager
     {
         private Type _settingType;
 
-        public PropertySettingEntry(object instance, PropertyInfo settingProp, object pluginInstance)
+        public PropertySettingEntry(
+            object instance,
+            PropertyInfo settingProp,
+            object pluginInstance
+        )
         {
             SetFromAttributes(settingProp.GetCustomAttributes(false), pluginInstance);
-            if (Browsable == null) Browsable = settingProp.CanRead && settingProp.CanWrite;
+            if (Browsable == null)
+                Browsable = settingProp.CanRead && settingProp.CanWrite;
             ReadOnly = settingProp.CanWrite;
             Property = settingProp;
             Instance = instance;

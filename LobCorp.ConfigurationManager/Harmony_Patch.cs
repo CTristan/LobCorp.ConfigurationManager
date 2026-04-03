@@ -20,7 +20,9 @@ namespace ConfigurationManager
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError("[ConfigurationManager] Failed to apply Harmony patches: " + ex);
+                UnityEngine.Debug.LogError(
+                    "[ConfigurationManager] Failed to apply Harmony patches: " + ex
+                );
             }
         }
     }

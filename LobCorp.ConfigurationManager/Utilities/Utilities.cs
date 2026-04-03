@@ -15,14 +15,17 @@ namespace ConfigurationManager.Utilities
     {
         public static string ToProperCase(this string str)
         {
-            if (string.IsNullOrEmpty(str)) return string.Empty;
-            if (str.Length < 2) return str;
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+            if (str.Length < 2)
+                return str;
 
             string result = str.Substring(0, 1).ToUpper();
 
             for (int i = 1; i < str.Length; i++)
             {
-                if (char.IsUpper(str[i])) result += " ";
+                if (char.IsUpper(str[i]))
+                    result += " ";
                 result += str[i];
             }
 
@@ -36,7 +39,9 @@ namespace ConfigurationManager.Utilities
 
         public static string AppendZeroIfFloat(this string s, Type type)
         {
-            return type == typeof(float) || type == typeof(double) || type == typeof(decimal) ? s.AppendZero() : s;
+            return type == typeof(float) || type == typeof(double) || type == typeof(decimal)
+                ? s.AppendZero()
+                : s;
         }
 
         public static void FillTexture(this Texture2D tex, Color color)
@@ -57,8 +62,8 @@ namespace ConfigurationManager.Utilities
             else
             {
                 for (var x = 0; x < tex.width; x++)
-                    for (var y = 0; y < tex.height; y++)
-                        tex.SetPixel(x, y, color);
+                for (var y = 0; y < tex.height; y++)
+                    tex.SetPixel(x, y, color);
             }
 
             tex.Apply(false);
@@ -67,8 +72,8 @@ namespace ConfigurationManager.Utilities
         public static void FillTextureCheckerboard(this Texture2D tex)
         {
             for (var x = 0; x < tex.width; x++)
-                for (var y = 0; y < tex.height; y++)
-                    tex.SetPixel(x, y, (x / 10 + y / 10) % 2 == 1 ? Color.black : Color.white);
+            for (var y = 0; y < tex.height; y++)
+                tex.SetPixel(x, y, (x / 10 + y / 10) % 2 == 1 ? Color.black : Color.white);
 
             tex.Apply(false);
         }
@@ -81,7 +86,10 @@ namespace ConfigurationManager.Utilities
             candidates.Add(Path.Combine(rootDir, "output_log.txt"));
             candidates.Add(Path.Combine(Application.dataPath, "output_log.txt"));
 
-            var prop = typeof(Application).GetProperty("consoleLogPath", BindingFlags.Static | BindingFlags.Public);
+            var prop = typeof(Application).GetProperty(
+                "consoleLogPath",
+                BindingFlags.Static | BindingFlags.Public
+            );
             if (prop != null)
             {
                 var path = prop.GetValue(null, null) as string;
@@ -90,24 +98,41 @@ namespace ConfigurationManager.Utilities
 
             if (Directory.Exists(Application.persistentDataPath))
             {
-                var file = Directory.GetFiles(Application.persistentDataPath, "output_log.txt", SearchOption.AllDirectories).FirstOrDefault();
+                var file = Directory
+                    .GetFiles(
+                        Application.persistentDataPath,
+                        "output_log.txt",
+                        SearchOption.AllDirectories
+                    )
+                    .FirstOrDefault();
                 candidates.Add(file);
             }
 
-            var latestLog = candidates.Where(x => x != null && File.Exists(x)).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
-            if (latestLog != null && TryOpen(latestLog)) return;
+            var latestLog = candidates
+                .Where(x => x != null && File.Exists(x))
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+            if (latestLog != null && TryOpen(latestLog))
+                return;
 
             candidates.Clear();
-            candidates.AddRange(Directory.GetFiles(rootDir, "output_log.txt", SearchOption.AllDirectories));
-            latestLog = candidates.Where(File.Exists).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
-            if (latestLog != null && TryOpen(latestLog)) return;
+            candidates.AddRange(
+                Directory.GetFiles(rootDir, "output_log.txt", SearchOption.AllDirectories)
+            );
+            latestLog = candidates
+                .Where(File.Exists)
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+            if (latestLog != null && TryOpen(latestLog))
+                return;
 
             throw new FileNotFoundException("No log files were found");
         }
 
         private static bool TryOpen(string path)
         {
-            if (path == null) return false;
+            if (path == null)
+                return false;
             try
             {
                 Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
@@ -121,12 +146,14 @@ namespace ConfigurationManager.Utilities
 
         public static string GetWebsite(object pluginInstance)
         {
-            if (pluginInstance == null) return null;
+            if (pluginInstance == null)
+                return null;
             try
             {
                 var type = pluginInstance.GetType();
                 var location = type.Assembly.Location;
-                if (string.IsNullOrEmpty(location) || !File.Exists(location)) return null;
+                if (string.IsNullOrEmpty(location) || !File.Exists(location))
+                    return null;
                 var fi = FileVersionInfo.GetVersionInfo(location);
                 return new[]
                 {
@@ -134,7 +161,7 @@ namespace ConfigurationManager.Utilities
                     fi.FileDescription,
                     fi.Comments,
                     fi.LegalCopyright,
-                    fi.LegalTrademarks
+                    fi.LegalTrademarks,
                 }.FirstOrDefault(x => Uri.IsWellFormedUriString(x, UriKind.Absolute));
             }
             catch (Exception e)
@@ -148,7 +175,8 @@ namespace ConfigurationManager.Utilities
         {
             try
             {
-                if (string.IsNullOrEmpty(url)) throw new Exception("Empty URL");
+                if (string.IsNullOrEmpty(url))
+                    throw new Exception("Empty URL");
                 Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
             catch (Exception ex)

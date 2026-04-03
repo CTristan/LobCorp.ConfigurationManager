@@ -44,7 +44,10 @@ namespace ConfigurationManager
         /// <summary>
         /// Custom hotkey drawer delegate.
         /// </summary>
-        public delegate void CustomHotkeyDrawerFunc(LmmConfigEntryBase setting, ref bool isCurrentlyAcceptingInput);
+        public delegate void CustomHotkeyDrawerFunc(
+            LmmConfigEntryBase setting,
+            ref bool isCurrentlyAcceptingInput
+        );
 
         /// <summary>
         /// Show this setting in the settings screen at all?
@@ -140,19 +143,22 @@ namespace ConfigurationManager
         /// </summary>
         public Func<string, object> StrToObj { get; internal set; }
 
-        private static readonly PropertyInfo[] _myProperties = typeof(SettingEntryBase).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        private static readonly PropertyInfo[] _myProperties =
+            typeof(SettingEntryBase).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
         internal void SetFromAttributes(object[] attribs, object pluginInstance)
         {
             PluginInstance = pluginInstance;
 
-            if (attribs == null || attribs.Length == 0) return;
+            if (attribs == null || attribs.Length == 0)
+                return;
 
             foreach (var attrib in attribs)
             {
                 switch (attrib)
                 {
-                    case null: break;
+                    case null:
+                        break;
 
                     case DisplayNameAttribute da:
                         DispName = da.DisplayName;
@@ -179,10 +185,19 @@ namespace ConfigurationManager
                     case string str:
                         switch (str)
                         {
-                            case "ReadOnly": ReadOnly = true; break;
-                            case "Browsable": Browsable = true; break;
-                            case "Unbrowsable": case "Hidden": Browsable = false; break;
-                            case "Advanced": IsAdvanced = true; break;
+                            case "ReadOnly":
+                                ReadOnly = true;
+                                break;
+                            case "Browsable":
+                                Browsable = true;
+                                break;
+                            case "Unbrowsable":
+                            case "Hidden":
+                                Browsable = false;
+                                break;
+                            case "Advanced":
+                                IsAdvanced = true;
+                                break;
                         }
                         break;
 
@@ -190,23 +205,49 @@ namespace ConfigurationManager
                         var attrType = attrib.GetType();
                         if (attrType.Name == "ConfigurationManagerAttributes")
                         {
-                            var otherFields = attrType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-                            foreach (var propertyPair in _myProperties.Join(otherFields, my => my.Name, other => other.Name, (my, other) => new { my, other }))
+                            var otherFields = attrType.GetFields(
+                                BindingFlags.Instance | BindingFlags.Public
+                            );
+                            foreach (
+                                var propertyPair in _myProperties.Join(
+                                    otherFields,
+                                    my => my.Name,
+                                    other => other.Name,
+                                    (my, other) => new { my, other }
+                                )
+                            )
                             {
                                 try
                                 {
                                     var val = propertyPair.other.GetValue(attrib);
                                     if (val != null)
                                     {
-                                        if (propertyPair.my.PropertyType != propertyPair.other.FieldType && typeof(Delegate).IsAssignableFrom(propertyPair.my.PropertyType))
-                                            val = Delegate.CreateDelegate(propertyPair.my.PropertyType, ((Delegate)val).Target, ((Delegate)val).Method);
+                                        if (
+                                            propertyPair.my.PropertyType
+                                                != propertyPair.other.FieldType
+                                            && typeof(Delegate).IsAssignableFrom(
+                                                propertyPair.my.PropertyType
+                                            )
+                                        )
+                                            val = Delegate.CreateDelegate(
+                                                propertyPair.my.PropertyType,
+                                                ((Delegate)val).Target,
+                                                ((Delegate)val).Method
+                                            );
 
                                         propertyPair.my.SetValue(this, val, null);
                                     }
                                 }
                                 catch (Exception ex)
                                 {
-                                    SimpleLogger.LogWarning("Failed to copy value " + propertyPair.my.Name + " from provided tag object " + attrType.FullName + " - " + ex.Message);
+                                    SimpleLogger.LogWarning(
+                                        "Failed to copy value "
+                                            + propertyPair.my.Name
+                                            + " from provided tag object "
+                                            + attrType.FullName
+                                            + " - "
+                                            + ex.Message
+                                    );
                                 }
                             }
                             break;

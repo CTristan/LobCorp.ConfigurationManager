@@ -5,7 +5,8 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Specifies the valid range for a setting value.
     /// </summary>
-    public class AcceptableValueRange<T> : AcceptableValueBase where T : IComparable
+    public class AcceptableValueRange<T> : AcceptableValueBase
+        where T : IComparable
     {
         public T MinValue { get; private set; }
         public T MaxValue { get; private set; }
@@ -25,8 +26,10 @@ namespace ConfigurationManager.Config
 
         public T Clamp(T value)
         {
-            if (value.CompareTo(MinValue) < 0) return MinValue;
-            if (value.CompareTo(MaxValue) > 0) return MaxValue;
+            if (value.CompareTo(MinValue) < 0)
+                return MinValue;
+            if (value.CompareTo(MaxValue) > 0)
+                return MaxValue;
             return value;
         }
     }

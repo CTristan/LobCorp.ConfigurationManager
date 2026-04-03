@@ -20,22 +20,38 @@ namespace ConfigurationManager
         /// <summary>
         /// All KeyCode values that can be used in a keyboard shortcut.
         /// </summary>
-        public static readonly IEnumerable<KeyCode> AllKeyCodes = Enum.GetValues(typeof(KeyCode)) as KeyCode[];
+        public static readonly IEnumerable<KeyCode> AllKeyCodes =
+            Enum.GetValues(typeof(KeyCode)) as KeyCode[];
 
         // Don't block hotkeys if mouse is being pressed
-        public static readonly KeyCode[] ModifierBlockKeyCodes = AllKeyCodes.Except(new[] {
-            KeyCode.Mouse0, KeyCode.Mouse1, KeyCode.Mouse2, KeyCode.Mouse3,
-            KeyCode.Mouse4, KeyCode.Mouse5, KeyCode.Mouse6, KeyCode.None }).ToArray();
+        public static readonly KeyCode[] ModifierBlockKeyCodes = AllKeyCodes
+            .Except(
+                new[]
+                {
+                    KeyCode.Mouse0,
+                    KeyCode.Mouse1,
+                    KeyCode.Mouse2,
+                    KeyCode.Mouse3,
+                    KeyCode.Mouse4,
+                    KeyCode.Mouse5,
+                    KeyCode.Mouse6,
+                    KeyCode.None,
+                }
+            )
+            .ToArray();
 
         private readonly KeyCode[] _allKeys;
 
         /// <summary>
         /// Create a new keyboard shortcut.
         /// </summary>
-        public KeyboardShortcut(KeyCode mainKey, params KeyCode[] modifiers) : this(new[] { mainKey }.Concat(modifiers).ToArray())
+        public KeyboardShortcut(KeyCode mainKey, params KeyCode[] modifiers)
+            : this(new[] { mainKey }.Concat(modifiers).ToArray())
         {
             if (mainKey == KeyCode.None && modifiers.Any())
-                throw new ArgumentException("Can't set mainKey to KeyCode.None if there are any modifiers");
+                throw new ArgumentException(
+                    "Can't set mainKey to KeyCode.None if there are any modifiers"
+                );
         }
 
         private KeyboardShortcut(KeyCode[] keys)
@@ -46,7 +62,9 @@ namespace ConfigurationManager
         private static KeyCode[] SanitizeKeys(params KeyCode[] keys)
         {
             return keys != null && keys.Length != 0 && keys[0] != KeyCode.None
-                ? new[] { keys[0] }.Concat(keys.Skip(1).Distinct().Where(x => x != keys[0]).OrderBy(x => (int)x)).ToArray()
+                ? new[] { keys[0] }
+                    .Concat(keys.Skip(1).Distinct().Where(x => x != keys[0]).OrderBy(x => (int)x))
+                    .ToArray()
                 : new[] { KeyCode.None };
         }
 
@@ -73,8 +91,12 @@ namespace ConfigurationManager
         {
             try
             {
-                var parts = str.Split(new[] { ' ', '+', ',', ';', '|' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x)).ToArray();
+                var parts = str.Split(
+                        new[] { ' ', '+', ',', ';', '|' },
+                        StringSplitOptions.RemoveEmptyEntries
+                    )
+                    .Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x))
+                    .ToArray();
                 return new KeyboardShortcut(parts);
             }
             catch (SystemException ex)
@@ -124,9 +146,8 @@ namespace ConfigurationManager
         private bool ModifierKeyTest()
         {
             var mainKey = MainKey;
-            return
-                _allKeys.All(key => key == mainKey || Input.GetKey(key)) &&
-                ModifierBlockKeyCodes.Except(_allKeys).All(key => !Input.GetKey(key));
+            return _allKeys.All(key => key == mainKey || Input.GetKey(key))
+                && ModifierBlockKeyCodes.Except(_allKeys).All(key => !Input.GetKey(key));
         }
 
         /// <inheritdoc />
@@ -140,14 +161,19 @@ namespace ConfigurationManager
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return obj is KeyboardShortcut shortcut && MainKey == shortcut.MainKey && Modifiers.SequenceEqual(shortcut.Modifiers);
+            return obj is KeyboardShortcut shortcut
+                && MainKey == shortcut.MainKey
+                && Modifiers.SequenceEqual(shortcut.Modifiers);
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
             return MainKey != KeyCode.None
-                ? _allKeys.Aggregate(_allKeys.Length, (current, item) => unchecked(current * 31 + (int)item))
+                ? _allKeys.Aggregate(
+                    _allKeys.Length,
+                    (current, item) => unchecked(current * 31 + (int)item)
+                )
                 : 0;
         }
     }

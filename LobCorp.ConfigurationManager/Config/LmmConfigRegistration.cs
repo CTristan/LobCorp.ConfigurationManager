@@ -10,7 +10,8 @@ namespace ConfigurationManager.Config
     /// </summary>
     public static class LmmConfigRegistration
     {
-        private static readonly Dictionary<string, RegisteredMod> RegisteredMods = new Dictionary<string, RegisteredMod>();
+        private static readonly Dictionary<string, RegisteredMod> RegisteredMods =
+            new Dictionary<string, RegisteredMod>();
 
         /// <summary>
         /// Get or create a config file for a mod.
@@ -30,7 +31,7 @@ namespace ConfigurationManager.Config
             {
                 ModId = modId,
                 ModName = modName,
-                ConfigFile = configFile
+                ConfigFile = configFile,
             };
             RegisteredMods[modId] = mod;
 
@@ -40,7 +41,14 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting for a mod.
         /// </summary>
-        public static LmmConfigEntry<T> Register<T>(string modId, string modName, string section, string key, T defaultValue, string description = null)
+        public static LmmConfigEntry<T> Register<T>(
+            string modId,
+            string modName,
+            string section,
+            string key,
+            T defaultValue,
+            string description = null
+        )
         {
             var configFile = GetConfigFile(modId, modName);
             return configFile.Bind(section, key, defaultValue, description);
@@ -49,7 +57,14 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting with full description.
         /// </summary>
-        public static LmmConfigEntry<T> Register<T>(string modId, string modName, string section, string key, T defaultValue, LmmConfigDescription description)
+        public static LmmConfigEntry<T> Register<T>(
+            string modId,
+            string modName,
+            string section,
+            string key,
+            T defaultValue,
+            LmmConfigDescription description
+        )
         {
             var configFile = GetConfigFile(modId, modName);
             return configFile.Bind(section, key, defaultValue, description);

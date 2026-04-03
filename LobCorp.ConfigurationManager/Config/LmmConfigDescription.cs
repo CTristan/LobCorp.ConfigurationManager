@@ -9,7 +9,11 @@ namespace ConfigurationManager.Config
         public AcceptableValueBase AcceptableValues { get; private set; }
         public object[] Tags { get; private set; }
 
-        public LmmConfigDescription(string description, AcceptableValueBase acceptableValues = null, params object[] tags)
+        public LmmConfigDescription(
+            string description,
+            AcceptableValueBase acceptableValues = null,
+            params object[] tags
+        )
         {
             Description = description;
             AcceptableValues = acceptableValues;

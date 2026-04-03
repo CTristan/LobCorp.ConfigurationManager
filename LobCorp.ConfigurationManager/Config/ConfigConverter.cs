@@ -19,162 +19,245 @@ namespace ConfigurationManager.Config
     /// </summary>
     public static class ConfigConverter
     {
-        private static readonly Dictionary<Type, TypeConverter> Converters = new Dictionary<Type, TypeConverter>();
+        private static readonly Dictionary<Type, TypeConverter> Converters =
+            new Dictionary<Type, TypeConverter>();
 
         static ConfigConverter()
         {
-            AddConverter(typeof(string), new TypeConverter
-            {
-                ConvertToString = (o, t) => (string)o ?? string.Empty,
-                ConvertToObject = (s, t) => s
-            });
-
-            AddConverter(typeof(bool), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((bool)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => bool.Parse(s)
-            });
-
-            AddConverter(typeof(int), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((int)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => int.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(long), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((long)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => long.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(float), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((float)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => float.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(double), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((double)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => double.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(decimal), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((decimal)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => decimal.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(short), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((short)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => short.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(byte), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((byte)o).ToString(CultureInfo.InvariantCulture),
-                ConvertToObject = (s, t) => byte.Parse(s, CultureInfo.InvariantCulture)
-            });
-
-            AddConverter(typeof(KeyCode), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((KeyCode)o).ToString(),
-                ConvertToObject = (s, t) => (KeyCode)Enum.Parse(typeof(KeyCode), s)
-            });
-
-            AddConverter(typeof(KeyboardShortcut), new TypeConverter
-            {
-                ConvertToString = (o, t) => ((KeyboardShortcut)o).Serialize(),
-                ConvertToObject = (s, t) => KeyboardShortcut.Deserialize(s)
-            });
-
-            AddConverter(typeof(Color), new TypeConverter
-            {
-                ConvertToString = (o, t) =>
+            AddConverter(
+                typeof(string),
+                new TypeConverter
                 {
-                    var c = (Color)o;
-                    return string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", c.r, c.g, c.b, c.a);
-                },
-                ConvertToObject = (s, t) =>
-                {
-                    var parts = s.Split(' ');
-                    return new Color(
-                        float.Parse(parts[0], CultureInfo.InvariantCulture),
-                        float.Parse(parts[1], CultureInfo.InvariantCulture),
-                        float.Parse(parts[2], CultureInfo.InvariantCulture),
-                        parts.Length > 3 ? float.Parse(parts[3], CultureInfo.InvariantCulture) : 1f);
+                    ConvertToString = (o, t) => (string)o ?? string.Empty,
+                    ConvertToObject = (s, t) => s,
                 }
-            });
+            );
 
-            AddConverter(typeof(Vector2), new TypeConverter
-            {
-                ConvertToString = (o, t) =>
+            AddConverter(
+                typeof(bool),
+                new TypeConverter
                 {
-                    var v = (Vector2)o;
-                    return string.Format(CultureInfo.InvariantCulture, "{0} {1}", v.x, v.y);
-                },
-                ConvertToObject = (s, t) =>
-                {
-                    var parts = s.Split(' ');
-                    return new Vector2(
-                        float.Parse(parts[0], CultureInfo.InvariantCulture),
-                        float.Parse(parts[1], CultureInfo.InvariantCulture));
+                    ConvertToString = (o, t) => ((bool)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => bool.Parse(s),
                 }
-            });
+            );
 
-            AddConverter(typeof(Vector3), new TypeConverter
-            {
-                ConvertToString = (o, t) =>
+            AddConverter(
+                typeof(int),
+                new TypeConverter
                 {
-                    var v = (Vector3)o;
-                    return string.Format(CultureInfo.InvariantCulture, "{0} {1} {2}", v.x, v.y, v.z);
-                },
-                ConvertToObject = (s, t) =>
-                {
-                    var parts = s.Split(' ');
-                    return new Vector3(
-                        float.Parse(parts[0], CultureInfo.InvariantCulture),
-                        float.Parse(parts[1], CultureInfo.InvariantCulture),
-                        float.Parse(parts[2], CultureInfo.InvariantCulture));
+                    ConvertToString = (o, t) => ((int)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => int.Parse(s, CultureInfo.InvariantCulture),
                 }
-            });
+            );
 
-            AddConverter(typeof(Vector4), new TypeConverter
-            {
-                ConvertToString = (o, t) =>
+            AddConverter(
+                typeof(long),
+                new TypeConverter
                 {
-                    var v = (Vector4)o;
-                    return string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", v.x, v.y, v.z, v.w);
-                },
-                ConvertToObject = (s, t) =>
-                {
-                    var parts = s.Split(' ');
-                    return new Vector4(
-                        float.Parse(parts[0], CultureInfo.InvariantCulture),
-                        float.Parse(parts[1], CultureInfo.InvariantCulture),
-                        float.Parse(parts[2], CultureInfo.InvariantCulture),
-                        float.Parse(parts[3], CultureInfo.InvariantCulture));
+                    ConvertToString = (o, t) => ((long)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => long.Parse(s, CultureInfo.InvariantCulture),
                 }
-            });
+            );
 
-            AddConverter(typeof(Quaternion), new TypeConverter
-            {
-                ConvertToString = (o, t) =>
+            AddConverter(
+                typeof(float),
+                new TypeConverter
                 {
-                    var q = (Quaternion)o;
-                    return string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", q.x, q.y, q.z, q.w);
-                },
-                ConvertToObject = (s, t) =>
-                {
-                    var parts = s.Split(' ');
-                    return new Quaternion(
-                        float.Parse(parts[0], CultureInfo.InvariantCulture),
-                        float.Parse(parts[1], CultureInfo.InvariantCulture),
-                        float.Parse(parts[2], CultureInfo.InvariantCulture),
-                        float.Parse(parts[3], CultureInfo.InvariantCulture));
+                    ConvertToString = (o, t) => ((float)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => float.Parse(s, CultureInfo.InvariantCulture),
                 }
-            });
+            );
+
+            AddConverter(
+                typeof(double),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((double)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => double.Parse(s, CultureInfo.InvariantCulture),
+                }
+            );
+
+            AddConverter(
+                typeof(decimal),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((decimal)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => decimal.Parse(s, CultureInfo.InvariantCulture),
+                }
+            );
+
+            AddConverter(
+                typeof(short),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((short)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => short.Parse(s, CultureInfo.InvariantCulture),
+                }
+            );
+
+            AddConverter(
+                typeof(byte),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((byte)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, t) => byte.Parse(s, CultureInfo.InvariantCulture),
+                }
+            );
+
+            AddConverter(
+                typeof(KeyCode),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((KeyCode)o).ToString(),
+                    ConvertToObject = (s, t) => (KeyCode)Enum.Parse(typeof(KeyCode), s),
+                }
+            );
+
+            AddConverter(
+                typeof(KeyboardShortcut),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) => ((KeyboardShortcut)o).Serialize(),
+                    ConvertToObject = (s, t) => KeyboardShortcut.Deserialize(s),
+                }
+            );
+
+            AddConverter(
+                typeof(Color),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) =>
+                    {
+                        var c = (Color)o;
+                        return string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{0} {1} {2} {3}",
+                            c.r,
+                            c.g,
+                            c.b,
+                            c.a
+                        );
+                    },
+                    ConvertToObject = (s, t) =>
+                    {
+                        var parts = s.Split(' ');
+                        return new Color(
+                            float.Parse(parts[0], CultureInfo.InvariantCulture),
+                            float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture),
+                            parts.Length > 3
+                                ? float.Parse(parts[3], CultureInfo.InvariantCulture)
+                                : 1f
+                        );
+                    },
+                }
+            );
+
+            AddConverter(
+                typeof(Vector2),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) =>
+                    {
+                        var v = (Vector2)o;
+                        return string.Format(CultureInfo.InvariantCulture, "{0} {1}", v.x, v.y);
+                    },
+                    ConvertToObject = (s, t) =>
+                    {
+                        var parts = s.Split(' ');
+                        return new Vector2(
+                            float.Parse(parts[0], CultureInfo.InvariantCulture),
+                            float.Parse(parts[1], CultureInfo.InvariantCulture)
+                        );
+                    },
+                }
+            );
+
+            AddConverter(
+                typeof(Vector3),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) =>
+                    {
+                        var v = (Vector3)o;
+                        return string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{0} {1} {2}",
+                            v.x,
+                            v.y,
+                            v.z
+                        );
+                    },
+                    ConvertToObject = (s, t) =>
+                    {
+                        var parts = s.Split(' ');
+                        return new Vector3(
+                            float.Parse(parts[0], CultureInfo.InvariantCulture),
+                            float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture)
+                        );
+                    },
+                }
+            );
+
+            AddConverter(
+                typeof(Vector4),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) =>
+                    {
+                        var v = (Vector4)o;
+                        return string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{0} {1} {2} {3}",
+                            v.x,
+                            v.y,
+                            v.z,
+                            v.w
+                        );
+                    },
+                    ConvertToObject = (s, t) =>
+                    {
+                        var parts = s.Split(' ');
+                        return new Vector4(
+                            float.Parse(parts[0], CultureInfo.InvariantCulture),
+                            float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture),
+                            float.Parse(parts[3], CultureInfo.InvariantCulture)
+                        );
+                    },
+                }
+            );
+
+            AddConverter(
+                typeof(Quaternion),
+                new TypeConverter
+                {
+                    ConvertToString = (o, t) =>
+                    {
+                        var q = (Quaternion)o;
+                        return string.Format(
+                            CultureInfo.InvariantCulture,
+                            "{0} {1} {2} {3}",
+                            q.x,
+                            q.y,
+                            q.z,
+                            q.w
+                        );
+                    },
+                    ConvertToObject = (s, t) =>
+                    {
+                        var parts = s.Split(' ');
+                        return new Quaternion(
+                            float.Parse(parts[0], CultureInfo.InvariantCulture),
+                            float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture),
+                            float.Parse(parts[3], CultureInfo.InvariantCulture)
+                        );
+                    },
+                }
+            );
         }
 
         public static void AddConverter(Type type, TypeConverter converter)
@@ -194,7 +277,7 @@ namespace ConfigurationManager.Config
                 return new TypeConverter
                 {
                     ConvertToString = (o, t) => o.ToString(),
-                    ConvertToObject = (s, t) => Enum.Parse(type, s)
+                    ConvertToObject = (s, t) => Enum.Parse(type, s),
                 };
             }
 

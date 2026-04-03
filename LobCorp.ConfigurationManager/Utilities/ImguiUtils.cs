@@ -17,7 +17,11 @@ namespace ConfigurationManager.Utilities
                 _windowBackground = windowBackground;
             }
 
-            GUI.Box(position, GUIContent.none, new GUIStyle { normal = new GUIStyleState { background = _windowBackground } });
+            GUI.Box(
+                position,
+                GUIContent.none,
+                new GUIStyle { normal = new GUIStyleState { background = _windowBackground } }
+            );
         }
 
         public static void DrawContolBackground(Rect position, Color color = default)
@@ -30,7 +34,11 @@ namespace ConfigurationManager.Utilities
                 _tooltipBg = background;
             }
 
-            GUI.Box(position, GUIContent.none, new GUIStyle { normal = new GUIStyleState { background = _tooltipBg } });
+            GUI.Box(
+                position,
+                GUIContent.none,
+                new GUIStyle { normal = new GUIStyleState { background = _tooltipBg } }
+            );
         }
     }
 }

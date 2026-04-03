@@ -13,7 +13,11 @@ namespace ConfigurationManager
     {
         public LmmConfigEntryBase Entry { get; private set; }
 
-        public LmmSettingEntry(LmmConfigEntryBase entry, PluginInfo pluginInfo, object pluginInstance)
+        public LmmSettingEntry(
+            LmmConfigEntryBase entry,
+            PluginInfo pluginInfo,
+            object pluginInstance
+        )
         {
             Entry = entry;
 
@@ -42,21 +46,37 @@ namespace ConfigurationManager
         private void GetAcceptableValues(AcceptableValueBase values)
         {
             var t = values.GetType();
-            var listProp = t.GetProperty("AcceptableValues", BindingFlags.Instance | BindingFlags.Public);
+            var listProp = t.GetProperty(
+                "AcceptableValues",
+                BindingFlags.Instance | BindingFlags.Public
+            );
             if (listProp != null)
             {
-                AcceptableValues = ((IEnumerable)listProp.GetValue(values, null)).Cast<object>().ToArray();
+                AcceptableValues = ((IEnumerable)listProp.GetValue(values, null))
+                    .Cast<object>()
+                    .ToArray();
             }
             else
             {
-                var minProp = t.GetProperty("MinValue", BindingFlags.Instance | BindingFlags.Public);
-                var maxProp = t.GetProperty("MaxValue", BindingFlags.Instance | BindingFlags.Public);
+                var minProp = t.GetProperty(
+                    "MinValue",
+                    BindingFlags.Instance | BindingFlags.Public
+                );
+                var maxProp = t.GetProperty(
+                    "MaxValue",
+                    BindingFlags.Instance | BindingFlags.Public
+                );
                 if (minProp != null && maxProp != null)
                 {
-                    AcceptableValueRange = new System.Collections.Generic.KeyValuePair<object, object>(
-                        minProp.GetValue(values, null), maxProp.GetValue(values, null));
-                    ShowRangeAsPercent = (AcceptableValueRange.Key.Equals(0) || AcceptableValueRange.Key.Equals(1)) && AcceptableValueRange.Value.Equals(100) ||
-                                         AcceptableValueRange.Key.Equals(0f) && AcceptableValueRange.Value.Equals(1f);
+                    AcceptableValueRange = new System.Collections.Generic.KeyValuePair<
+                        object,
+                        object
+                    >(minProp.GetValue(values, null), maxProp.GetValue(values, null));
+                    ShowRangeAsPercent =
+                        (AcceptableValueRange.Key.Equals(0) || AcceptableValueRange.Key.Equals(1))
+                            && AcceptableValueRange.Value.Equals(100)
+                        || AcceptableValueRange.Key.Equals(0f)
+                            && AcceptableValueRange.Value.Equals(1f);
                 }
             }
         }

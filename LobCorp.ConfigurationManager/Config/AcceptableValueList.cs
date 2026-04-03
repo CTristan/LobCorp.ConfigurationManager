@@ -6,7 +6,8 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Specifies the list of acceptable values for a setting.
     /// </summary>
-    public class AcceptableValueList<T> : AcceptableValueBase where T : IEquatable<T>
+    public class AcceptableValueList<T> : AcceptableValueBase
+        where T : IEquatable<T>
     {
         public T[] AcceptableValues { get; private set; }
 

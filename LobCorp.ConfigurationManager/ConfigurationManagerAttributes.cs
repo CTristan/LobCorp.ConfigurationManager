@@ -46,7 +46,10 @@ internal sealed class ConfigurationManagerAttributes
     /// <summary>
     /// Custom setting draw action that allows polling keyboard input with the Input class.
     /// </summary>
-    public delegate void CustomHotkeyDrawerFunc(ConfigurationManager.Config.LmmConfigEntryBase setting, ref bool isCurrentlyAcceptingInput);
+    public delegate void CustomHotkeyDrawerFunc(
+        ConfigurationManager.Config.LmmConfigEntryBase setting,
+        ref bool isCurrentlyAcceptingInput
+    );
 
     /// <summary>
     /// Show this setting in the settings screen at all? If false, don't show.

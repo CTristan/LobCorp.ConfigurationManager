@@ -18,7 +18,13 @@ namespace ConfigurationManager.Utilities
         private readonly GUIStyle listStyle;
         private readonly int _windowYmax;
 
-        public ComboBox(Rect rect, GUIContent buttonContent, GUIContent[] listContent, GUIStyle listStyle, float windowYmax)
+        public ComboBox(
+            Rect rect,
+            GUIContent buttonContent,
+            GUIContent[] listContent,
+            GUIStyle listStyle,
+            float windowYmax
+        )
         {
             Rect = rect;
             ButtonContent = buttonContent;
@@ -74,8 +80,13 @@ namespace ConfigurationManager.Utilities
                 GUI.enabled = false;
                 GUI.color = new Color(1, 1, 1, 2);
 
-                var location = GUIUtility.GUIToScreenPoint(new Vector2(Rect.x, Rect.y + listStyle.CalcHeight(listContent[0], 1.0f)));
-                var size = new Vector2(Rect.width, listStyle.CalcHeight(listContent[0], 1.0f) * listContent.Length);
+                var location = GUIUtility.GUIToScreenPoint(
+                    new Vector2(Rect.x, Rect.y + listStyle.CalcHeight(listContent[0], 1.0f))
+                );
+                var size = new Vector2(
+                    Rect.width,
+                    listStyle.CalcHeight(listContent[0], 1.0f) * listContent.Length
+                );
 
                 var innerRect = new Rect(0, 0, size.x, size.y);
 
@@ -86,7 +97,10 @@ namespace ConfigurationManager.Utilities
                     outerRectScreen.width += 20;
                 }
 
-                if (currentMousePosition != Vector2.zero && outerRectScreen.Contains(GUIUtility.GUIToScreenPoint(currentMousePosition)))
+                if (
+                    currentMousePosition != Vector2.zero
+                    && outerRectScreen.Contains(GUIUtility.GUIToScreenPoint(currentMousePosition))
+                )
                     done = false;
 
                 CurrentDropdownDrawer = () =>
@@ -94,14 +108,31 @@ namespace ConfigurationManager.Utilities
                     GUI.enabled = true;
 
                     var scrpos = GUIUtility.ScreenToGUIPoint(location);
-                    var outerRectLocal = new Rect(scrpos.x, scrpos.y, outerRectScreen.width, outerRectScreen.height);
+                    var outerRectLocal = new Rect(
+                        scrpos.x,
+                        scrpos.y,
+                        outerRectScreen.width,
+                        outerRectScreen.height
+                    );
 
                     ImguiUtils.DrawContolBackground(outerRectLocal);
 
-                    _scrollPosition = GUI.BeginScrollView(outerRectLocal, _scrollPosition, innerRect, false, false);
+                    _scrollPosition = GUI.BeginScrollView(
+                        outerRectLocal,
+                        _scrollPosition,
+                        innerRect,
+                        false,
+                        false
+                    );
                     {
                         const int initialSelectedItem = -1;
-                        var newSelectedItemIndex = GUI.SelectionGrid(innerRect, initialSelectedItem, listContent, 1, listStyle);
+                        var newSelectedItemIndex = GUI.SelectionGrid(
+                            innerRect,
+                            initialSelectedItem,
+                            listContent,
+                            1,
+                            listStyle
+                        );
                         if (newSelectedItemIndex != initialSelectedItem)
                         {
                             onItemSelected(newSelectedItemIndex);
