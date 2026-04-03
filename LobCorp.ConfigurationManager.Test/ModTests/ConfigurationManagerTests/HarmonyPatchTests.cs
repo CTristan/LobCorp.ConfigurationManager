@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MIT
+
+#region
+
+using ConfigurationManager.Patches;
+using LobCorp.ConfigurationManager.Test.Extensions;
+
+#endregion
+
+namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
+{
+    public sealed class HarmonyPatchTests
+    {
+        [Fact]
+        public void IntroPlayerPatchAwake_ShouldTargetIntroPlayerAwake()
+        {
+            typeof(IntroPlayerPatchAwake).ValidateHarmonyPatch(typeof(IntroPlayer), "Awake");
+        }
+    }
+}
