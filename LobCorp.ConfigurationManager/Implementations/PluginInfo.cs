@@ -44,7 +44,7 @@ namespace ConfigurationManager
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return GUID != null ? GUID.GetHashCode() : 0;
+            return (GUID?.GetHashCode()) ?? 0;
         }
 
         /// <inheritdoc />
