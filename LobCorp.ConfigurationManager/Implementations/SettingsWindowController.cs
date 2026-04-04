@@ -505,12 +505,21 @@ namespace ConfigurationManager.Implementations
 
         private void DrawTips()
         {
-            var tip =
-                !_tipsPluginHeaderWasClicked
-                    ? "Tip: Click plugin names to expand. Click setting and group names to see their descriptions."
-                : !_tipsWindowWasMoved
-                    ? "Tip: You can drag this window to move it. It will stay open while you interact with the game."
-                : null;
+            string tip;
+            if (!_tipsPluginHeaderWasClicked)
+            {
+                tip =
+                    "Tip: Click plugin names to expand. Click setting and group names to see their descriptions.";
+            }
+            else if (!_tipsWindowWasMoved)
+            {
+                tip =
+                    "Tip: You can drag this window to move it. It will stay open while you interact with the game.";
+            }
+            else
+            {
+                tip = null;
+            }
 
             if (tip != null)
             {

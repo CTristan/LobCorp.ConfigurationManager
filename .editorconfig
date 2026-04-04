@@ -7,13 +7,5 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Count: 2 - Declare 'ConfigurationManagerAttributes' inside namespace
 dotnet_diagnostic.RCS1110.severity = none
-# Count: 2 - Use string.Length instead of comparison with empty string
-dotnet_diagnostic.RCS1156.severity = none
-# Count: 2 - Convert comment to documentation comment
-dotnet_diagnostic.RCS1181.severity = none
-# Count: 2 - Use pattern matching instead of combination of 'as' operator and null check
-dotnet_diagnostic.RCS1221.severity = none
 # Count: 2 - Add paragraph to documentation comment
 dotnet_diagnostic.RCS1226.severity = none
-# Count: 2 - Avoid nested ?: operators
-dotnet_diagnostic.RCS1238.severity = none
