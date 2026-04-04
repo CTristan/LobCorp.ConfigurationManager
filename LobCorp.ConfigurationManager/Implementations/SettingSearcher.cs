@@ -150,7 +150,10 @@ namespace ConfigurationManager.Implementations
             {
                 var line = rawLine.Trim();
 
-                if (line.StartsWith("[") && line.EndsWith("]"))
+                if (
+                    line.StartsWith("[", StringComparison.Ordinal)
+                    && line.EndsWith("]", StringComparison.Ordinal)
+                )
                 {
                     currentSection = line.Substring(1, line.Length - 2);
                     currentDescription = null;
@@ -159,25 +162,25 @@ namespace ConfigurationManager.Implementations
                     continue;
                 }
 
-                if (line.StartsWith("## Setting type: "))
+                if (line.StartsWith("## Setting type: ", StringComparison.Ordinal))
                 {
                     currentTypeName = line.Substring("## Setting type: ".Length).Trim();
                     continue;
                 }
 
-                if (line.StartsWith("## Default value: "))
+                if (line.StartsWith("## Default value: ", StringComparison.Ordinal))
                 {
                     currentDefault = line.Substring("## Default value: ".Length).Trim();
                     continue;
                 }
 
-                if (line.StartsWith("## "))
+                if (line.StartsWith("## ", StringComparison.Ordinal))
                 {
                     currentDescription = line.Substring(3).Trim();
                     continue;
                 }
 
-                if (line.StartsWith("#") || string.IsNullOrEmpty(line))
+                if (line.StartsWith("#", StringComparison.Ordinal) || string.IsNullOrEmpty(line))
                 {
                     continue;
                 }

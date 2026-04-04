@@ -243,13 +243,16 @@ namespace ConfigurationManager.Config
             {
                 var line = rawLine.Trim();
 
-                if (line.StartsWith("[") && line.EndsWith("]"))
+                if (
+                    line.StartsWith("[", StringComparison.Ordinal)
+                    && line.EndsWith("]", StringComparison.Ordinal)
+                )
                 {
                     currentSection = line.Substring(1, line.Length - 2);
                     continue;
                 }
 
-                if (line.StartsWith("#") || string.IsNullOrEmpty(line))
+                if (line.StartsWith("#", StringComparison.Ordinal) || string.IsNullOrEmpty(line))
                 {
                     continue;
                 }
