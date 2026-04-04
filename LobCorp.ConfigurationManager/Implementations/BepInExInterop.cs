@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using ConfigurationManager.Config;
@@ -12,6 +13,9 @@ namespace ConfigurationManager
     /// Pure reflection-based interop with BepInEx.
     /// All access is guarded so the mod works without BepInEx installed.
     /// </summary>
+    [ExcludeFromCodeCoverage(
+        Justification = "Requires BepInEx runtime for reflection-based interop"
+    )]
     internal static class BepInExInterop
     {
         private static bool _initialized;
@@ -355,6 +359,9 @@ namespace ConfigurationManager
     /// <summary>
     /// Setting entry that wraps a BepInEx ConfigEntryBase via reflection.
     /// </summary>
+    [ExcludeFromCodeCoverage(
+        Justification = "Requires BepInEx runtime for reflection-based interop"
+    )]
     internal sealed class BepInExSettingEntry : SettingEntryBase
     {
         private readonly object _configEntry;

@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace ConfigurationManager.Utilities
 {
-    internal static class Utils
+    public static class Utils
     {
         public static string ToProperCase(this string str)
         {
@@ -52,6 +52,9 @@ namespace ConfigurationManager.Utilities
                 : s;
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Unity Texture2D API"
+        )]
         public static void FillTexture(this Texture2D tex, Color color)
         {
             if (color.a < 1f)
@@ -81,6 +84,9 @@ namespace ConfigurationManager.Utilities
             tex.Apply(false);
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Unity Texture2D API"
+        )]
         public static void FillTextureCheckerboard(this Texture2D tex)
         {
             for (var x = 0; x < tex.width; x++)
@@ -94,6 +100,9 @@ namespace ConfigurationManager.Utilities
             tex.Apply(false);
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Unity Application.dataPath and Process.Start"
+        )]
         public static void OpenLog()
         {
             var candidates = new List<string>();
@@ -149,6 +158,7 @@ namespace ConfigurationManager.Utilities
             throw new FileNotFoundException("No log files were found");
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Process.Start")]
         private static bool TryOpen(string path)
         {
             if (path == null)
@@ -167,6 +177,9 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Requires assembly file on disk"
+        )]
         public static string GetWebsite(object pluginInstance)
         {
             if (pluginInstance == null)
@@ -200,6 +213,12 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Process.Start")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Design",
+            "CA1054",
+            Justification = "URL is a string from game metadata"
+        )]
         public static void OpenWebsite(string url)
         {
             try
@@ -217,6 +236,9 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Unity GUIStyle API"
+        )]
         public static GUIStyle CreateCopy(this GUIStyle original)
         {
             return new GUIStyle(original);

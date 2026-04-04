@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,9 @@ using UnityEngine;
 
 namespace ConfigurationManager
 {
+    [ExcludeFromCodeCoverage(
+        Justification = "Depends on Unity Application.dataPath and file system scanning"
+    )]
     internal static class SettingSearcher
     {
         public static void CollectSettings(

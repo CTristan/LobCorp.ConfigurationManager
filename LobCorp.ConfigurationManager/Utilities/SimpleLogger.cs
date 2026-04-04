@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace ConfigurationManager.Utilities
 {
+    [ExcludeFromCodeCoverage(Justification = "Thin wrapper around Debug.Log")]
     internal static class SimpleLogger
     {
         private const string Prefix = "[ConfigurationManager] ";

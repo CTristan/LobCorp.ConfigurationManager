@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using ConfigurationManager.Config;
@@ -13,6 +14,7 @@ using UnityEngine;
 
 namespace ConfigurationManager
 {
+    [ExcludeFromCodeCoverage(Justification = "ImGUI field drawing")]
     internal class SettingFieldDrawer
     {
         private static IEnumerable<KeyCode> _keysToCheck;

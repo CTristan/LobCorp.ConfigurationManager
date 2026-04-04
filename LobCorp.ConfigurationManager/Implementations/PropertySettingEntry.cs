@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ConfigurationManager
 {
-    internal class PropertySettingEntry : SettingEntryBase
+    public class PropertySettingEntry : SettingEntryBase
     {
         private Type _settingType;
 

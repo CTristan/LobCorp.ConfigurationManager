@@ -9,7 +9,7 @@ namespace ConfigurationManager
     /// <summary>
     /// Wraps an LmmConfigEntryBase for display in the configuration UI.
     /// </summary>
-    internal sealed class LmmSettingEntry : SettingEntryBase
+    public sealed class LmmSettingEntry : SettingEntryBase
     {
         public LmmConfigEntryBase Entry { get; private set; }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace ConfigurationManager
@@ -7,5 +8,6 @@ namespace ConfigurationManager
     /// MonoBehaviour that provides Unity lifecycle hooks (Update, LateUpdate, OnGUI)
     /// for the ConfigurationManager. Injected via Harmony patch on IntroPlayer.Awake.
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "MonoBehaviour lifecycle wrapper")]
     public sealed class ConfigManagerBehaviour : MonoBehaviour;
 }

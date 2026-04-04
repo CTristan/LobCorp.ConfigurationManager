@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace ConfigurationManager.Utilities
 {
+    [ExcludeFromCodeCoverage(Justification = "ImGUI utility functions")]
     internal static class ImguiUtils
     {
         private static Texture2D _tooltipBg;

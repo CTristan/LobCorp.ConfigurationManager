@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,7 @@ namespace ConfigurationManager
     /// <summary>
     /// An easy way to let user configure how a plugin behaves without the need to make your own GUI.
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "ImGUI window rendering and Unity lifecycle")]
     public class ConfigurationManager
     {
         /// <summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Harmony;
 
 namespace ConfigurationManager
@@ -7,6 +8,7 @@ namespace ConfigurationManager
     /// LMM entry point for the Configuration Manager mod.
     /// Loaded by Basemod from LobotomyCorp_Data/BaseMods/ConfigurationManager/.
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Harmony entry point")]
     public sealed class Harmony_Patch
     {
         public static readonly Harmony_Patch Instance = new Harmony_Patch();

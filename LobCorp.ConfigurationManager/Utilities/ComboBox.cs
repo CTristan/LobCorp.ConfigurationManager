@@ -4,10 +4,12 @@
 // Modified by MarC0 / ManlyMarco
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace ConfigurationManager.Utilities
 {
+    [ExcludeFromCodeCoverage(Justification = "ImGUI dropdown control")]
     internal class ComboBox
     {
         private static bool forceToUnShow;

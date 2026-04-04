@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Harmony;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace ConfigurationManager.Patches
     /// into the game during IntroPlayer.Awake, following the same pattern
     /// as the DebugPanel mod.
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Harmony entry point, tested for patch targeting")]
     [HarmonyPatch(typeof(IntroPlayer), "Awake")]
     public static class IntroPlayerPatchAwake
     {

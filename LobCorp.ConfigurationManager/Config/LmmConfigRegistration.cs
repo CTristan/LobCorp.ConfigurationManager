@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using ConfigurationManager.Utilities;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Static API for LMM mod authors to register config settings.
     /// </summary>
+    [ExcludeFromCodeCoverage(
+        Justification = "Depends on Unity Application.dataPath and static state"
+    )]
     public static class LmmConfigRegistration
     {
         private static readonly Dictionary<string, RegisteredMod> RegisteredMods =

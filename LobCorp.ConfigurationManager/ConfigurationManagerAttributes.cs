@@ -24,6 +24,9 @@
 /// You can optionally remove fields that you won't use from this class, it's the same as leaving them null.
 /// </remarks>
 #pragma warning disable 0169, 0414, 0649
+[System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+    Justification = "Internal data holder class copied by plugins"
+)]
 internal sealed class ConfigurationManagerAttributes
 {
     /// <summary>

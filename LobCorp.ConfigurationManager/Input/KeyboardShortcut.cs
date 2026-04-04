@@ -121,6 +121,9 @@ namespace ConfigurationManager
         /// <summary>
         /// Check if the main key was just pressed (Input.GetKeyDown), and specified modifier keys are all pressed.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Requires Unity Input runtime"
+        )]
         public bool IsDown()
         {
             var mainKey = MainKey;
@@ -130,6 +133,9 @@ namespace ConfigurationManager
         /// <summary>
         /// Check if the main key is currently held down (Input.GetKey), and specified modifier keys are all pressed.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Requires Unity Input runtime"
+        )]
         public bool IsPressed()
         {
             var mainKey = MainKey;
@@ -139,12 +145,18 @@ namespace ConfigurationManager
         /// <summary>
         /// Check if the main key was just lifted (Input.GetKeyUp), and specified modifier keys are all pressed.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Requires Unity Input runtime"
+        )]
         public bool IsUp()
         {
             var mainKey = MainKey;
             return mainKey != KeyCode.None && Input.GetKeyUp(mainKey) && ModifierKeyTest();
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
+            Justification = "Requires Unity Input runtime"
+        )]
         private bool ModifierKeyTest()
         {
             var mainKey = MainKey;

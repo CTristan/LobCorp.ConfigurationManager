@@ -335,3 +335,9 @@ external/
 
 # Local NuGet packages
 nupkg/
+
+# Code coverage reports
+**/coverage.opencover.xml
+**/coverage.cobertura.xml
+coverage-report/
+format.log
