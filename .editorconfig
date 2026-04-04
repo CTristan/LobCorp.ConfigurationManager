@@ -5,8 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 8 - Delegate invocation can be simplified.
-dotnet_diagnostic.IDE1005.severity = none
 # Count: 8 - Use method chaining
 dotnet_diagnostic.RCS1201.severity = none
 # Count: 6 - The behavior of 'Convert.ChangeType(object, Type)' could vary based on the current user's locale settings. Replace this call in 'SettingFieldDrawer.CanCovert(string, Type)' with a call to 'Convert.ChangeType(object, Type, IFormatProvider)'.

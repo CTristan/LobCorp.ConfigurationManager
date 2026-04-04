@@ -63,11 +63,7 @@ namespace ConfigurationManager.Config
         /// </summary>
         protected void OnSettingChanged()
         {
-            var handler = SettingChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            SettingChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

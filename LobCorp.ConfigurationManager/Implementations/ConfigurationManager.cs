@@ -168,12 +168,7 @@ namespace ConfigurationManager.Implementations
                         SetUnlockCursor(_previousCursorLockState, _previousCursorVisible);
                     }
                 }
-
-                var handler = DisplayingWindowChanged;
-                if (handler != null)
-                {
-                    handler(this, new ValueChangedEventArgs<bool>(value));
-                }
+                DisplayingWindowChanged?.Invoke(this, new ValueChangedEventArgs<bool>(value));
             }
         }
 
