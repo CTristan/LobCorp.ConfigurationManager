@@ -401,14 +401,14 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawTooltip(Rect area)
         {
-            string tooltip = GUI.tooltip;
+            var tooltip = GUI.tooltip;
             if (!string.IsNullOrEmpty(tooltip))
             {
                 var style = GUI.skin.box.CreateCopy();
                 style.wordWrap = true;
                 style.alignment = TextAnchor.MiddleCenter;
 
-                GUIContent content = new GUIContent(tooltip);
+                var content = new GUIContent(tooltip);
 
                 const int width = 400;
                 var height = style.CalcHeight(content, 400) + 10;
@@ -780,7 +780,7 @@ namespace ConfigurationManager.Implementations
                 return;
             }
 
-            object defaultValue = setting.DefaultValue;
+            var defaultValue = setting.DefaultValue;
             if (defaultValue != null || setting.SettingType.IsClass)
             {
                 GUILayout.Space(5);

@@ -31,9 +31,9 @@ namespace ConfigurationManager.Utilities
                 return str;
             }
 
-            string result = str.Substring(0, 1).ToUpper();
+            var result = str.Substring(0, 1).ToUpper();
 
-            for (int i = 1; i < str.Length; i++)
+            for (var i = 1; i < str.Length; i++)
             {
                 if (char.IsUpper(str[i]))
                 {
