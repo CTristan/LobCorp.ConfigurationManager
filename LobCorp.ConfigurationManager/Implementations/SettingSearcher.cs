@@ -32,7 +32,7 @@ namespace ConfigurationManager.Implementations
                     var pluginInfo = new PluginInfo(mod.ModId, mod.ModName, "1.0.0");
                     var detected = new List<SettingEntryBase>();
 
-                    foreach (var kvp in mod.ConfigFile.GetEntries())
+                    foreach (var kvp in mod.ConfigFile.Entries)
                     {
                         detected.Add(new LmmSettingEntry(kvp.Value, pluginInfo, null));
                     }

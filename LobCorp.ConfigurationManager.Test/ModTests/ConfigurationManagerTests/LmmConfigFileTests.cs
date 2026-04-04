@@ -116,13 +116,13 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void GetEntries_ShouldReturnAllBoundEntries()
+        public void Entries_ShouldReturnAllBoundEntries()
         {
             var configFile = new LmmConfigFile(_tempPath);
             configFile.Bind("General", "Volume", 50);
             configFile.Bind("General", "Brightness", 75);
 
-            var entries = configFile.GetEntries().ToList();
+            var entries = configFile.Entries.ToList();
 
             entries.Should().HaveCount(2);
         }

@@ -116,10 +116,8 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Get all registered entries.
         /// </summary>
-        public IEnumerable<KeyValuePair<LmmConfigDefinition, LmmConfigEntryBase>> GetEntries()
-        {
-            return _entries;
-        }
+        public IEnumerable<KeyValuePair<LmmConfigDefinition, LmmConfigEntryBase>> Entries =>
+            _entries;
 
         /// <summary>
         /// Save all settings to disk.
