@@ -34,7 +34,7 @@ namespace ConfigurationManager
 
             DispName = entry.Definition.Key;
             Category = entry.Definition.Section;
-            Description = entry.Description != null ? entry.Description.Description : null;
+            Description = entry.Description?.Description;
 
             var converter = ConfigConverter.GetConverter(entry.SettingType);
             if (converter != null)
@@ -43,7 +43,7 @@ namespace ConfigurationManager
                 StrToObj = s => converter.ConvertToObject(s, entry.SettingType);
             }
 
-            var values = entry.Description != null ? entry.Description.AcceptableValues : null;
+            var values = entry.Description?.AcceptableValues;
             if (values != null)
             {
                 GetAcceptableValues(values);
@@ -52,7 +52,7 @@ namespace ConfigurationManager
             DefaultValue = entry.DefaultValue;
 
             PluginInfo = pluginInfo;
-            var tags = entry.Description != null ? entry.Description.Tags : null;
+            var tags = entry.Description?.Tags;
             SetFromAttributes(tags, pluginInstance);
         }
 

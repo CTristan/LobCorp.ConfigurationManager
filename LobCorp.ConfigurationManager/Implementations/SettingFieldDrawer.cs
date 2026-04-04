@@ -343,13 +343,10 @@ namespace ConfigurationManager
             {
                 var enumType = x.GetType();
                 var enumMember = enumType.GetMember(x.ToString()).FirstOrDefault();
-                var attr =
-                    enumMember != null
-                        ? enumMember
-                            .GetCustomAttributes(typeof(DescriptionAttribute), false)
-                            .Cast<DescriptionAttribute>()
-                            .FirstOrDefault()
-                        : null;
+                var attr = enumMember
+                    ?.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                    .Cast<DescriptionAttribute>()
+                    .FirstOrDefault();
                 if (attr != null)
                 {
                     return new GUIContent(attr.Description);

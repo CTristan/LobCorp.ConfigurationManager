@@ -44,10 +44,7 @@ namespace ConfigurationManager.Config
 
                 _value = value;
                 OnSettingChanged();
-                if (ConfigFile != null)
-                {
-                    ConfigFile.Save();
-                }
+                ConfigFile?.Save();
             }
         }
 

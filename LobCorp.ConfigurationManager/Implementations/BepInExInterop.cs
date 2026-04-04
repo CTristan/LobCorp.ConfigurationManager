@@ -193,27 +193,18 @@ namespace ConfigurationManager
                 {
                     try
                     {
-                        var instance =
-                            _pluginInfoInstanceProperty != null
-                                ? _pluginInfoInstanceProperty.GetValue(pluginInfoObj, null)
-                                : null;
+                        var instance = _pluginInfoInstanceProperty?.GetValue(pluginInfoObj, null);
                         if (instance == null)
                         {
                             continue;
                         }
 
                         // Get plugin metadata
-                        var metadata =
-                            _pluginInfoMetadataProperty != null
-                                ? _pluginInfoMetadataProperty.GetValue(pluginInfoObj, null)
-                                : null;
+                        var metadata = _pluginInfoMetadataProperty?.GetValue(pluginInfoObj, null);
                         var pluginInfo = CreatePluginInfo(metadata);
 
                         // Get config file
-                        var config =
-                            _configProperty != null
-                                ? _configProperty.GetValue(instance, null)
-                                : null;
+                        var config = _configProperty?.GetValue(instance, null);
                         if (config == null)
                         {
                             continue;
@@ -307,18 +298,12 @@ namespace ConfigurationManager
             PluginInfo pluginInfo
         )
         {
-            var definition =
-                _configEntryDefinitionProperty != null
-                    ? _configEntryDefinitionProperty.GetValue(configEntryBase, null)
-                    : null;
+            var definition = _configEntryDefinitionProperty?.GetValue(configEntryBase, null);
             var settingType =
                 _configEntrySettingTypeProperty != null
                     ? _configEntrySettingTypeProperty.GetValue(configEntryBase, null) as Type
                     : null;
-            var defaultValue =
-                _configEntryDefaultValueProperty != null
-                    ? _configEntryDefaultValueProperty.GetValue(configEntryBase, null)
-                    : null;
+            var defaultValue = _configEntryDefaultValueProperty?.GetValue(configEntryBase, null);
 
             if (definition == null || settingType == null)
             {
@@ -334,10 +319,7 @@ namespace ConfigurationManager
                     ? _configDefinitionKeyProperty.GetValue(definition, null) as string
                     : "";
 
-            var descriptionObj =
-                _configEntryDescriptionProperty != null
-                    ? _configEntryDescriptionProperty.GetValue(configEntryBase, null)
-                    : null;
+            var descriptionObj = _configEntryDescriptionProperty?.GetValue(configEntryBase, null);
             var descriptionText = "";
             if (descriptionObj != null && _configDescriptionDescriptionProperty != null)
             {
@@ -398,17 +380,12 @@ namespace ConfigurationManager
 
         public override object Get()
         {
-            return _boxedValueProperty != null
-                ? _boxedValueProperty.GetValue(_configEntry, null)
-                : null;
+            return _boxedValueProperty?.GetValue(_configEntry, null);
         }
 
         protected override void SetValue(object newVal)
         {
-            if (_boxedValueProperty != null)
-            {
-                _boxedValueProperty.SetValue(_configEntry, newVal, null);
-            }
+            _boxedValueProperty?.SetValue(_configEntry, newVal, null);
         }
     }
 }
