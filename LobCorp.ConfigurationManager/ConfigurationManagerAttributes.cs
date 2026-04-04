@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+// CS0169 (field never used), CS0414 (field assigned but never read), CS0649 (field never assigned):
+// These fields form a public API contract for external plugins. Plugins create instances of this class
+// and assign fields to customize how their settings appear in the configuration window. This assembly
+// then reads the values via reflection in SettingEntryBase.SetFromAttributes(). The compiler cannot see
+// either side of this interaction within this assembly, so the warnings are expected and intentional.
 #pragma warning disable 0169, 0414, 0649
 namespace ConfigurationManager
 {
