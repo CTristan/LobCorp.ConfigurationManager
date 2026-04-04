@@ -4,6 +4,7 @@
 
 using AwesomeAssertions;
 using ConfigurationManager;
+using ConfigurationManager.Implementations;
 using Xunit;
 
 #endregion

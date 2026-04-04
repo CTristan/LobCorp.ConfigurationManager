@@ -1,6 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net35</TargetFramework>
+		<!--
+			RootNamespace and AssemblyName intentionally match upstream BepInEx.ConfigurationManager.
+			Same AssemblyName produces ConfigurationManager.dll, preventing both from loading
+			simultaneously (DLL collision acts as a mutual-exclusion mechanism).
+			Same RootNamespace ensures drop-in replacement compatibility for any code referencing
+			types like ConfigurationManager.ConfigurationManagerAttributes by full qualified name.
+			Changing either would risk dual-load conflicts: double UI entries and duplicate
+			attribute processing via the name-based ConfigurationManagerAttributes detection.
+		-->
+		<RootNamespace>ConfigurationManager</RootNamespace>
+    	<AssemblyName>ConfigurationManager</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>

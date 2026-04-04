@@ -8,10 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ConfigurationManager.Config;
+using ConfigurationManager.Input;
 using ConfigurationManager.Utilities;
 using UnityEngine;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// An easy way to let user configure how a plugin behaves without the need to make your own GUI.
@@ -357,7 +358,7 @@ namespace ConfigurationManager
             {
                 SetUnlockCursor(0, true);
 
-                var mousePosition = Input.mousePosition;
+                var mousePosition = UnityEngine.Input.mousePosition;
                 mousePosition.y = Screen.height - mousePosition.y;
 
                 if (!_windowWasMoved)
@@ -393,7 +394,7 @@ namespace ConfigurationManager
                     && (!_windowWasMoved || SettingWindowRect.Contains(mousePosition))
                 )
                 {
-                    Input.ResetInputAxes();
+                    UnityEngine.Input.ResetInputAxes();
                 }
             }
         }

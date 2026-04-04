@@ -8,10 +8,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using ConfigurationManager.Config;
+using ConfigurationManager.Input;
 using ConfigurationManager.Utilities;
 using UnityEngine;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     [ExcludeFromCodeCoverage(Justification = "ImGUI field drawing")]
     internal class SettingFieldDrawer
@@ -496,7 +497,7 @@ namespace ConfigurationManager
 
                 foreach (var key in _keysToCheck)
                 {
-                    if (Input.GetKeyUp(key))
+                    if (UnityEngine.Input.GetKeyUp(key))
                     {
                         setting.Set(key);
                         _currentKeyboardShortcutToSet = null;
@@ -547,12 +548,12 @@ namespace ConfigurationManager
 
                 foreach (var key in _keysToCheck)
                 {
-                    if (Input.GetKeyUp(key))
+                    if (UnityEngine.Input.GetKeyUp(key))
                     {
                         setting.Set(
                             new KeyboardShortcut(
                                 key,
-                                _keysToCheck.Where(x => Input.GetKey(x)).ToArray()
+                                _keysToCheck.Where(x => UnityEngine.Input.GetKey(x)).ToArray()
                             )
                         );
                         _currentKeyboardShortcutToSet = null;

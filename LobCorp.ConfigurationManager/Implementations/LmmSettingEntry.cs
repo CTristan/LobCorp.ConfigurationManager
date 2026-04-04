@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using ConfigurationManager.Config;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// Wraps an LmmConfigEntryBase for display in the configuration UI.

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// Metadata about a plugin/mod, replacing BepInPlugin.

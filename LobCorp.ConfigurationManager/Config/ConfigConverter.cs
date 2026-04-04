@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using ConfigurationManager.Input;
 using UnityEngine;
 
 namespace ConfigurationManager.Config

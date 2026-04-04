@@ -8,7 +8,7 @@ using System.Reflection;
 using ConfigurationManager.Config;
 using ConfigurationManager.Utilities;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// Class representing all data about a setting collected by ConfigurationManager.

@@ -5,8 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 20 - Namespace "ConfigurationManager" does not match folder structure, expected "ConfigurationManager.Implementations"
-dotnet_diagnostic.IDE0130.severity = none
 # Count: 20 - Collection initialization can be simplified
 dotnet_diagnostic.IDE0300.severity = none
 # Count: 18 - The behavior of 'string.StartsWith(string)' could vary based on the current user's locale settings. Replace this call in 'ConfigurationManager.Config.LmmConfigFile.ReadValueFromFile(string, string)' with a call to 'string.StartsWith(string, System.StringComparison)'.

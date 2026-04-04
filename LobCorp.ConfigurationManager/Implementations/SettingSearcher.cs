@@ -10,7 +10,7 @@ using ConfigurationManager.Config;
 using ConfigurationManager.Utilities;
 using UnityEngine;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     [ExcludeFromCodeCoverage(
         Justification = "Depends on Unity Application.dataPath and file system scanning"

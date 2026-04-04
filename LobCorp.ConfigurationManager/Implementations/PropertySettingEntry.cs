@@ -3,7 +3,7 @@
 using System;
 using System.Reflection;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// Wraps a C# property as a setting entry for display in the configuration UI.

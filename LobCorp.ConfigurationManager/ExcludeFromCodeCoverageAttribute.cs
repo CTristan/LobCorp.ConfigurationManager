@@ -2,6 +2,7 @@
 
 #if !NETCOREAPP && !NET5_0_OR_GREATER
 
+#pragma warning disable IDE0130 // Compatibility shim must live in the BCL namespace.
 // ReSharper disable once CheckNamespace
 namespace System.Diagnostics.CodeAnalysis
 {

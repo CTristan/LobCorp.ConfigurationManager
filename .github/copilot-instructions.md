@@ -46,7 +46,7 @@ No test projects exist yet. The test infrastructure (xunit.v3, Moq, AwesomeAsser
 ## Key Constraints
 
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
-- **RootNamespace is `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — follows original BepInEx conventions.
+- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This makes the fork a drop-in replacement: the identical DLL name prevents both from loading simultaneously, and the shared namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). Do not change either without accounting for these implications.
 - **All references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime.
 - **Implicit usings and nullable are disabled.**
 - `Microsoft.NETFramework.ReferenceAssemblies` is pulled in implicitly by the SDK for net35 — do not add it to `Directory.Packages.props`.

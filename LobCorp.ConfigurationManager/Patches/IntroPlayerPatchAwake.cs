@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using ConfigurationManager.Implementations;
 using Harmony;
 using UnityEngine;
 

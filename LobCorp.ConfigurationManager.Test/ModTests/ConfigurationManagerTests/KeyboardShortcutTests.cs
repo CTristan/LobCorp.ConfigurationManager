@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using AwesomeAssertions;
 using ConfigurationManager;
+using ConfigurationManager.Input;
 using UnityEngine;
 using Xunit;
 

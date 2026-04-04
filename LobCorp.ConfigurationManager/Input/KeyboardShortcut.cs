@@ -6,7 +6,7 @@ using System.Linq;
 using ConfigurationManager.Utilities;
 using UnityEngine;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Input
 {
     /// <summary>
     /// A keyboard shortcut that can be used in Update method to check if user presses a key combo.
@@ -130,7 +130,9 @@ namespace ConfigurationManager
         public bool IsDown()
         {
             var mainKey = MainKey;
-            return mainKey != KeyCode.None && Input.GetKeyDown(mainKey) && ModifierKeyTest();
+            return mainKey != KeyCode.None
+                && UnityEngine.Input.GetKeyDown(mainKey)
+                && ModifierKeyTest();
         }
 
         /// <summary>
@@ -142,7 +144,9 @@ namespace ConfigurationManager
         public bool IsPressed()
         {
             var mainKey = MainKey;
-            return mainKey != KeyCode.None && Input.GetKey(mainKey) && ModifierKeyTest();
+            return mainKey != KeyCode.None
+                && UnityEngine.Input.GetKey(mainKey)
+                && ModifierKeyTest();
         }
 
         /// <summary>
@@ -154,7 +158,9 @@ namespace ConfigurationManager
         public bool IsUp()
         {
             var mainKey = MainKey;
-            return mainKey != KeyCode.None && Input.GetKeyUp(mainKey) && ModifierKeyTest();
+            return mainKey != KeyCode.None
+                && UnityEngine.Input.GetKeyUp(mainKey)
+                && ModifierKeyTest();
         }
 
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
@@ -163,8 +169,10 @@ namespace ConfigurationManager
         private bool ModifierKeyTest()
         {
             var mainKey = MainKey;
-            return _allKeys.All(key => key == mainKey || Input.GetKey(key))
-                && ModifierBlockKeyCodes.Except(_allKeys).All(key => !Input.GetKey(key));
+            return _allKeys.All(key => key == mainKey || UnityEngine.Input.GetKey(key))
+                && ModifierBlockKeyCodes
+                    .Except(_allKeys)
+                    .All(key => !UnityEngine.Input.GetKey(key));
         }
 
         /// <inheritdoc />

@@ -8,6 +8,7 @@ using System.Linq;
 using AwesomeAssertions;
 using ConfigurationManager;
 using ConfigurationManager.Config;
+using ConfigurationManager.Implementations;
 using Xunit;
 
 #endregion

@@ -9,7 +9,7 @@ using System.Reflection;
 using ConfigurationManager.Config;
 using ConfigurationManager.Utilities;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// Pure reflection-based interop with BepInEx.

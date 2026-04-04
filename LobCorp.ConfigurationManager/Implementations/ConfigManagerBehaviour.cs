@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
-namespace ConfigurationManager
+namespace ConfigurationManager.Implementations
 {
     /// <summary>
     /// MonoBehaviour that provides Unity lifecycle hooks (Update, LateUpdate, OnGUI)
