@@ -4,14 +4,16 @@
 namespace ConfigurationManager
 {
     /// <summary>
-    /// Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.
-    ///
+    /// <para>Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.</para>
+    /// <para>
     /// Usage:
     /// This class template has to be copied inside the plugin's project and referenced by its code directly.
     /// Make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.
-    ///
+    /// </para>
+    /// <para>
     /// If a field is null (default), it will be ignored and won't change how the setting is displayed.
     /// If a field is non-null (you assigned a value to it), it will override default behavior.
+    /// </para>
     /// </summary>
     ///
     /// <example>
@@ -42,7 +44,7 @@ namespace ConfigurationManager
         /// Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).
         /// See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing.
         /// </summary>
-        public System.Action<ConfigurationManager.Config.LmmConfigEntryBase> CustomDrawer;
+        public System.Action<Config.LmmConfigEntryBase> CustomDrawer;
 
         /// <summary>
         /// Custom setting editor that allows polling keyboard input with the Input class.
@@ -56,7 +58,7 @@ namespace ConfigurationManager
         /// <param name="setting">The config entry being drawn in the settings window.</param>
         /// <param name="isCurrentlyAcceptingInput">Ref flag indicating whether the control is actively capturing keyboard input.</param>
         public delegate void CustomHotkeyDrawerFunc(
-            ConfigurationManager.Config.LmmConfigEntryBase setting,
+            Config.LmmConfigEntryBase setting,
             ref bool isCurrentlyAcceptingInput
         );
 
