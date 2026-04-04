@@ -14,7 +14,7 @@ namespace ConfigurationManager.Utilities
     /// <summary>
     /// Shared helpers for string formatting, texture operations, and process launching
     /// </summary>
-    public static class Utils
+    public static class CommonHelpers
     {
         /// <summary>
         /// Inserts spaces before uppercase letters for display (e.g. "MyValue" → "My Value").

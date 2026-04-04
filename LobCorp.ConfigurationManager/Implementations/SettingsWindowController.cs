@@ -17,7 +17,7 @@ namespace ConfigurationManager.Implementations
     /// An easy way to let user configure how a plugin behaves without the need to make your own GUI.
     /// </summary>
     [ExcludeFromCodeCoverage(Justification = "ImGUI window rendering and Unity lifecycle")]
-    public class ConfigurationManager
+    public class SettingsWindowController
     {
         /// <summary>
         /// Identifier of this plugin.
@@ -86,7 +86,7 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// Initializes the UI controller, setting field drawer, and own config entries.
         /// </summary>
-        public ConfigurationManager()
+        public SettingsWindowController()
         {
             _fieldDrawer = new SettingFieldDrawer(this);
 
@@ -287,7 +287,7 @@ namespace ConfigurationManager.Implementations
                                 .ToList(),
                         });
 
-                    var website = Utils.GetWebsite(pluginSettings.First().PluginInstance);
+                    var website = CommonHelpers.GetWebsite(pluginSettings.First().PluginInstance);
 
                     return new PluginSettingsData
                     {
@@ -570,7 +570,7 @@ namespace ConfigurationManager.Implementations
                 {
                     try
                     {
-                        Utils.OpenLog();
+                        CommonHelpers.OpenLog();
                     }
                     catch (SystemException ex)
                     {
@@ -699,7 +699,7 @@ namespace ConfigurationManager.Implementations
                         )
                     )
                     {
-                        Utils.OpenWebsite(plugin.Website);
+                        CommonHelpers.OpenWebsite(plugin.Website);
                     }
 
                     GUI.color = origColor;

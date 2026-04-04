@@ -17,7 +17,7 @@ namespace ConfigurationManager.Input
         /// <summary>
         /// Shortcut that never triggers.
         /// </summary>
-        public static readonly KeyboardShortcut Empty = new KeyboardShortcut();
+        public static readonly KeyboardShortcut Empty;
 
         /// <summary>
         /// All KeyCode values that can be used in a keyboard shortcut.

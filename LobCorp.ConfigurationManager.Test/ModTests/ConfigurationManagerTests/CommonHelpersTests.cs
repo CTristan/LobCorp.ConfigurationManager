@@ -12,7 +12,7 @@ using Xunit;
 
 namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 {
-    public sealed class UtilsTests
+    public sealed class CommonHelpersTests
     {
         [Fact]
         public void ToProperCase_Empty_ShouldReturnEmpty()

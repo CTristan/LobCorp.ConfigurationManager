@@ -24,7 +24,7 @@ namespace ConfigurationManager.Implementations
         private static readonly Dictionary<SettingEntryBase, ColorCacheEntry> _colorCache =
             new Dictionary<SettingEntryBase, ColorCacheEntry>();
 
-        private static ConfigurationManager _instance;
+        private static SettingsWindowController _instance;
 
         private static SettingEntryBase _currentKeyboardShortcutToSet;
         public static bool SettingKeyboardShortcut => _currentKeyboardShortcutToSet != null;
@@ -44,7 +44,7 @@ namespace ConfigurationManager.Implementations
             };
         }
 
-        public SettingFieldDrawer(ConfigurationManager instance)
+        public SettingFieldDrawer(SettingsWindowController instance)
         {
             _instance = instance;
         }
