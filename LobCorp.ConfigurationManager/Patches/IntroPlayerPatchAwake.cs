@@ -14,6 +14,9 @@ namespace ConfigurationManager.Patches
     [HarmonyPatch(typeof(IntroPlayer), "Awake")]
     public static class IntroPlayerPatchAwake
     {
+        /// <summary>
+        /// Harmony postfix that injects the ConfigManagerBehaviour into the scene
+        /// </summary>
         public static void Postfix()
         {
             try

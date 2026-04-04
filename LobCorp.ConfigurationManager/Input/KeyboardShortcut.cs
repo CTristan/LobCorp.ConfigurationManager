@@ -23,7 +23,9 @@ namespace ConfigurationManager
         public static readonly IEnumerable<KeyCode> AllKeyCodes =
             Enum.GetValues(typeof(KeyCode)) as KeyCode[];
 
-        // Don't block hotkeys if mouse is being pressed
+        /// <summary>
+        /// All key codes except mouse buttons, used to detect unwanted modifier keys during shortcut matching
+        /// </summary>
         public static readonly KeyCode[] ModifierBlockKeyCodes = AllKeyCodes
             .Except(
                 new[]

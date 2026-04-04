@@ -88,6 +88,9 @@ namespace ConfigurationManager
         private readonly LmmConfigEntry<bool> _pluginConfigCollapsedDefault;
         private bool _showDebug;
 
+        /// <summary>
+        /// Initializes the UI controller, setting field drawer, and own config entries.
+        /// </summary>
         public ConfigurationManager()
         {
             _fieldDrawer = new SettingFieldDrawer(this);

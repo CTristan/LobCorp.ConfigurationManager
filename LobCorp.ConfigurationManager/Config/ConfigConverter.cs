@@ -10,7 +10,14 @@ namespace ConfigurationManager.Config
     /// </summary>
     public class TypeConverter
     {
+        /// <summary>
+        /// Delegate that serializes a value of the given type to a string
+        /// </summary>
         public Func<object, Type, string> ConvertToString;
+
+        /// <summary>
+        /// Delegate that deserializes a string back into a value of the given type
+        /// </summary>
         public Func<string, Type, object> ConvertToObject;
     }
 
@@ -260,11 +267,20 @@ namespace ConfigurationManager.Config
             );
         }
 
+        /// <summary>
+        /// Registers a converter for the specified type, replacing any existing one.
+        /// </summary>
+        /// <param name="type">The CLR type to register a converter for</param>
+        /// <param name="converter">The converter delegate pair</param>
         public static void AddConverter(Type type, TypeConverter converter)
         {
             Converters[type] = converter;
         }
 
+        /// <summary>
+        /// Looks up a registered converter for the type, falling back to generic enum handling.
+        /// </summary>
+        /// <param name="type">The CLR type to look up</param>
         public static TypeConverter GetConverter(Type type)
         {
             TypeConverter converter;
@@ -286,6 +302,11 @@ namespace ConfigurationManager.Config
             return null;
         }
 
+        /// <summary>
+        /// Converts a value to its string representation using the registered converter.
+        /// </summary>
+        /// <param name="value">The value to serialize</param>
+        /// <param name="type">The CLR type of the value</param>
         public static string ConvertToString(object value, Type type)
         {
             var converter = GetConverter(type);
@@ -297,6 +318,11 @@ namespace ConfigurationManager.Config
             return value != null ? value.ToString() : string.Empty;
         }
 
+        /// <summary>
+        /// Parses a string back into a typed value using the registered converter.
+        /// </summary>
+        /// <param name="value">The string to deserialize</param>
+        /// <param name="type">The target CLR type</param>
         public static object ConvertToObject(string value, Type type)
         {
             var converter = GetConverter(type);

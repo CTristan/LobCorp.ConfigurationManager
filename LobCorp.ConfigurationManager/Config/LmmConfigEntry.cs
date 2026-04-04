@@ -21,11 +21,15 @@ namespace ConfigurationManager.Config
             _value = defaultValue;
         }
 
+        /// <inheritdoc />
         public override Type SettingType
         {
             get { return typeof(T); }
         }
 
+        /// <summary>
+        /// The typed setting value; triggers auto-save and change event on set
+        /// </summary>
         public T Value
         {
             get { return _value; }
@@ -45,6 +49,7 @@ namespace ConfigurationManager.Config
             }
         }
 
+        /// <inheritdoc />
         public override object BoxedValue
         {
             get { return _value; }

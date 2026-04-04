@@ -11,8 +11,15 @@ using UnityEngine;
 
 namespace ConfigurationManager.Utilities
 {
+    /// <summary>
+    /// Shared helpers for string formatting, texture operations, and process launching
+    /// </summary>
     public static class Utils
     {
+        /// <summary>
+        /// Inserts spaces before uppercase letters for display (e.g. "MyValue" → "My Value").
+        /// </summary>
+        /// <param name="str">The PascalCase string to convert</param>
         public static string ToProperCase(this string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -40,11 +47,20 @@ namespace ConfigurationManager.Utilities
             return result;
         }
 
+        /// <summary>
+        /// Appends ".0" if the string has no decimal point.
+        /// </summary>
+        /// <param name="s">The numeric string to check</param>
         public static string AppendZero(this string s)
         {
             return !s.Contains(".") ? s + ".0" : s;
         }
 
+        /// <summary>
+        /// Appends ".0" if the type is float, double, or decimal and the string lacks a decimal point.
+        /// </summary>
+        /// <param name="s">The numeric string to check</param>
+        /// <param name="type">The CLR type of the value</param>
         public static string AppendZeroIfFloat(this string s, Type type)
         {
             return type == typeof(float) || type == typeof(double) || type == typeof(decimal)
@@ -52,6 +68,11 @@ namespace ConfigurationManager.Utilities
                 : s;
         }
 
+        /// <summary>
+        /// Fills a texture with the given color, alpha-blending if the color is translucent.
+        /// </summary>
+        /// <param name="tex">The texture to fill</param>
+        /// <param name="color">Fill color; blended with existing pixels if alpha is less than 1</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Texture2D API"
         )]
@@ -84,6 +105,10 @@ namespace ConfigurationManager.Utilities
             tex.Apply(false);
         }
 
+        /// <summary>
+        /// Fills a texture with a 10px black-and-white checkerboard pattern.
+        /// </summary>
+        /// <param name="tex">The texture to fill</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Texture2D API"
         )]
@@ -100,6 +125,9 @@ namespace ConfigurationManager.Utilities
             tex.Apply(false);
         }
 
+        /// <summary>
+        /// Locates and opens the most recent Unity log file.
+        /// </summary>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Application.dataPath and Process.Start"
         )]
@@ -177,6 +205,10 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        /// <summary>
+        /// Extracts a URL from the plugin assembly's file version info metadata.
+        /// </summary>
+        /// <param name="pluginInstance">The plugin object whose assembly to inspect</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Requires assembly file on disk"
         )]
@@ -213,6 +245,10 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        /// <summary>
+        /// Opens a URL in the default browser.
+        /// </summary>
+        /// <param name="url">The URL to open</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Process.Start")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Design",
@@ -236,6 +272,10 @@ namespace ConfigurationManager.Utilities
             }
         }
 
+        /// <summary>
+        /// Creates a shallow copy of a GUIStyle.
+        /// </summary>
+        /// <param name="original">The style to copy</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity GUIStyle API"
         )]

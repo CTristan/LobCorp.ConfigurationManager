@@ -15,8 +15,15 @@ namespace ConfigurationManager.Config
             new Dictionary<LmmConfigDefinition, LmmConfigEntryBase>();
         private bool _disableSaving;
 
+        /// <summary>
+        /// Absolute path to the INI config file on disk
+        /// </summary>
         public string ConfigFilePath { get; private set; }
 
+        /// <summary>
+        /// Creates a new config file manager for the given path.
+        /// </summary>
+        /// <param name="configFilePath">Absolute path to the INI config file</param>
         public LmmConfigFile(string configFilePath)
         {
             ConfigFilePath = configFilePath;

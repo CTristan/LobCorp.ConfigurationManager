@@ -3,8 +3,6 @@ root = true
 # Temporary Suppressions, remove this file when all cleared
 
 [*.cs]
-# Count: 100 - Missing XML comment for publicly visible type or member 'AcceptableValueBase.ValueType'
-dotnet_diagnostic.CS1591.severity = none
 # Count: 72 - Unused parameter 't'
 dotnet_diagnostic.RCS1163.severity = none
 # Count: 56 - A source file is missing a required header.

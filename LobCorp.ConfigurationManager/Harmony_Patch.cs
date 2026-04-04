@@ -11,6 +11,9 @@ namespace ConfigurationManager
     [ExcludeFromCodeCoverage(Justification = "Harmony entry point")]
     public sealed class Harmony_Patch
     {
+        /// <summary>
+        /// Singleton created by the static initializer, triggers Harmony patching on first access
+        /// </summary>
         public static readonly Harmony_Patch Instance = new Harmony_Patch();
 
         private Harmony_Patch()

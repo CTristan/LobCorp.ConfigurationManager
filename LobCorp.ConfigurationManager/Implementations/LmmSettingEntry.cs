@@ -11,8 +11,17 @@ namespace ConfigurationManager
     /// </summary>
     public sealed class LmmSettingEntry : SettingEntryBase
     {
+        /// <summary>
+        /// The underlying config entry this UI wrapper displays
+        /// </summary>
         public LmmConfigEntryBase Entry { get; private set; }
 
+        /// <summary>
+        /// Creates a UI wrapper for the given config entry.
+        /// </summary>
+        /// <param name="entry">The config entry to wrap</param>
+        /// <param name="pluginInfo">Plugin metadata for grouping in the UI</param>
+        /// <param name="pluginInstance">Plugin instance used for attribute discovery</param>
         public LmmSettingEntry(
             LmmConfigEntryBase entry,
             PluginInfo pluginInfo,
@@ -83,16 +92,19 @@ namespace ConfigurationManager
             }
         }
 
+        /// <inheritdoc />
         public override Type SettingType
         {
             get { return Entry.SettingType; }
         }
 
+        /// <inheritdoc />
         public override object Get()
         {
             return Entry.BoxedValue;
         }
 
+        /// <inheritdoc />
         protected override void SetValue(object newVal)
         {
             Entry.BoxedValue = newVal;
