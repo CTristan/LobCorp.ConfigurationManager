@@ -34,6 +34,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Bind a config entry, creating it if it doesn't exist, or reading its value from the config file.
         /// </summary>
+        /// <typeparam name="T">The type of the setting value.</typeparam>
         /// <param name="section">Config section name.</param>
         /// <param name="key">Setting key within the section.</param>
         /// <param name="defaultValue">Default value used when no saved value exists.</param>
@@ -56,6 +57,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Bind a config entry with a full description.
         /// </summary>
+        /// <typeparam name="T">The type of the setting value.</typeparam>
         /// <param name="section">Config section name.</param>
         /// <param name="key">Setting key within the section.</param>
         /// <param name="defaultValue">Default value used when no saved value exists.</param>

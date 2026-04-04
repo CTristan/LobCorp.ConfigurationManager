@@ -7,6 +7,7 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Specifies the valid range for a setting value.
     /// </summary>
+    /// <typeparam name="T">The comparable type of the setting value (e.g. int, float).</typeparam>
     public class AcceptableValueRange<T> : AcceptableValueBase
         where T : IComparable
     {

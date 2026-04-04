@@ -8,6 +8,7 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Specifies the list of acceptable values for a setting.
     /// </summary>
+    /// <typeparam name="T">The equatable type of the setting value (e.g. string, enum).</typeparam>
     public class AcceptableValueList<T> : AcceptableValueBase
         where T : IEquatable<T>
     {

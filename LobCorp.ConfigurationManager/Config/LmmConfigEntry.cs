@@ -7,6 +7,7 @@ namespace ConfigurationManager.Config
     /// <summary>
     /// Typed config entry that stores a value and persists it.
     /// </summary>
+    /// <typeparam name="T">The type of value this entry stores.</typeparam>
     public class LmmConfigEntry<T> : LmmConfigEntryBase
     {
         private T _value;

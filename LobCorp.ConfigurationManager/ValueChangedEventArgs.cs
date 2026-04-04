@@ -7,6 +7,7 @@ namespace ConfigurationManager
     /// <summary>
     /// Arguments representing a change in value
     /// </summary>
+    /// <typeparam name="TValue">The type of the changed value.</typeparam>
     public sealed class ValueChangedEventArgs<TValue> : EventArgs
     {
         /// <inheritdoc />

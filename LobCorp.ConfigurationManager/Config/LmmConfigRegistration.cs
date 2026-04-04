@@ -50,6 +50,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting for a mod.
         /// </summary>
+        /// <typeparam name="T">The type of the setting value.</typeparam>
         /// <param name="modId">Unique mod identifier.</param>
         /// <param name="modName">Human-readable mod name for display.</param>
         /// <param name="section">Config section name to group the setting under.</param>
@@ -72,6 +73,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting with full description.
         /// </summary>
+        /// <typeparam name="T">The type of the setting value.</typeparam>
         /// <param name="modId">Unique mod identifier.</param>
         /// <param name="modName">Human-readable mod name for display.</param>
         /// <param name="section">Config section name to group the setting under.</param>
