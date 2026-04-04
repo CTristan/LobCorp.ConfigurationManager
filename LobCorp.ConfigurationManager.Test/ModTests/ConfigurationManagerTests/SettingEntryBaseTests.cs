@@ -30,14 +30,9 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             public int FullyAttributed { get; set; }
         }
 
-        private sealed class NonWritableHolder
+        private sealed class NonWritableHolder(string value)
         {
-            public string ReadOnlyValue { get; }
-
-            public NonWritableHolder(string value)
-            {
-                ReadOnlyValue = value;
-            }
+            public string ReadOnlyValue { get; } = value;
         }
 
         [Fact]
