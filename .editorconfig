@@ -5,7 +5,5 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 2 - Declare 'ConfigurationManagerAttributes' inside namespace
-dotnet_diagnostic.RCS1110.severity = none
 # Count: 2 - Add paragraph to documentation comment
 dotnet_diagnostic.RCS1226.severity = none
