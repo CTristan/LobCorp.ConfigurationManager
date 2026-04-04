@@ -142,13 +142,12 @@ namespace ConfigurationManager.Implementations
             var lines = File.ReadAllLines(configPath, System.Text.Encoding.UTF8);
             string currentSection = null;
             string currentDescription = null;
-            string currentTypeName = null;
-            string currentDefault = null;
-
             foreach (var rawLine in lines)
             {
                 var line = rawLine.Trim();
 
+                string currentTypeName;
+                string currentDefault;
                 if (
                     line.StartsWith("[", StringComparison.Ordinal)
                     && line.EndsWith("]", StringComparison.Ordinal)

@@ -180,9 +180,9 @@ namespace ConfigurationManager.Implementations
                     return results;
                 }
 
-                var values = (IEnumerable)valuesProperty.GetValue(pluginInfos, null);
-
-                foreach (var pluginInfoObj in values)
+                foreach (
+                    var pluginInfoObj in (IEnumerable)valuesProperty.GetValue(pluginInfos, null)
+                )
                 {
                     try
                     {
@@ -204,8 +204,7 @@ namespace ConfigurationManager.Implementations
                         }
 
                         // Enumerate config entries
-                        var configEntries = GetConfigEntries(config);
-                        foreach (var entryObj in configEntries)
+                        foreach (var entryObj in GetConfigEntries(config))
                         {
                             try
                             {

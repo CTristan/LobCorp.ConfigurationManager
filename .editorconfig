@@ -5,18 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 4 - Prefer comparing 'Length' to 0 rather than using 'Any()', both for clarity and for performance
-dotnet_diagnostic.CA1860.severity = none
-# Count: 4 - Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
-dotnet_diagnostic.CA1861.severity = none
-# Count: 4 - Unnecessary assignment of a value to 'currentDefault'
-dotnet_diagnostic.IDE0059.severity = none
-# Count: 4 - Remove unused parameter 'color'
-dotnet_diagnostic.IDE0060.severity = none
-# Count: 4 - Use nameof operator
-dotnet_diagnostic.RCS1015.severity = none
-# Count: 4 - Inline local variable
-dotnet_diagnostic.RCS1124.severity = none
 # Count: 4 - Add exception to documentation comment
 dotnet_diagnostic.RCS1140.severity = none
 # Count: 2 - Use properties where appropriate

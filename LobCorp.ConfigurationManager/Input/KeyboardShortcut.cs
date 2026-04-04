@@ -52,9 +52,9 @@ namespace ConfigurationManager.Input
         /// <param name="mainKey">Primary key of the shortcut (must not be None if modifiers are specified).</param>
         /// <param name="modifiers">Zero or more modifier keys that must be held alongside the main key.</param>
         public KeyboardShortcut(KeyCode mainKey, params KeyCode[] modifiers)
-            : this(new[] { mainKey }.Concat(modifiers).ToArray())
+            : this(CreateKeys(mainKey, modifiers))
         {
-            if (mainKey == KeyCode.None && modifiers.Any())
+            if (mainKey == KeyCode.None && modifiers.Length != 0)
             {
                 throw new ArgumentException(
                     "Can't set mainKey to KeyCode.None if there are any modifiers"
@@ -65,6 +65,16 @@ namespace ConfigurationManager.Input
         private KeyboardShortcut(KeyCode[] keys)
         {
             _allKeys = SanitizeKeys(keys);
+        }
+
+        private static KeyCode[] CreateKeys(KeyCode mainKey, KeyCode[] modifiers)
+        {
+            if (modifiers == null)
+            {
+                throw new ArgumentNullException(nameof(modifiers));
+            }
+
+            return new[] { mainKey }.Concat(modifiers).ToArray();
         }
 
         private static KeyCode[] SanitizeKeys(params KeyCode[] keys)
@@ -87,6 +97,8 @@ namespace ConfigurationManager.Input
         public IEnumerable<KeyCode> Modifiers =>
             _allKeys != null ? _allKeys.Skip(1) : Enumerable.Empty<KeyCode>();
 
+        private static readonly char[] separator = new[] { ' ', '+', ',', ';', '|' };
+
         /// <summary>
         /// Attempt to deserialize key combination from the string.
         /// </summary>
@@ -100,10 +112,7 @@ namespace ConfigurationManager.Input
 
             try
             {
-                var parts = str.Split(
-                        new[] { ' ', '+', ',', ';', '|' },
-                        StringSplitOptions.RemoveEmptyEntries
-                    )
+                var parts = str.Split(separator, StringSplitOptions.RemoveEmptyEntries)
                     .Select(x => (KeyCode)Enum.Parse(typeof(KeyCode), x))
                     .ToArray();
                 return new KeyboardShortcut(parts);

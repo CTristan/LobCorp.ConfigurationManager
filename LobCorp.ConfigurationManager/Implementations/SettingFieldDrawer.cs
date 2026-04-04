@@ -221,7 +221,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawEnumField(SettingEntryBase setting)
         {
-            if (setting.SettingType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
+            if (setting.SettingType.GetCustomAttributes(typeof(FlagsAttribute), false).Length != 0)
             {
                 DrawFlagsField(
                     setting,

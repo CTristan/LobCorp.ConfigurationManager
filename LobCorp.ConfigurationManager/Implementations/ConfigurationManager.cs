@@ -227,7 +227,7 @@ namespace ConfigurationManager.Implementations
             IEnumerable<SettingEntryBase> results = _allSettings;
 
             var searchStrings = SearchString.Split(
-                new[] { ' ' },
+                separator,
                 StringSplitOptions.RemoveEmptyEntries
             );
 
@@ -649,6 +649,8 @@ namespace ConfigurationManager.Implementations
                 BuildFilteredSettingList();
             }
         }
+
+        private static readonly char[] separator = new[] { ' ' };
 
         private void DrawSinglePlugin(PluginSettingsData plugin)
         {
