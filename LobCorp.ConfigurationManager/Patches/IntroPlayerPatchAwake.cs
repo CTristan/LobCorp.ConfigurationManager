@@ -30,6 +30,15 @@ namespace ConfigurationManager.Patches
                     return;
                 }
 
+                if (DuplicateAssemblyDetector.IsDuplicateLoaded)
+                {
+                    Debug.LogError(
+                        "[ConfigurationManager] Duplicate ConfigurationManager assembly detected at: "
+                            + DuplicateAssemblyDetector.DuplicateLocation
+                            + " — remove the original BepInEx.ConfigurationManager from BepInEx/plugins/ to avoid conflicts."
+                    );
+                }
+
                 var go = new GameObject("LobCorp_ConfigurationManager");
                 _ = go.AddComponent<ConfigManagerBehaviour>();
             }
