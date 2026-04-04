@@ -61,8 +61,7 @@ namespace ConfigurationManager.Config
         {
             var definition = new LmmConfigDefinition(section, key);
 
-            LmmConfigEntryBase existing;
-            if (_entries.TryGetValue(definition, out existing))
+            if (_entries.TryGetValue(definition, out var existing))
             {
                 return (LmmConfigEntry<T>)existing;
             }

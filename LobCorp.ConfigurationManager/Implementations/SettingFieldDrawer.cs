@@ -200,8 +200,7 @@ namespace ConfigurationManager
 
         private static bool DrawFieldBasedOnValueType(SettingEntryBase setting)
         {
-            Action<SettingEntryBase> drawMethod;
-            if (SettingDrawHandlers.TryGetValue(setting.SettingType, out drawMethod))
+            if (SettingDrawHandlers.TryGetValue(setting.SettingType, out var drawMethod))
             {
                 drawMethod(setting);
                 return true;
@@ -310,8 +309,7 @@ namespace ConfigurationManager
                 GUILayout.ExpandWidth(true)
             );
 
-            ComboBox box;
-            if (!_comboBoxCache.TryGetValue(setting, out box))
+            if (!_comboBoxCache.TryGetValue(setting, out var box))
             {
                 box = new ComboBox(
                     dispRect,
@@ -645,7 +643,6 @@ namespace ConfigurationManager
         private static float DrawSingleVectorSlider(float setting, string label)
         {
             GUILayout.Label(label, GUILayout.ExpandWidth(false));
-            float x;
             _ = float.TryParse(
                 GUILayout.TextField(
                     setting.ToString("F", CultureInfo.InvariantCulture),
@@ -653,7 +650,7 @@ namespace ConfigurationManager
                 ),
                 NumberStyles.Any,
                 CultureInfo.InvariantCulture,
-                out x
+                out var x
             );
             return x;
         }
@@ -666,8 +663,7 @@ namespace ConfigurationManager
 
             GUI.changed = false;
 
-            ColorCacheEntry cacheEntry;
-            if (!_colorCache.TryGetValue(obj, out cacheEntry))
+            if (!_colorCache.TryGetValue(obj, out var cacheEntry))
             {
                 var tex = new Texture2D(100, 20, TextureFormat.ARGB32, false);
                 cacheEntry = new ColorCacheEntry { Tex = tex, Last = colorValue };
@@ -696,8 +692,7 @@ namespace ConfigurationManager
                     {
                         if (_drawColorHex)
                         {
-                            Color parsedColor;
-                            if (ColorUtility.TryParseHtmlString(newColorStr, out parsedColor))
+                            if (ColorUtility.TryParseHtmlString(newColorStr, out var parsedColor))
                             {
                                 colorValue = parsedColor;
                             }
@@ -705,16 +700,12 @@ namespace ConfigurationManager
                         else
                         {
                             var split = newColorStr.Split(' ');
-                            float r,
-                                g,
-                                b,
-                                a;
                             if (
                                 split.Length == 4
-                                && float.TryParse(split[0], out r)
-                                && float.TryParse(split[1], out g)
-                                && float.TryParse(split[2], out b)
-                                && float.TryParse(split[3], out a)
+                                && float.TryParse(split[0], out var r)
+                                && float.TryParse(split[1], out var g)
+                                && float.TryParse(split[2], out var b)
+                                && float.TryParse(split[3], out var a)
                             )
                             {
                                 colorValue = new Color(r, g, b, a);

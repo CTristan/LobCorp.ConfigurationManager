@@ -1,13 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net35</TargetFramework>
-		<AssemblyName>LobCorp.ConfigurationManager</AssemblyName>
-		<RootNamespace>ConfigurationManager</RootNamespace>
-		<LangVersion>latest</LangVersion>
-		<OutputPath>..\bin\</OutputPath>
 	</PropertyGroup>
-
-
 
 	<ItemGroup>
 		<Reference Include="0Harmony">

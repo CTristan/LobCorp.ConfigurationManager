@@ -217,9 +217,7 @@ namespace ConfigurationManager
         /// </summary>
         public void BuildSettingList()
         {
-            IEnumerable<SettingEntryBase> results;
-            List<string> modsWithoutSettings;
-            SettingSearcher.CollectSettings(out results, out modsWithoutSettings);
+            SettingSearcher.CollectSettings(out var results, out var modsWithoutSettings);
 
             _modsWithoutSettings = string.Join(
                 ", ",

@@ -24,8 +24,7 @@ namespace ConfigurationManager.Config
         /// </summary>
         public static LmmConfigFile GetConfigFile(string modId, string modName)
         {
-            RegisteredMod mod;
-            if (RegisteredMods.TryGetValue(modId, out mod))
+            if (RegisteredMods.TryGetValue(modId, out var mod))
             {
                 return mod.ConfigFile;
             }

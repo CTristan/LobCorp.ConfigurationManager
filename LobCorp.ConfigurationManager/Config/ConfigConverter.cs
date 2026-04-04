@@ -285,8 +285,7 @@ namespace ConfigurationManager.Config
         /// <param name="type">The CLR type to look up</param>
         public static TypeConverter GetConverter(Type type)
         {
-            TypeConverter converter;
-            if (Converters.TryGetValue(type, out converter))
+            if (Converters.TryGetValue(type, out var converter))
             {
                 return converter;
             }

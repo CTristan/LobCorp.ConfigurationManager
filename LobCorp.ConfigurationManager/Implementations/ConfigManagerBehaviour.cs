@@ -11,5 +11,5 @@ namespace ConfigurationManager
     /// for the ConfigurationManager. Injected via Harmony patch on IntroPlayer.Awake.
     /// </summary>
     [ExcludeFromCodeCoverage(Justification = "MonoBehaviour lifecycle wrapper")]
-    public sealed class ConfigManagerBehaviour : MonoBehaviour;
+    public sealed class ConfigManagerBehaviour : MonoBehaviour { }
 }
