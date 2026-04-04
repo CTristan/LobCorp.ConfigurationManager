@@ -5,12 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 6 - Private member 'BepInExInterop._infoProperty' can be removed as the value assigned to it is never read
-dotnet_diagnostic.IDE0052.severity = none
-# Count: 6 - Member can be made 'readonly'
-dotnet_diagnostic.IDE0251.severity = none
-# Count: 6 - Collection initialization can be simplified
-dotnet_diagnostic.IDE0301.severity = none
 # Count: 6 - Add braces to if-else
 dotnet_diagnostic.RCS1003.severity = none
 # Count: 4 - In externally visible method 'TypeConverter ConfigConverter.GetConverter(Type type)', validate parameter 'type' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'.

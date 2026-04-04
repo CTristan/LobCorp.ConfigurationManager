@@ -35,13 +35,10 @@ namespace ConfigurationManager.Implementations
 
         private static Type _baseUnityPluginType;
         private static PropertyInfo _configProperty;
-        private static PropertyInfo _infoProperty;
 
-        private static Type _configFileType;
         private static Type _configEntryBaseType;
         private static PropertyInfo _configEntryDefinitionProperty;
         private static PropertyInfo _configEntrySettingTypeProperty;
-        private static PropertyInfo _configEntryBoxedValueProperty;
         private static PropertyInfo _configEntryDefaultValueProperty;
         private static PropertyInfo _configEntryDescriptionProperty;
 
@@ -104,11 +101,9 @@ namespace ConfigurationManager.Implementations
                 if (_baseUnityPluginType != null)
                 {
                     _configProperty = _baseUnityPluginType.GetProperty("Config");
-                    _infoProperty = _baseUnityPluginType.GetProperty("Info");
                 }
 
                 var configAssembly = _bepInExAssembly;
-                _configFileType = configAssembly.GetType("BepInEx.Configuration.ConfigFile");
                 _configEntryBaseType = configAssembly.GetType(
                     "BepInEx.Configuration.ConfigEntryBase"
                 );
@@ -119,7 +114,6 @@ namespace ConfigurationManager.Implementations
                     _configEntrySettingTypeProperty = _configEntryBaseType.GetProperty(
                         "SettingType"
                     );
-                    _configEntryBoxedValueProperty = _configEntryBaseType.GetProperty("BoxedValue");
                     _configEntryDefaultValueProperty = _configEntryBaseType.GetProperty(
                         "DefaultValue"
                     );
