@@ -1,0 +1,155 @@
+root = true
+
+# Temporary Suppressions, remove this file when all cleared
+
+[*.cs]
+# Count: 274 - Add braces to 'if' statement.
+dotnet_diagnostic.IDE0011.severity = none
+# Count: 100 - Missing XML comment for publicly visible type or member 'AcceptableValueBase.ValueType'
+dotnet_diagnostic.CS1591.severity = none
+# Count: 72 - Unused parameter 't'
+dotnet_diagnostic.RCS1163.severity = none
+# Count: 56 - A source file is missing a required header.
+dotnet_diagnostic.IDE0073.severity = none
+# Count: 38 - Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none
+# Count: 32 - Null check can be simplified
+dotnet_diagnostic.IDE0031.severity = none
+# Count: 32 - Add braces to if statement
+dotnet_diagnostic.RCS1001.severity = none
+# Count: 28 - Variable declaration can be inlined
+dotnet_diagnostic.IDE0018.severity = none
+# Count: 26 - Collection initialization can be simplified
+dotnet_diagnostic.IDE0305.severity = none
+# Count: 26 - Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1141.severity = none
+# Count: 24 - Use read-only auto-implemented property
+dotnet_diagnostic.RCS1170.severity = none
+# Count: 24 - Use conditional access instead of conditional expression
+dotnet_diagnostic.RCS1206.severity = none
+# Count: 20 - Use expression body for property
+dotnet_diagnostic.IDE0025.severity = none
+# Count: 20 - 'new' expression can be simplified
+dotnet_diagnostic.IDE0090.severity = none
+# Count: 20 - Namespace "ConfigurationManager" does not match folder structure, expected "ConfigurationManager.Implementations"
+dotnet_diagnostic.IDE0130.severity = none
+# Count: 20 - Collection initialization can be simplified
+dotnet_diagnostic.IDE0300.severity = none
+# Count: 18 - The behavior of 'string.StartsWith(string)' could vary based on the current user's locale settings. Replace this call in 'ConfigurationManager.Config.LmmConfigFile.ReadValueFromFile(string, string)' with a call to 'string.StartsWith(string, System.StringComparison)'.
+dotnet_diagnostic.CA1310.severity = none
+# Count: 16 - Use expression body for accessor
+dotnet_diagnostic.IDE0027.severity = none
+# Count: 16 - Collection initialization can be simplified
+dotnet_diagnostic.IDE0028.severity = none
+# Count: 16 - Add 'typeparam' element to documentation comment
+dotnet_diagnostic.RCS1142.severity = none
+# Count: 14 - Use primary constructor
+dotnet_diagnostic.IDE0290.severity = none
+# Count: 14 - Use conditional access
+dotnet_diagnostic.RCS1146.severity = none
+# Count: 12 - use 'var' instead of explicit type
+dotnet_diagnostic.IDE0007.severity = none
+# Count: 12 - Parentheses should be added for clarity
+dotnet_diagnostic.IDE0048.severity = none
+# Count: 12 - Add parentheses when necessary
+dotnet_diagnostic.RCS1123.severity = none
+# Count: 10 - Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = none
+# Count: 10 - Use compound assignment
+dotnet_diagnostic.IDE0074.severity = none
+# Count: 8 - Type 'SettingFieldDrawer' can be sealed because it has no subtypes in its containing assembly and is not externally visible
+dotnet_diagnostic.CA1852.severity = none
+# Count: 8 - Delegate invocation can be simplified.
+dotnet_diagnostic.IDE1005.severity = none
+# Count: 8 - Use method chaining
+dotnet_diagnostic.RCS1201.severity = none
+# Count: 6 - The behavior of 'Convert.ChangeType(object, Type)' could vary based on the current user's locale settings. Replace this call in 'SettingFieldDrawer.CanCovert(string, Type)' with a call to 'Convert.ChangeType(object, Type, IFormatProvider)'.
+dotnet_diagnostic.CA1305.severity = none
+# Count: 6 - Identifier 'GUID' contains type name
+dotnet_diagnostic.CA1720.severity = none
+# Count: 6 - Properties should not return arrays
+dotnet_diagnostic.CA1819.severity = none
+# Count: 6 - Use auto property
+dotnet_diagnostic.IDE0032.severity = none
+# Count: 6 - Private member 'BepInExInterop._infoProperty' can be removed as the value assigned to it is never read
+dotnet_diagnostic.IDE0052.severity = none
+# Count: 6 - Member can be made 'readonly'
+dotnet_diagnostic.IDE0251.severity = none
+# Count: 6 - Collection initialization can be simplified
+dotnet_diagnostic.IDE0301.severity = none
+# Count: 6 - Add braces to if-else
+dotnet_diagnostic.RCS1003.severity = none
+# Count: 4 - In externally visible method 'TypeConverter ConfigConverter.GetConverter(Type type)', validate parameter 'type' is non-null before using it. If appropriate, throw an 'ArgumentNullException' when the argument is 'null'.
+dotnet_diagnostic.CA1062.severity = none
+# Count: 4 - Use nameof in place of string literal 'settingType'
+dotnet_diagnostic.CA1507.severity = none
+# Count: 4 - Prefer comparing 'Length' to 0 rather than using 'Any()', both for clarity and for performance
+dotnet_diagnostic.CA1860.severity = none
+# Count: 4 - Prefer 'static readonly' fields over constant array arguments if the called method is called repeatedly and is not mutating the passed array
+dotnet_diagnostic.CA1861.severity = none
+# Count: 4 - Unnecessary assignment of a value to 'currentDefault'
+dotnet_diagnostic.IDE0059.severity = none
+# Count: 4 - Remove unused parameter 'color'
+dotnet_diagnostic.IDE0060.severity = none
+# Count: 4 - Use nameof operator
+dotnet_diagnostic.RCS1015.severity = none
+# Count: 4 - Inline local variable
+dotnet_diagnostic.RCS1124.severity = none
+# Count: 4 - Add exception to documentation comment
+dotnet_diagnostic.RCS1140.severity = none
+# Count: 2 - Use properties where appropriate
+dotnet_diagnostic.CA1024.severity = none
+# Count: 2 - Type ConfigurationManager.KeyboardShortcut should implement IEquatable<T> because it overrides Equals
+dotnet_diagnostic.CA1066.severity = none
+# Count: 2 - The behavior of 'string.ToUpper()' could vary based on the current user's locale settings. Replace this call in 'string.ToProperCase()' with a call to 'string.ToUpper(CultureInfo)'.
+dotnet_diagnostic.CA1304.severity = none
+# Count: 2 - Specify a culture or use an invariant version to avoid implicit dependency on current culture
+dotnet_diagnostic.CA1311.severity = none
+# Count: 2 - 'settingEntry != null' is always 'true'. Remove or refactor the condition(s) to avoid dead code.
+dotnet_diagnostic.CA1508.severity = none
+# Count: 2 - Rename virtual/interface member SettingEntryBase.Get() so that it no longer conflicts with the reserved language keyword 'Get'. Using a reserved keyword as the name of a virtual/interface member makes it harder for consumers in other languages to override/implement the member.
+dotnet_diagnostic.CA1716.severity = none
+# Count: 2 - The type name ConfigurationManager conflicts in whole or in part with the namespace name 'ConfigurationManager'. Change either name to eliminate the conflict.
+dotnet_diagnostic.CA1724.severity = none
+# Count: 2 - Member 'Empty' is explicitly initialized to its default value
+dotnet_diagnostic.CA1805.severity = none
+# Count: 2 - KeyboardShortcut should override the equality
+dotnet_diagnostic.CA1815.severity = none
+# Count: 2 - Test for empty strings using 'string.Length' property or 'string.IsNullOrEmpty' method instead of an Equality check
+dotnet_diagnostic.CA1820.severity = none
+# Count: 2 - Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup
+dotnet_diagnostic.CA1854.severity = none
+# Count: 2 - Change return type of method 'CreateBepInExSettingEntry' from 'ConfigurationManager.SettingEntryBase' to 'ConfigurationManager.BepInExSettingEntry?' for improved performance
+dotnet_diagnostic.CA1859.severity = none
+# Count: 2 - Exception type System.Exception is not sufficiently specific
+dotnet_diagnostic.CA2201.severity = none
+# Count: 2 - Implement the equality operators and make their behavior identical to that of the Equals method
+dotnet_diagnostic.CA2231.severity = none
+# Count: 2 - Cast is redundant.
+dotnet_diagnostic.IDE0004.severity = none
+# Count: 2 - Use pattern matching
+dotnet_diagnostic.IDE0019.severity = none
+# Count: 2 - Lambda expression can be removed
+dotnet_diagnostic.IDE0200.severity = none
+# Count: 2 - Struct can be made 'readonly'
+dotnet_diagnostic.IDE0250.severity = none
+# Count: 2 - Merge 'else' with nested 'if'
+dotnet_diagnostic.RCS1006.severity = none
+# Count: 2 - Use compound assignment
+dotnet_diagnostic.RCS1058.severity = none
+# Count: 2 - Merge 'if' with nested 'if'
+dotnet_diagnostic.RCS1061.severity = none
+# Count: 2 - Use auto-implemented property
+dotnet_diagnostic.RCS1085.severity = none
+# Count: 2 - Declare 'ConfigurationManagerAttributes' inside namespace
+dotnet_diagnostic.RCS1110.severity = none
+# Count: 2 - Use string.Length instead of comparison with empty string
+dotnet_diagnostic.RCS1156.severity = none
+# Count: 2 - Convert comment to documentation comment
+dotnet_diagnostic.RCS1181.severity = none
+# Count: 2 - Use pattern matching instead of combination of 'as' operator and null check
+dotnet_diagnostic.RCS1221.severity = none
+# Count: 2 - Add paragraph to documentation comment
+dotnet_diagnostic.RCS1226.severity = none
+# Count: 2 - Avoid nested ?: operators
+dotnet_diagnostic.RCS1238.severity = none
