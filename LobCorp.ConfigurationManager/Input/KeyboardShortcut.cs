@@ -12,7 +12,7 @@ namespace ConfigurationManager.Input
     /// A keyboard shortcut that can be used in Update method to check if user presses a key combo.
     /// The shortcut is only triggered when the user presses the exact combination.
     /// </summary>
-    public struct KeyboardShortcut
+    public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
     {
         /// <summary>
         /// Shortcut that never triggers.
@@ -200,9 +200,7 @@ namespace ConfigurationManager.Input
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return obj is KeyboardShortcut shortcut
-                && MainKey == shortcut.MainKey
-                && Modifiers.SequenceEqual(shortcut.Modifiers);
+            return obj is KeyboardShortcut shortcut && Equals(shortcut);
         }
 
         /// <inheritdoc />
@@ -214,6 +212,16 @@ namespace ConfigurationManager.Input
                     (current, item) => unchecked((current * 31) + (int)item)
                 )
                 : 0;
+        }
+
+        /// <summary>
+        /// Determine whether this shortcut matches another shortcut.
+        /// </summary>
+        /// <param name="other">The shortcut to compare against.</param>
+        /// <returns><see langword="true" /> when both shortcuts have the same main key and modifiers.</returns>
+        public bool Equals(KeyboardShortcut other)
+        {
+            return MainKey == other.MainKey && Modifiers.SequenceEqual(other.Modifiers);
         }
     }
 }
