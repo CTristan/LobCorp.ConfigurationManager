@@ -134,7 +134,7 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         public bool DisplayingWindow
         {
-            get { return _displayingWindow; }
+            get => _displayingWindow;
             set
             {
                 if (_displayingWindow == value)
@@ -635,7 +635,7 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         public string SearchString
         {
-            get { return _searchString; }
+            get => _searchString;
             private set
             {
                 if (value == null)
@@ -886,7 +886,7 @@ namespace ConfigurationManager.Implementations
             private bool _collapsed;
             public bool Collapsed
             {
-                get { return _collapsed; }
+                get => _collapsed;
                 set
                 {
                     _collapsed = value;

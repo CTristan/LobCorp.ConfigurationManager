@@ -48,8 +48,8 @@ namespace ConfigurationManager.Implementations
         /// <inheritdoc />
         public override string DispName
         {
-            get { return string.IsNullOrEmpty(base.DispName) ? Property.Name : base.DispName; }
-            protected internal set { base.DispName = value; }
+            get => string.IsNullOrEmpty(base.DispName) ? Property.Name : base.DispName;
+            protected internal set => base.DispName = value;
         }
 
         /// <inheritdoc />

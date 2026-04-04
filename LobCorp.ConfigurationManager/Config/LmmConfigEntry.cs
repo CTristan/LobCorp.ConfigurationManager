@@ -31,7 +31,7 @@ namespace ConfigurationManager.Config
         /// </summary>
         public T Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 if (Equals(_value, value))
@@ -48,8 +48,8 @@ namespace ConfigurationManager.Config
         /// <inheritdoc />
         public override object BoxedValue
         {
-            get { return _value; }
-            set { Value = (T)value; }
+            get => _value;
+            set => Value = (T)value;
         }
     }
 }
