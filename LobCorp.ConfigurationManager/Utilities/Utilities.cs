@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +32,7 @@ namespace ConfigurationManager.Utilities
                 return str;
             }
 
-            var result = str.Substring(0, 1).ToUpper();
+            var result = str.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture);
 
             for (var i = 1; i < str.Length; i++)
             {

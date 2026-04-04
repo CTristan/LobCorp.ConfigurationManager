@@ -5,10 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 2 - The behavior of 'string.ToUpper()' could vary based on the current user's locale settings. Replace this call in 'string.ToProperCase()' with a call to 'string.ToUpper(CultureInfo)'.
-dotnet_diagnostic.CA1304.severity = none
-# Count: 2 - Specify a culture or use an invariant version to avoid implicit dependency on current culture
-dotnet_diagnostic.CA1311.severity = none
 # Count: 2 - 'settingEntry != null' is always 'true'. Remove or refactor the condition(s) to avoid dead code.
 dotnet_diagnostic.CA1508.severity = none
 # Count: 2 - Rename virtual/interface member SettingEntryBase.Get() so that it no longer conflicts with the reserved language keyword 'Get'. Using a reserved keyword as the name of a virtual/interface member makes it harder for consumers in other languages to override/implement the member.
