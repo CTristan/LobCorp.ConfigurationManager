@@ -20,9 +20,9 @@ namespace ConfigurationManager.Implementations
     public class ConfigurationManager
     {
         /// <summary>
-        /// GUID of this plugin
+        /// Identifier of this plugin.
         /// </summary>
-        public const string GUID = "com.lobcorp.configurationmanager";
+        public const string PluginId = "com.lobcorp.configurationmanager";
 
         private static SettingFieldDrawer _fieldDrawer;
 
@@ -313,7 +313,7 @@ namespace ConfigurationManager.Implementations
             var combinedSearchTarget =
                 setting.PluginInfo.Name
                 + "\n"
-                + setting.PluginInfo.GUID
+                + setting.PluginInfo.Identifier
                 + "\n"
                 + setting.DispName
                 + "\n"
@@ -658,7 +658,7 @@ namespace ConfigurationManager.Implementations
                 ? new GUIContent(
                     plugin.Info.Name.TrimStart('!') + " " + plugin.Info.Version,
                     null,
-                    "GUID: " + plugin.Info.GUID
+                    "ID: " + plugin.Info.Identifier
                 )
                 : new GUIContent(plugin.Info.Name.TrimStart('!') + " " + plugin.Info.Version);
 

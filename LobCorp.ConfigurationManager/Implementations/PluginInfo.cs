@@ -10,7 +10,7 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// Unique identifier for the plugin, used for equality comparison
         /// </summary>
-        public string GUID { get; set; }
+        public string Identifier { get; set; }
 
         /// <summary>
         /// Display name shown in the config UI header
@@ -25,12 +25,12 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// Creates a new plugin info with the given identity.
         /// </summary>
-        /// <param name="guid">Unique identifier for the plugin</param>
+        /// <param name="identifier">Unique identifier for the plugin</param>
         /// <param name="name">Display name</param>
         /// <param name="version">Version string</param>
-        public PluginInfo(string guid, string name, string version)
+        public PluginInfo(string identifier, string name, string version)
         {
-            GUID = guid ?? string.Empty;
+            Identifier = identifier ?? string.Empty;
             Name = name ?? string.Empty;
             Version = version ?? string.Empty;
         }
@@ -38,13 +38,13 @@ namespace ConfigurationManager.Implementations
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return obj is PluginInfo other && GUID == other.GUID;
+            return obj is PluginInfo other && Identifier == other.Identifier;
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (GUID?.GetHashCode()) ?? 0;
+            return (Identifier?.GetHashCode()) ?? 0;
         }
 
         /// <inheritdoc />

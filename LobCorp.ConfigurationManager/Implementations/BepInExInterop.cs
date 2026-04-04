@@ -250,7 +250,7 @@ namespace ConfigurationManager.Implementations
                 return new PluginInfo("unknown", "Unknown Plugin", "");
             }
 
-            var guid =
+            var identifier =
                 _bepInPluginGuidProperty != null
                     ? _bepInPluginGuidProperty.GetValue(metadata, null) as string
                     : "unknown";
@@ -263,7 +263,7 @@ namespace ConfigurationManager.Implementations
                     ? (_bepInPluginVersionProperty.GetValue(metadata, null) ?? "").ToString()
                     : "";
 
-            return new PluginInfo(guid ?? "unknown", name ?? "Unknown", version ?? "");
+            return new PluginInfo(identifier ?? "unknown", name ?? "Unknown", version ?? "");
         }
 
         private static IEnumerable<object> GetConfigEntries(object configFile)
