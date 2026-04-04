@@ -50,6 +50,7 @@ namespace ConfigurationManager.Utilities
         /// Appends ".0" if the string has no decimal point.
         /// </summary>
         /// <param name="s">The numeric string to check</param>
+        /// <exception cref="ArgumentNullException">Thrown when the input string is null and cannot be checked for a decimal point.</exception>
         public static string AppendZero(this string s)
         {
             if (s == null)
@@ -77,6 +78,7 @@ namespace ConfigurationManager.Utilities
         /// </summary>
         /// <param name="tex">The texture to fill</param>
         /// <param name="color">Fill color; blended with existing pixels if alpha is less than 1</param>
+        /// <exception cref="ArgumentNullException">Thrown when no texture is provided to fill.</exception>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Texture2D API"
         )]
@@ -118,6 +120,7 @@ namespace ConfigurationManager.Utilities
         /// Fills a texture with a 10px black-and-white checkerboard pattern.
         /// </summary>
         /// <param name="tex">The texture to fill</param>
+        /// <exception cref="ArgumentNullException">Thrown when no texture is provided to fill.</exception>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Texture2D API"
         )]
@@ -142,6 +145,7 @@ namespace ConfigurationManager.Utilities
         /// <summary>
         /// Locates and opens the most recent Unity log file.
         /// </summary>
+        /// <exception cref="FileNotFoundException">Thrown when no Unity log file could be located in any of the standard search paths.</exception>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Unity Application.dataPath and Process.Start"
         )]

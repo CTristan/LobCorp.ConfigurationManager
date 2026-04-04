@@ -103,6 +103,7 @@ namespace ConfigurationManager.Input
         /// Attempt to deserialize key combination from the string.
         /// </summary>
         /// <param name="str">Serialized key combination string (e.g. "LeftControl + F1") to parse.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the serialized shortcut string is null.</exception>
         public static KeyboardShortcut Deserialize(string str)
         {
             if (str == null)

@@ -284,6 +284,7 @@ namespace ConfigurationManager.Config
         /// Looks up a registered converter for the type, falling back to generic enum handling.
         /// </summary>
         /// <param name="type">The CLR type to look up</param>
+        /// <exception cref="ArgumentNullException">Thrown when the type to look up a converter for is null.</exception>
         public static TypeConverter GetConverter(Type type)
         {
             if (type == null)

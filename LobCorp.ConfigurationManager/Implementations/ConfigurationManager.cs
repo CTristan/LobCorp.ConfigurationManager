@@ -177,6 +177,8 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         /// <param name="settingType">The setting value type this drawer handles.</param>
         /// <param name="onGuiDrawer">ImGUI draw callback invoked when rendering settings of this type.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the setting type to register a drawer for is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the draw callback is null.</exception>
         public static void RegisterCustomSettingDrawer(
             Type settingType,
             Action<SettingEntryBase> onGuiDrawer
