@@ -17,11 +17,7 @@ namespace ConfigurationManager
     internal class SettingFieldDrawer
     {
         private static IEnumerable<KeyCode> _keysToCheck;
-        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers
-        {
-            get;
-            private set;
-        }
+        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers { get; }
 
         private static readonly Dictionary<SettingEntryBase, ComboBox> _comboBoxCache =
             new Dictionary<SettingEntryBase, ComboBox>();

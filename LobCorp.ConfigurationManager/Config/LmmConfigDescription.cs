@@ -10,17 +10,17 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Human-readable description shown in the config UI
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; }
 
         /// <summary>
         /// Optional constraint on valid values (range or list)
         /// </summary>
-        public AcceptableValueBase AcceptableValues { get; private set; }
+        public AcceptableValueBase AcceptableValues { get; }
 
         /// <summary>
         /// Attribute objects applied to the entry (e.g. <see cref="ConfigurationManagerAttributes"/>)
         /// </summary>
-        public object[] Tags { get; private set; }
+        public object[] Tags { get; }
 
         /// <summary>
         /// Creates a new config description with optional value constraints and tags.

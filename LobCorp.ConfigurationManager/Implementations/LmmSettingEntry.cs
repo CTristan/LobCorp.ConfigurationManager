@@ -16,7 +16,7 @@ namespace ConfigurationManager
         /// <summary>
         /// The underlying config entry this UI wrapper displays
         /// </summary>
-        public LmmConfigEntryBase Entry { get; private set; }
+        public LmmConfigEntryBase Entry { get; }
 
         /// <summary>
         /// Creates a UI wrapper for the given config entry.

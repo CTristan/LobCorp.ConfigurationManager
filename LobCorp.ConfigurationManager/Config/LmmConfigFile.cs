@@ -20,7 +20,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Absolute path to the INI config file on disk
         /// </summary>
-        public string ConfigFilePath { get; private set; }
+        public string ConfigFilePath { get; }
 
         /// <summary>
         /// Creates a new config file manager for the given path.

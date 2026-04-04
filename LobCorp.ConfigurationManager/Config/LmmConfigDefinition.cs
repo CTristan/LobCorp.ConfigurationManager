@@ -10,12 +10,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// INI section name used as the group header in config.cfg
         /// </summary>
-        public string Section { get; private set; }
+        public string Section { get; }
 
         /// <summary>
         /// Setting key within the section, unique per section
         /// </summary>
-        public string Key { get; private set; }
+        public string Key { get; }
 
         /// <summary>
         /// Creates a new config definition with the given section and key.

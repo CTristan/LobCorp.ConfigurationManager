@@ -12,12 +12,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Section and key identity for this entry
         /// </summary>
-        public LmmConfigDefinition Definition { get; private set; }
+        public LmmConfigDefinition Definition { get; }
 
         /// <summary>
         /// Metadata including description text and value constraints
         /// </summary>
-        public LmmConfigDescription Description { get; private set; }
+        public LmmConfigDescription Description { get; }
 
         /// <summary>
         /// CLR type of the setting value

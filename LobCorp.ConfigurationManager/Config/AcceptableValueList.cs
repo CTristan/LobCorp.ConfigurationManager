@@ -14,7 +14,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Array of valid values for this setting
         /// </summary>
-        public T[] AcceptableValues { get; private set; }
+        public T[] AcceptableValues { get; }
 
         /// <summary>
         /// Creates a new constraint limiting values to the specified list.

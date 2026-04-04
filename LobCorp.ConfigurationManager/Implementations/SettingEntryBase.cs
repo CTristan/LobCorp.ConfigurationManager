@@ -38,7 +38,7 @@ namespace ConfigurationManager
         /// <summary>
         /// Custom setting draw action that allows polling keyboard input.
         /// </summary>
-        public CustomHotkeyDrawerFunc CustomHotkeyDrawer { get; private set; }
+        public CustomHotkeyDrawerFunc CustomHotkeyDrawer { get; }
 
         /// <summary>
         /// Custom hotkey drawer delegate.

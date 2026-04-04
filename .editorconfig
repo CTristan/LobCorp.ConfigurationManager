@@ -5,8 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 24 - Use read-only auto-implemented property
-dotnet_diagnostic.RCS1170.severity = none
 # Count: 24 - Use conditional access instead of conditional expression
 dotnet_diagnostic.RCS1206.severity = none
 # Count: 20 - Use expression body for property
