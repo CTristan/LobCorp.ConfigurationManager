@@ -26,7 +26,7 @@ namespace ConfigurationManager.Utilities
             );
         }
 
-        public static void DrawContolBackground(Rect position, Color color = default)
+        public static void DrawContolBackground(Rect position)
         {
             if (!_tooltipBg)
             {

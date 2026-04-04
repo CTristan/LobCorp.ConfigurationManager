@@ -17,8 +17,7 @@ namespace ConfigurationManager
     {
         public static void CollectSettings(
             out IEnumerable<SettingEntryBase> results,
-            out List<string> modsWithoutSettings,
-            bool showDebug
+            out List<string> modsWithoutSettings
         )
         {
             modsWithoutSettings = new List<string>();

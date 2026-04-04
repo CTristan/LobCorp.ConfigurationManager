@@ -221,7 +221,7 @@ namespace ConfigurationManager
         {
             IEnumerable<SettingEntryBase> results;
             List<string> modsWithoutSettings;
-            SettingSearcher.CollectSettings(out results, out modsWithoutSettings, _showDebug);
+            SettingSearcher.CollectSettings(out results, out modsWithoutSettings);
 
             _modsWithoutSettings = string.Join(
                 ", ",
@@ -427,7 +427,7 @@ namespace ConfigurationManager
                         : mousePosition.y + 25;
 
                 var position = new Rect(x, y, width, height);
-                ImguiUtils.DrawContolBackground(position, Color.black);
+                ImguiUtils.DrawContolBackground(position);
                 style.Draw(position, content, -1);
             }
         }

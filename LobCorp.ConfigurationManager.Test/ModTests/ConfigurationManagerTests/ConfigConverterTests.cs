@@ -220,8 +220,8 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             var originalConverter = ConfigConverter.GetConverter(typeof(int));
             var customConverter = new TypeConverter
             {
-                ConvertToString = (o, t) => "custom:" + o,
-                ConvertToObject = (s, t) =>
+                ConvertToString = (o, _) => "custom:" + o,
+                ConvertToObject = (s, _) =>
                     int.Parse(s.Replace("custom:", "", StringComparison.Ordinal)),
             };
 

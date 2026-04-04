@@ -35,8 +35,8 @@ namespace ConfigurationManager.Config
                 typeof(string),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => (string)o ?? string.Empty,
-                    ConvertToObject = (s, t) => s,
+                    ConvertToString = (o, _) => (string)o ?? string.Empty,
+                    ConvertToObject = (s, _) => s,
                 }
             );
 
@@ -44,8 +44,8 @@ namespace ConfigurationManager.Config
                 typeof(bool),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((bool)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => bool.Parse(s),
+                    ConvertToString = (o, _) => ((bool)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => bool.Parse(s),
                 }
             );
 
@@ -53,8 +53,8 @@ namespace ConfigurationManager.Config
                 typeof(int),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((int)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => int.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((int)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => int.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -62,8 +62,8 @@ namespace ConfigurationManager.Config
                 typeof(long),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((long)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => long.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((long)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => long.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -71,8 +71,8 @@ namespace ConfigurationManager.Config
                 typeof(float),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((float)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => float.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((float)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => float.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -80,8 +80,8 @@ namespace ConfigurationManager.Config
                 typeof(double),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((double)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => double.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((double)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => double.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -89,8 +89,8 @@ namespace ConfigurationManager.Config
                 typeof(decimal),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((decimal)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => decimal.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((decimal)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => decimal.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -98,8 +98,8 @@ namespace ConfigurationManager.Config
                 typeof(short),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((short)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => short.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((short)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => short.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -107,8 +107,8 @@ namespace ConfigurationManager.Config
                 typeof(byte),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((byte)o).ToString(CultureInfo.InvariantCulture),
-                    ConvertToObject = (s, t) => byte.Parse(s, CultureInfo.InvariantCulture),
+                    ConvertToString = (o, _) => ((byte)o).ToString(CultureInfo.InvariantCulture),
+                    ConvertToObject = (s, _) => byte.Parse(s, CultureInfo.InvariantCulture),
                 }
             );
 
@@ -116,8 +116,8 @@ namespace ConfigurationManager.Config
                 typeof(KeyCode),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((KeyCode)o).ToString(),
-                    ConvertToObject = (s, t) => (KeyCode)Enum.Parse(typeof(KeyCode), s),
+                    ConvertToString = (o, _) => ((KeyCode)o).ToString(),
+                    ConvertToObject = (s, _) => (KeyCode)Enum.Parse(typeof(KeyCode), s),
                 }
             );
 
@@ -125,8 +125,8 @@ namespace ConfigurationManager.Config
                 typeof(KeyboardShortcut),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) => ((KeyboardShortcut)o).Serialize(),
-                    ConvertToObject = (s, t) => KeyboardShortcut.Deserialize(s),
+                    ConvertToString = (o, _) => ((KeyboardShortcut)o).Serialize(),
+                    ConvertToObject = (s, _) => KeyboardShortcut.Deserialize(s),
                 }
             );
 
@@ -134,7 +134,7 @@ namespace ConfigurationManager.Config
                 typeof(Color),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) =>
+                    ConvertToString = (o, _) =>
                     {
                         var c = (Color)o;
                         return string.Format(
@@ -146,7 +146,7 @@ namespace ConfigurationManager.Config
                             c.a
                         );
                     },
-                    ConvertToObject = (s, t) =>
+                    ConvertToObject = (s, _) =>
                     {
                         var parts = s.Split(' ');
                         return new Color(
@@ -165,12 +165,12 @@ namespace ConfigurationManager.Config
                 typeof(Vector2),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) =>
+                    ConvertToString = (o, _) =>
                     {
                         var v = (Vector2)o;
                         return string.Format(CultureInfo.InvariantCulture, "{0} {1}", v.x, v.y);
                     },
-                    ConvertToObject = (s, t) =>
+                    ConvertToObject = (s, _) =>
                     {
                         var parts = s.Split(' ');
                         return new Vector2(
@@ -185,7 +185,7 @@ namespace ConfigurationManager.Config
                 typeof(Vector3),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) =>
+                    ConvertToString = (o, _) =>
                     {
                         var v = (Vector3)o;
                         return string.Format(
@@ -196,7 +196,7 @@ namespace ConfigurationManager.Config
                             v.z
                         );
                     },
-                    ConvertToObject = (s, t) =>
+                    ConvertToObject = (s, _) =>
                     {
                         var parts = s.Split(' ');
                         return new Vector3(
@@ -212,7 +212,7 @@ namespace ConfigurationManager.Config
                 typeof(Vector4),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) =>
+                    ConvertToString = (o, _) =>
                     {
                         var v = (Vector4)o;
                         return string.Format(
@@ -224,7 +224,7 @@ namespace ConfigurationManager.Config
                             v.w
                         );
                     },
-                    ConvertToObject = (s, t) =>
+                    ConvertToObject = (s, _) =>
                     {
                         var parts = s.Split(' ');
                         return new Vector4(
@@ -241,7 +241,7 @@ namespace ConfigurationManager.Config
                 typeof(Quaternion),
                 new TypeConverter
                 {
-                    ConvertToString = (o, t) =>
+                    ConvertToString = (o, _) =>
                     {
                         var q = (Quaternion)o;
                         return string.Format(
@@ -253,7 +253,7 @@ namespace ConfigurationManager.Config
                             q.w
                         );
                     },
-                    ConvertToObject = (s, t) =>
+                    ConvertToObject = (s, _) =>
                     {
                         var parts = s.Split(' ');
                         return new Quaternion(
@@ -294,8 +294,8 @@ namespace ConfigurationManager.Config
             {
                 return new TypeConverter
                 {
-                    ConvertToString = (o, t) => o.ToString(),
-                    ConvertToObject = (s, t) => Enum.Parse(type, s),
+                    ConvertToString = (o, _) => o.ToString(),
+                    ConvertToObject = (s, _) => Enum.Parse(type, s),
                 };
             }
 
