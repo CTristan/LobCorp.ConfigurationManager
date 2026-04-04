@@ -5,14 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 2 - KeyboardShortcut should override the equality
-dotnet_diagnostic.CA1815.severity = none
-# Count: 2 - Test for empty strings using 'string.Length' property or 'string.IsNullOrEmpty' method instead of an Equality check
-dotnet_diagnostic.CA1820.severity = none
-# Count: 2 - Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup
-dotnet_diagnostic.CA1854.severity = none
-# Count: 2 - Change return type of method 'CreateBepInExSettingEntry' from 'ConfigurationManager.SettingEntryBase' to 'ConfigurationManager.BepInExSettingEntry?' for improved performance
-dotnet_diagnostic.CA1859.severity = none
 # Count: 2 - Exception type System.Exception is not sufficiently specific
 dotnet_diagnostic.CA2201.severity = none
 # Count: 2 - Implement the equality operators and make their behavior identical to that of the Equals method

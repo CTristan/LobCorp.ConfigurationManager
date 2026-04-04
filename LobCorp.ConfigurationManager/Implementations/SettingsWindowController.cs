@@ -529,7 +529,7 @@ namespace ConfigurationManager.Implementations
         {
             GUILayout.BeginHorizontal(GUI.skin.box);
             {
-                GUI.enabled = SearchString == string.Empty;
+                GUI.enabled = string.IsNullOrEmpty(SearchString);
 
                 var newVal = GUILayout.Toggle(_showSettings.Value, "Normal settings");
                 if (_showSettings.Value != newVal)

@@ -474,9 +474,9 @@ namespace ConfigurationManager.Implementations
 
         private bool CanCovert(string value, Type type)
         {
-            if (_canCovertCache.ContainsKey(type))
+            if (_canCovertCache.TryGetValue(type, out var value1))
             {
-                return _canCovertCache[type];
+                return value1;
             }
 
             try

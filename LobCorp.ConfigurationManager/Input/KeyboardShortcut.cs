@@ -223,5 +223,23 @@ namespace ConfigurationManager.Input
         {
             return MainKey == other.MainKey && Modifiers.SequenceEqual(other.Modifiers);
         }
+
+        /// <summary>Compares two shortcuts for value equality by delegating to <see cref="Equals(KeyboardShortcut)" />.</summary>
+        /// <param name="left">The left-hand shortcut.</param>
+        /// <param name="right">The right-hand shortcut.</param>
+        /// <returns><see langword="true" /> when both shortcuts have the same main key and modifiers.</returns>
+        public static bool operator ==(KeyboardShortcut left, KeyboardShortcut right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>Compares two shortcuts for value inequality; returns the negation of <see cref="op_Equality" />.</summary>
+        /// <param name="left">The left-hand shortcut.</param>
+        /// <param name="right">The right-hand shortcut.</param>
+        /// <returns><see langword="true" /> when the shortcuts differ in main key or modifiers.</returns>
+        public static bool operator !=(KeyboardShortcut left, KeyboardShortcut right)
+        {
+            return !(left == right);
+        }
     }
 }
