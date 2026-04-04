@@ -54,7 +54,9 @@ namespace ConfigurationManager.Config
 
             LmmConfigEntryBase existing;
             if (_entries.TryGetValue(definition, out existing))
+            {
                 return (LmmConfigEntry<T>)existing;
+            }
 
             var entry = new LmmConfigEntry<T>(this, definition, defaultValue, description);
             _entries[definition] = entry;
@@ -107,13 +109,17 @@ namespace ConfigurationManager.Config
         public void Save()
         {
             if (_disableSaving)
+            {
                 return;
+            }
 
             try
             {
                 var dir = Path.GetDirectoryName(ConfigFilePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
                     Directory.CreateDirectory(dir);
+                }
 
                 var sb = new StringBuilder();
                 sb.AppendLine("## Settings file");
@@ -129,7 +135,10 @@ namespace ConfigurationManager.Config
                     if (def.Section != currentSection)
                     {
                         if (currentSection != null)
+                        {
                             sb.AppendLine();
+                        }
+
                         sb.AppendLine("[" + def.Section + "]");
                         sb.AppendLine();
                         currentSection = def.Section;
@@ -139,7 +148,9 @@ namespace ConfigurationManager.Config
                         entry.Description != null
                         && !string.IsNullOrEmpty(entry.Description.Description)
                     )
+                    {
                         sb.AppendLine("## " + entry.Description.Description);
+                    }
 
                     sb.AppendLine("## Setting type: " + entry.SettingType.Name);
                     sb.AppendLine(
@@ -169,7 +180,9 @@ namespace ConfigurationManager.Config
         public void Reload()
         {
             if (!File.Exists(ConfigFilePath))
+            {
                 return;
+            }
 
             _disableSaving = true;
             try
@@ -181,10 +194,12 @@ namespace ConfigurationManager.Config
                     {
                         var converter = ConfigConverter.GetConverter(kvp.Value.SettingType);
                         if (converter != null)
+                        {
                             kvp.Value.BoxedValue = converter.ConvertToObject(
                                 savedValue,
                                 kvp.Value.SettingType
                             );
+                        }
                     }
                 }
             }
@@ -201,7 +216,9 @@ namespace ConfigurationManager.Config
         private string ReadValueFromFile(string section, string key)
         {
             if (!File.Exists(ConfigFilePath))
+            {
                 return null;
+            }
 
             var lines = File.ReadAllLines(ConfigFilePath, Encoding.UTF8);
             string currentSection = null;
@@ -217,18 +234,26 @@ namespace ConfigurationManager.Config
                 }
 
                 if (line.StartsWith("#") || string.IsNullOrEmpty(line))
+                {
                     continue;
+                }
 
                 if (currentSection != section)
+                {
                     continue;
+                }
 
                 var eqIndex = line.IndexOf('=');
                 if (eqIndex < 0)
+                {
                     continue;
+                }
 
                 var lineKey = line.Substring(0, eqIndex).Trim();
                 if (lineKey == key)
+                {
                     return line.Substring(eqIndex + 1).Trim();
+                }
             }
 
             return null;

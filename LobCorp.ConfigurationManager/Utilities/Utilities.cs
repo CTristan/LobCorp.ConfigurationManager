@@ -16,16 +16,24 @@ namespace ConfigurationManager.Utilities
         public static string ToProperCase(this string str)
         {
             if (string.IsNullOrEmpty(str))
+            {
                 return string.Empty;
+            }
+
             if (str.Length < 2)
+            {
                 return str;
+            }
 
             string result = str.Substring(0, 1).ToUpper();
 
             for (int i = 1; i < str.Length; i++)
             {
                 if (char.IsUpper(str[i]))
+                {
                     result += " ";
+                }
+
                 result += str[i];
             }
 
@@ -62,8 +70,12 @@ namespace ConfigurationManager.Utilities
             else
             {
                 for (var x = 0; x < tex.width; x++)
-                for (var y = 0; y < tex.height; y++)
-                    tex.SetPixel(x, y, color);
+                {
+                    for (var y = 0; y < tex.height; y++)
+                    {
+                        tex.SetPixel(x, y, color);
+                    }
+                }
             }
 
             tex.Apply(false);
@@ -72,8 +84,12 @@ namespace ConfigurationManager.Utilities
         public static void FillTextureCheckerboard(this Texture2D tex)
         {
             for (var x = 0; x < tex.width; x++)
-            for (var y = 0; y < tex.height; y++)
-                tex.SetPixel(x, y, (x / 10 + y / 10) % 2 == 1 ? Color.black : Color.white);
+            {
+                for (var y = 0; y < tex.height; y++)
+                {
+                    tex.SetPixel(x, y, (x / 10 + y / 10) % 2 == 1 ? Color.black : Color.white);
+                }
+            }
 
             tex.Apply(false);
         }
@@ -113,7 +129,9 @@ namespace ConfigurationManager.Utilities
                 .OrderByDescending(File.GetLastWriteTimeUtc)
                 .FirstOrDefault();
             if (latestLog != null && TryOpen(latestLog))
+            {
                 return;
+            }
 
             candidates.Clear();
             candidates.AddRange(
@@ -124,7 +142,9 @@ namespace ConfigurationManager.Utilities
                 .OrderByDescending(File.GetLastWriteTimeUtc)
                 .FirstOrDefault();
             if (latestLog != null && TryOpen(latestLog))
+            {
                 return;
+            }
 
             throw new FileNotFoundException("No log files were found");
         }
@@ -132,7 +152,10 @@ namespace ConfigurationManager.Utilities
         private static bool TryOpen(string path)
         {
             if (path == null)
+            {
                 return false;
+            }
+
             try
             {
                 Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
@@ -147,13 +170,19 @@ namespace ConfigurationManager.Utilities
         public static string GetWebsite(object pluginInstance)
         {
             if (pluginInstance == null)
+            {
                 return null;
+            }
+
             try
             {
                 var type = pluginInstance.GetType();
                 var location = type.Assembly.Location;
                 if (string.IsNullOrEmpty(location) || !File.Exists(location))
+                {
                     return null;
+                }
+
                 var fi = FileVersionInfo.GetVersionInfo(location);
                 return new[]
                 {
@@ -176,7 +205,10 @@ namespace ConfigurationManager.Utilities
             try
             {
                 if (string.IsNullOrEmpty(url))
+                {
                     throw new Exception("Empty URL");
+                }
+
                 Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
             catch (Exception ex)

@@ -137,7 +137,10 @@ namespace ConfigurationManager
             set
             {
                 if (_displayingWindow == value)
+                {
                     return;
+                }
+
                 _displayingWindow = value;
 
                 SettingFieldDrawer.ClearCache();
@@ -161,12 +164,16 @@ namespace ConfigurationManager
                 else
                 {
                     if (!_previousCursorVisible || _previousCursorLockState != 0)
+                    {
                         SetUnlockCursor(_previousCursorLockState, _previousCursorVisible);
+                    }
                 }
 
                 var handler = DisplayingWindowChanged;
                 if (handler != null)
+                {
                     handler(this, new ValueChangedEventArgs<bool>(value));
+                }
             }
         }
 
@@ -179,18 +186,27 @@ namespace ConfigurationManager
         )
         {
             if (settingType == null)
+            {
                 throw new ArgumentNullException("settingType");
+            }
+
             if (onGuiDrawer == null)
+            {
                 throw new ArgumentNullException("onGuiDrawer");
+            }
 
             if (SettingFieldDrawer.SettingDrawHandlers.ContainsKey(settingType))
+            {
                 SimpleLogger.LogWarning(
                     "Tried to add a setting drawer for type "
                         + settingType.FullName
                         + " while one already exists."
                 );
+            }
             else
+            {
                 SettingFieldDrawer.SettingDrawHandlers[settingType] = onGuiDrawer;
+            }
         }
 
         /// <summary>
@@ -227,11 +243,19 @@ namespace ConfigurationManager
             else
             {
                 if (!_showAdvanced.Value)
+                {
                     results = results.Where(x => x.IsAdvanced != true);
+                }
+
                 if (!_showKeybinds.Value)
+                {
                     results = results.Where(x => !IsKeyboardShortcut(x));
+                }
+
                 if (!_showSettings.Value)
+                {
                     results = results.Where(x => x.IsAdvanced == true || IsKeyboardShortcut(x));
+                }
             }
 
             var settingsAreCollapsed = _pluginConfigCollapsedDefault.Value;
@@ -342,7 +366,9 @@ namespace ConfigurationManager
                         GUI.Button(_screenRect, string.Empty, GUI.skin.box)
                         && !SettingWindowRect.Contains(mousePosition)
                     )
+                    {
                         DisplayingWindow = false;
+                    }
 
                     ImguiUtils.DrawWindowBackground(SettingWindowRect);
                 }
@@ -366,7 +392,9 @@ namespace ConfigurationManager
                     !SettingFieldDrawer.SettingKeyboardShortcut
                     && (!_windowWasMoved || SettingWindowRect.Contains(mousePosition))
                 )
+                {
                     Input.ResetInputAxes();
+                }
             }
         }
 
@@ -419,7 +447,9 @@ namespace ConfigurationManager
                     DrawTips();
 
                     if (_tipsHeight == 0 && Event.current.type == EventType.Repaint)
+                    {
                         _tipsHeight = (int)GUILayoutUtility.GetLastRect().height;
+                    }
                 }
 
                 var currentHeight = _tipsHeight;
@@ -440,7 +470,9 @@ namespace ConfigurationManager
                         catch (ArgumentException) { }
 
                         if (plugin.Height == 0 && Event.current.type == EventType.Repaint)
+                        {
                             plugin.Height = (int)GUILayoutUtility.GetLastRect().height;
+                        }
                     }
                     else
                     {
@@ -468,7 +500,9 @@ namespace ConfigurationManager
             GUILayout.EndScrollView();
 
             if (!SettingFieldDrawer.DrawCurrentDropdown())
+            {
                 DrawTooltip(SettingWindowRect);
+            }
 
             GUI.DragWindow();
         }
@@ -569,7 +603,9 @@ namespace ConfigurationManager
                 }
 
                 if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
+                {
                     SearchString = string.Empty;
+                }
 
                 GUILayout.Space(8);
 
@@ -583,7 +619,9 @@ namespace ConfigurationManager
                     var newValue = !_pluginConfigCollapsedDefault.Value;
                     _pluginConfigCollapsedDefault.Value = newValue;
                     foreach (var plugin in _filteredSetings)
+                    {
                         plugin.Collapsed = newValue;
+                    }
 
                     _tipsPluginHeaderWasClicked = true;
                 }
@@ -600,10 +638,14 @@ namespace ConfigurationManager
             private set
             {
                 if (value == null)
+                {
                     value = string.Empty;
+                }
 
                 if (_searchString == value)
+                {
                     return;
+                }
 
                 _searchString = value;
 
@@ -655,7 +697,10 @@ namespace ConfigurationManager
                             GUILayout.ExpandWidth(false)
                         )
                     )
+                    {
                         Utils.OpenWebsite(plugin.Website);
+                    }
+
                     GUI.color = origColor;
                     GUILayout.EndHorizontal();
                 }
@@ -668,7 +713,9 @@ namespace ConfigurationManager
                     if (!string.IsNullOrEmpty(category.Name))
                     {
                         if (plugin.Categories.Count > 1 || !_hideSingleSection.Value)
+                        {
                             SettingFieldDrawer.DrawCategoryHeader(category.Name);
+                        }
                     }
 
                     foreach (var setting in category.Settings)
@@ -706,11 +753,15 @@ namespace ConfigurationManager
         private void DrawSettingName(SettingEntryBase setting)
         {
             if (setting.HideSettingName)
+            {
                 return;
+            }
 
             var origColor = GUI.color;
             if (setting.IsAdvanced == true)
+            {
                 GUI.color = _advancedSettingColor;
+            }
 
             GUILayout.Label(
                 new GUIContent(setting.DispName.TrimStart('!'), null, setting.Description),
@@ -724,14 +775,18 @@ namespace ConfigurationManager
         private static void DrawDefaultButton(SettingEntryBase setting)
         {
             if (setting.HideDefaultButton)
+            {
                 return;
+            }
 
             object defaultValue = setting.DefaultValue;
             if (defaultValue != null || setting.SettingType.IsClass)
             {
                 GUILayout.Space(5);
                 if (GUILayout.Button("Reset", GUILayout.ExpandWidth(false)))
+                {
                     setting.Set(defaultValue);
+                }
             }
         }
 
@@ -780,19 +835,27 @@ namespace ConfigurationManager
         internal void Update()
         {
             if (DisplayingWindow)
+            {
                 SetUnlockCursor(0, true);
+            }
 
             if (OverrideHotkey)
+            {
                 return;
+            }
 
             if (_keybind.Value.IsDown())
+            {
                 DisplayingWindow = !DisplayingWindow;
+            }
         }
 
         internal void LateUpdate()
         {
             if (DisplayingWindow)
+            {
                 SetUnlockCursor(0, true);
+            }
         }
 
         private void SetUnlockCursor(int lockState, bool cursorVisible)
@@ -800,9 +863,13 @@ namespace ConfigurationManager
             if (_curLockState != null)
             {
                 if (_obsoleteCursor)
+                {
                     _curLockState.SetValue(null, Convert.ToBoolean(lockState), null);
+                }
                 else
+                {
                     _curLockState.SetValue(null, lockState, null);
+                }
 
                 _curVisible.SetValue(null, cursorVisible, null);
             }

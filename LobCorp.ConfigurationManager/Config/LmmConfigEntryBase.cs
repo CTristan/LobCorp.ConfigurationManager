@@ -33,7 +33,9 @@ namespace ConfigurationManager.Config
         {
             var handler = SettingChanged;
             if (handler != null)
+            {
                 handler(this, EventArgs.Empty);
+            }
         }
     }
 }

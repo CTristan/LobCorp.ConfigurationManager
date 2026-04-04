@@ -50,7 +50,10 @@ namespace ConfigurationManager
         private static void Initialize()
         {
             if (_initialized)
+            {
                 return;
+            }
+
             _initialized = true;
 
             try
@@ -157,7 +160,9 @@ namespace ConfigurationManager
             Initialize();
 
             if (!_bepInExAvailable)
+            {
                 return null;
+            }
 
             var results = new List<SettingEntryBase>();
 
@@ -165,12 +170,16 @@ namespace ConfigurationManager
             {
                 var pluginInfos = _pluginInfosProperty.GetValue(null, null);
                 if (pluginInfos == null)
+                {
                     return results;
+                }
 
                 // PluginInfos is Dictionary<string, PluginInfo>
                 var valuesProperty = pluginInfos.GetType().GetProperty("Values");
                 if (valuesProperty == null)
+                {
                     return results;
+                }
 
                 var values = (IEnumerable)valuesProperty.GetValue(pluginInfos, null);
 
@@ -183,7 +192,9 @@ namespace ConfigurationManager
                                 ? _pluginInfoInstanceProperty.GetValue(pluginInfoObj, null)
                                 : null;
                         if (instance == null)
+                        {
                             continue;
+                        }
 
                         // Get plugin metadata
                         var metadata =
@@ -198,7 +209,9 @@ namespace ConfigurationManager
                                 ? _configProperty.GetValue(instance, null)
                                 : null;
                         if (config == null)
+                        {
                             continue;
+                        }
 
                         // Enumerate config entries
                         var configEntries = GetConfigEntries(config);
@@ -208,7 +221,9 @@ namespace ConfigurationManager
                             {
                                 var settingEntry = CreateBepInExSettingEntry(entryObj, pluginInfo);
                                 if (settingEntry != null)
+                                {
                                     results.Add(settingEntry);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -235,7 +250,9 @@ namespace ConfigurationManager
         private static PluginInfo CreatePluginInfo(object metadata)
         {
             if (metadata == null)
+            {
                 return new PluginInfo("unknown", "Unknown Plugin", "");
+            }
 
             var guid =
                 _bepInPluginGuidProperty != null
@@ -258,7 +275,9 @@ namespace ConfigurationManager
             // ConfigFile implements IEnumerable<KeyValuePair<ConfigDefinition, ConfigEntryBase>>
             var enumerableType = configFile.GetType().GetInterface("IEnumerable");
             if (enumerableType == null)
+            {
                 return Enumerable.Empty<object>();
+            }
 
             var result = new List<object>();
             foreach (var kvp in (IEnumerable)configFile)
@@ -269,7 +288,9 @@ namespace ConfigurationManager
                 {
                     var entry = valueProperty.GetValue(kvp, null);
                     if (entry != null)
+                    {
                         result.Add(entry);
+                    }
                 }
             }
             return result;
@@ -294,7 +315,9 @@ namespace ConfigurationManager
                     : null;
 
             if (definition == null || settingType == null)
+            {
                 return null;
+            }
 
             var section =
                 _configDefinitionSectionProperty != null
@@ -311,9 +334,11 @@ namespace ConfigurationManager
                     : null;
             var descriptionText = "";
             if (descriptionObj != null && _configDescriptionDescriptionProperty != null)
+            {
                 descriptionText =
                     _configDescriptionDescriptionProperty.GetValue(descriptionObj, null) as string
                     ?? "";
+            }
 
             return new BepInExSettingEntry(
                 configEntryBase,
@@ -372,7 +397,9 @@ namespace ConfigurationManager
         protected override void SetValue(object newVal)
         {
             if (_boxedValueProperty != null)
+            {
                 _boxedValueProperty.SetValue(_configEntry, newVal, null);
+            }
         }
     }
 }

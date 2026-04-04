@@ -125,7 +125,9 @@ namespace ConfigurationManager
         public void Set(object newVal)
         {
             if (ReadOnly != true)
+            {
                 SetValue(newVal);
+            }
         }
 
         /// <summary>
@@ -151,7 +153,9 @@ namespace ConfigurationManager
             PluginInstance = pluginInstance;
 
             if (attribs == null || attribs.Length == 0)
+            {
                 return;
+            }
 
             foreach (var attrib in attribs)
             {
@@ -229,11 +233,13 @@ namespace ConfigurationManager
                                                 propertyPair.my.PropertyType
                                             )
                                         )
+                                        {
                                             val = Delegate.CreateDelegate(
                                                 propertyPair.my.PropertyType,
                                                 ((Delegate)val).Target,
                                                 ((Delegate)val).Method
                                             );
+                                        }
 
                                         propertyPair.my.SetValue(this, val, null);
                                     }

@@ -36,9 +36,13 @@ namespace ConfigurationManager
                     detected.RemoveAll(x => x.Browsable == false);
 
                     if (detected.Count == 0)
+                    {
                         modsWithoutSettings.Add(mod.ModName);
+                    }
                     else
+                    {
                         results = results.Concat(detected);
+                    }
                 }
             }
             catch (Exception ex)
@@ -56,7 +60,9 @@ namespace ConfigurationManager
                     {
                         var configPath = Path.Combine(modDir, "config.cfg");
                         if (!File.Exists(configPath))
+                        {
                             continue;
+                        }
 
                         var modName = Path.GetFileName(modDir);
 
@@ -71,15 +77,21 @@ namespace ConfigurationManager
                             }
                         }
                         if (alreadyRegistered)
+                        {
                             continue;
+                        }
 
                         try
                         {
                             var entries = ParseConfigFile(configPath, modName);
                             if (entries.Count > 0)
+                            {
                                 results = results.Concat(entries);
+                            }
                             else
+                            {
                                 modsWithoutSettings.Add(modName);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -100,7 +112,9 @@ namespace ConfigurationManager
             {
                 var bepInExSettings = BepInExInterop.CollectBepInExSettings();
                 if (bepInExSettings != null)
+                {
                     results = results.Concat(bepInExSettings);
+                }
             }
             catch (Exception ex)
             {
@@ -157,14 +171,20 @@ namespace ConfigurationManager
                 }
 
                 if (line.StartsWith("#") || string.IsNullOrEmpty(line))
+                {
                     continue;
+                }
 
                 if (currentSection == null)
+                {
                     continue;
+                }
 
                 var eqIndex = line.IndexOf('=');
                 if (eqIndex < 0)
+                {
                     continue;
+                }
 
                 var key = line.Substring(0, eqIndex).Trim();
                 var value = line.Substring(eqIndex + 1).Trim();

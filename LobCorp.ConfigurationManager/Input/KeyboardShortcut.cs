@@ -49,9 +49,11 @@ namespace ConfigurationManager
             : this(new[] { mainKey }.Concat(modifiers).ToArray())
         {
             if (mainKey == KeyCode.None && modifiers.Any())
+            {
                 throw new ArgumentException(
                     "Can't set mainKey to KeyCode.None if there are any modifiers"
                 );
+            }
         }
 
         private KeyboardShortcut(KeyCode[] keys)

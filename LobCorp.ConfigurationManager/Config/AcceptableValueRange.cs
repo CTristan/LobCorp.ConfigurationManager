@@ -14,7 +14,10 @@ namespace ConfigurationManager.Config
         public AcceptableValueRange(T minValue, T maxValue)
         {
             if (maxValue.CompareTo(minValue) < 0)
+            {
                 throw new ArgumentException("MaxValue must be greater than or equal to MinValue");
+            }
+
             MinValue = minValue;
             MaxValue = maxValue;
         }
@@ -27,9 +30,15 @@ namespace ConfigurationManager.Config
         public T Clamp(T value)
         {
             if (value.CompareTo(MinValue) < 0)
+            {
                 return MinValue;
+            }
+
             if (value.CompareTo(MaxValue) > 0)
+            {
                 return MaxValue;
+            }
+
             return value;
         }
     }

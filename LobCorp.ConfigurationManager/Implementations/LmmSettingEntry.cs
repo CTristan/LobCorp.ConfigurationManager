@@ -34,7 +34,9 @@ namespace ConfigurationManager
 
             var values = entry.Description != null ? entry.Description.AcceptableValues : null;
             if (values != null)
+            {
                 GetAcceptableValues(values);
+            }
 
             DefaultValue = entry.DefaultValue;
 

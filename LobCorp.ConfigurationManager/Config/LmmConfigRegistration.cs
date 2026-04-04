@@ -20,7 +20,9 @@ namespace ConfigurationManager.Config
         {
             RegisteredMod mod;
             if (RegisteredMods.TryGetValue(modId, out mod))
+            {
                 return mod.ConfigFile;
+            }
 
             // Default config file path in BaseMods directory
             var baseModsPath = Path.Combine(Application.dataPath, "BaseMods");

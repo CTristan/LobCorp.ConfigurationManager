@@ -71,18 +71,30 @@ namespace ConfigurationManager
                 setting.CustomHotkeyDrawer(configEntry, ref isBeingSet);
 
                 if (isBeingSet != isBeingSetOriginal)
+                {
                     _currentKeyboardShortcutToSet = isBeingSet ? setting : null;
+                }
             }
             else if (setting.ShowRangeAsPercent != null && setting.AcceptableValueRange.Key != null)
+            {
                 DrawRangeField(setting);
+            }
             else if (setting.AcceptableValues != null)
+            {
                 DrawListField(setting);
+            }
             else if (DrawFieldBasedOnValueType(setting))
+            {
                 return;
+            }
             else if (setting.SettingType.IsEnum)
+            {
                 DrawEnumField(setting);
+            }
             else
+            {
                 DrawUnknownField(setting, _instance.RightColumnWidth);
+            }
         }
 
         public static void ClearCache()
@@ -90,7 +102,10 @@ namespace ConfigurationManager
             _comboBoxCache.Clear();
 
             foreach (var tex in _colorCache)
+            {
                 UnityEngine.Object.Destroy(tex.Value.Tex);
+            }
+
             _colorCache.Clear();
         }
 
@@ -133,7 +148,10 @@ namespace ConfigurationManager
             }
 
             if (isCollapsed)
+            {
                 content.text += "\n...";
+            }
+
             return GUILayout.Button(content, _pluginHeaderSkin, GUILayout.ExpandWidth(true));
         }
 
@@ -152,23 +170,31 @@ namespace ConfigurationManager
         {
             var acceptableValues = setting.AcceptableValues;
             if (acceptableValues.Length == 0)
+            {
                 throw new ArgumentException(
                     "AcceptableValueListAttribute returned an empty list of acceptable values. You need to supply at least 1 option."
                 );
+            }
 
             if (
                 !setting.SettingType.IsInstanceOfType(
                     acceptableValues.FirstOrDefault(x => x != null)
                 )
             )
+            {
                 throw new ArgumentException(
                     "AcceptableValueListAttribute returned a list with items of type other than the setting type itself."
                 );
+            }
 
             if (setting.SettingType == typeof(KeyCode))
+            {
                 DrawKeyCode(setting);
+            }
             else
+            {
                 DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
+            }
         }
 
         private static bool DrawFieldBasedOnValueType(SettingEntryBase setting)
@@ -191,23 +217,29 @@ namespace ConfigurationManager
                 GUILayout.ExpandWidth(true)
             );
             if (result != boolVal)
+            {
                 setting.Set(result);
+            }
         }
 
         private static void DrawEnumField(SettingEntryBase setting)
         {
             if (setting.SettingType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
+            {
                 DrawFlagsField(
                     setting,
                     Enum.GetValues(setting.SettingType),
                     _instance.RightColumnWidth
                 );
+            }
             else
+            {
                 DrawComboboxField(
                     setting,
                     Enum.GetValues(setting.SettingType),
                     _instance.SettingWindowRect.yMax
                 );
+            }
         }
 
         private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
@@ -235,7 +267,9 @@ namespace ConfigurationManager
                                     GUI.skin.toggle.CalcSize(new GUIContent(value.name)).x;
                                 currentWidth += textDimension;
                                 if (currentWidth > maxWidth)
+                                {
                                     break;
+                                }
 
                                 GUI.changed = false;
                                 var newVal = GUILayout.Toggle(
@@ -296,7 +330,9 @@ namespace ConfigurationManager
             box.Show(id =>
             {
                 if (id >= 0 && id < list.Count)
+                {
                     setting.Set(list[id]);
+                }
             });
         }
 
@@ -314,7 +350,10 @@ namespace ConfigurationManager
                             .FirstOrDefault()
                         : null;
                 if (attr != null)
+                {
                     return new GUIContent(attr.Description);
+                }
+
                 return new GUIContent(x.ToString().ToProperCase());
             }
             return new GUIContent(x.ToString());
@@ -392,7 +431,9 @@ namespace ConfigurationManager
                 );
 
                 if (result != text)
+                {
                     setting.Set(setting.StrToObj(result));
+                }
             }
             else
             {
@@ -411,6 +452,7 @@ namespace ConfigurationManager
                         GUILayout.MaxWidth(rightColumnWidth)
                     );
                     if (result != value)
+                    {
                         setting.Set(
                             Convert.ChangeType(
                                 result,
@@ -418,6 +460,7 @@ namespace ConfigurationManager
                                 CultureInfo.InvariantCulture
                             )
                         );
+                    }
                 }
                 else
                 {
@@ -433,7 +476,9 @@ namespace ConfigurationManager
         private bool CanCovert(string value, Type type)
         {
             if (_canCovertCache.ContainsKey(type))
+            {
                 return _canCovertCache[type];
+            }
 
             try
             {
@@ -456,7 +501,9 @@ namespace ConfigurationManager
                 GUIUtility.keyboardControl = -1;
 
                 if (_keysToCheck == null)
+                {
                     _keysToCheck = KeyboardShortcut.ModifierBlockKeyCodes;
+                }
 
                 foreach (var key in _keysToCheck)
                 {
@@ -469,7 +516,9 @@ namespace ConfigurationManager
                 }
 
                 if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
+                {
                     _currentKeyboardShortcutToSet = null;
+                }
             }
             else
             {
@@ -489,7 +538,9 @@ namespace ConfigurationManager
                         GUILayout.ExpandWidth(false)
                     )
                 )
+                {
                     _currentKeyboardShortcutToSet = setting;
+                }
             }
         }
 
@@ -501,7 +552,9 @@ namespace ConfigurationManager
                 GUIUtility.keyboardControl = -1;
 
                 if (_keysToCheck == null)
+                {
                     _keysToCheck = KeyboardShortcut.ModifierBlockKeyCodes;
+                }
 
                 foreach (var key in _keysToCheck)
                 {
@@ -519,12 +572,16 @@ namespace ConfigurationManager
                 }
 
                 if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
+                {
                     _currentKeyboardShortcutToSet = null;
+                }
             }
             else
             {
                 if (GUILayout.Button(setting.Get().ToString(), GUILayout.ExpandWidth(true)))
+                {
                     _currentKeyboardShortcutToSet = setting;
+                }
 
                 if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
                 {
@@ -541,7 +598,9 @@ namespace ConfigurationManager
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
             if (setting != copy)
+            {
                 obj.Set(setting);
+            }
         }
 
         private static void DrawVector3(SettingEntryBase obj)
@@ -552,7 +611,9 @@ namespace ConfigurationManager
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
             if (setting != copy)
+            {
                 obj.Set(setting);
+            }
         }
 
         private static void DrawVector4(SettingEntryBase obj)
@@ -564,7 +625,9 @@ namespace ConfigurationManager
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
             setting.w = DrawSingleVectorSlider(setting.w, "W");
             if (setting != copy)
+            {
                 obj.Set(setting);
+            }
         }
 
         private static void DrawQuaternion(SettingEntryBase obj)
@@ -576,7 +639,9 @@ namespace ConfigurationManager
             setting.z = DrawSingleVectorSlider(setting.z, "Z");
             setting.w = DrawSingleVectorSlider(setting.w, "W");
             if (setting != copy)
+            {
                 obj.Set(setting);
+            }
         }
 
         private static float DrawSingleVectorSlider(float setting, string label)
@@ -635,7 +700,9 @@ namespace ConfigurationManager
                         {
                             Color parsedColor;
                             if (ColorUtility.TryParseHtmlString(newColorStr, out parsedColor))
+                            {
                                 colorValue = parsedColor;
+                            }
                         }
                         else
                         {
@@ -651,7 +718,9 @@ namespace ConfigurationManager
                                 && float.TryParse(split[2], out b)
                                 && float.TryParse(split[3], out a)
                             )
+                            {
                                 colorValue = new Color(r, g, b, a);
+                            }
                         }
                     }
 
@@ -708,7 +777,10 @@ namespace ConfigurationManager
         private static void FillTex(Color color, Texture2D tex)
         {
             if (color.a < 1f)
+            {
                 tex.FillTextureCheckerboard();
+            }
+
             tex.FillTexture(color);
         }
 

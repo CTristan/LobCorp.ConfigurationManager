@@ -32,11 +32,16 @@ namespace ConfigurationManager.Config
             set
             {
                 if (Equals(_value, value))
+                {
                     return;
+                }
+
                 _value = value;
                 OnSettingChanged();
                 if (ConfigFile != null)
+                {
                     ConfigFile.Save();
+                }
             }
         }
 

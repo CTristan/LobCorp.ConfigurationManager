@@ -14,7 +14,10 @@ namespace ConfigurationManager.Config
         public AcceptableValueList(params T[] acceptableValues)
         {
             if (acceptableValues == null || acceptableValues.Length == 0)
+            {
                 throw new ArgumentException("At least one acceptable value is needed");
+            }
+
             AcceptableValues = acceptableValues;
         }
 

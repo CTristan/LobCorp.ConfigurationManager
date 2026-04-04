@@ -269,7 +269,9 @@ namespace ConfigurationManager.Config
         {
             TypeConverter converter;
             if (Converters.TryGetValue(type, out converter))
+            {
                 return converter;
+            }
 
             // Handle enums generically
             if (type.IsEnum)
@@ -288,7 +290,10 @@ namespace ConfigurationManager.Config
         {
             var converter = GetConverter(type);
             if (converter != null)
+            {
                 return converter.ConvertToString(value, type);
+            }
+
             return value != null ? value.ToString() : string.Empty;
         }
 
@@ -296,7 +301,10 @@ namespace ConfigurationManager.Config
         {
             var converter = GetConverter(type);
             if (converter != null)
+            {
                 return converter.ConvertToObject(value, type);
+            }
+
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
     }

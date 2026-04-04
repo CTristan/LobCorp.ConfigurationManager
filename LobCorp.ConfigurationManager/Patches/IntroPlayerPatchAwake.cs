@@ -18,7 +18,9 @@ namespace ConfigurationManager.Patches
             {
                 var existing = UnityEngine.Object.FindObjectOfType<ConfigManagerBehaviour>();
                 if (existing != null)
+                {
                     return;
+                }
 
                 var go = new GameObject("LobCorp_ConfigurationManager");
                 go.AddComponent<ConfigManagerBehaviour>();

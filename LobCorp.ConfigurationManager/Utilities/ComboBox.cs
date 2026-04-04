@@ -101,7 +101,9 @@ namespace ConfigurationManager.Utilities
                     currentMousePosition != Vector2.zero
                     && outerRectScreen.Contains(GUIUtility.GUIToScreenPoint(currentMousePosition))
                 )
+                {
                     done = false;
+                }
 
                 CurrentDropdownDrawer = () =>
                 {
@@ -144,7 +146,9 @@ namespace ConfigurationManager.Utilities
             }
 
             if (done)
+            {
                 isClickedComboButton = false;
+            }
         }
 
         private Vector2 _scrollPosition = Vector2.zero;

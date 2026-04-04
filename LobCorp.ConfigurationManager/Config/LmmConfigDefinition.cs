@@ -18,7 +18,10 @@ namespace ConfigurationManager.Config
         {
             var other = obj as LmmConfigDefinition;
             if (other == null)
+            {
                 return false;
+            }
+
             return Section == other.Section && Key == other.Key;
         }
 
