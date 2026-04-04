@@ -65,9 +65,12 @@ namespace ConfigurationManager.Implementations
             );
             if (listProp != null)
             {
-                AcceptableValues = ((IEnumerable)listProp.GetValue(values, null))
-                    .Cast<object>()
-                    .ToArray();
+                SetAcceptableValues(
+                    ((IEnumerable)listProp.GetValue(values, null))
+                        .Cast<object>()
+                        .ToList()
+                        .AsReadOnly()
+                );
             }
             else
             {

@@ -18,7 +18,7 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// List of values this setting can take
         /// </summary>
-        public object[] AcceptableValues { get; protected set; }
+        public IList<object> AcceptableValues { get; private set; }
 
         /// <summary>
         /// Range of the values this setting can take
@@ -151,11 +151,16 @@ namespace ConfigurationManager.Implementations
         private static readonly PropertyInfo[] _myProperties =
             typeof(SettingEntryBase).GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-        internal void SetFromAttributes(object[] attribs, object pluginInstance)
+        internal void SetAcceptableValues(IList<object> acceptableValues)
+        {
+            AcceptableValues = acceptableValues;
+        }
+
+        internal void SetFromAttributes(ICollection<object> attribs, object pluginInstance)
         {
             PluginInstance = pluginInstance;
 
-            if (attribs == null || attribs.Length == 0)
+            if (attribs == null || attribs.Count == 0)
             {
                 return;
             }

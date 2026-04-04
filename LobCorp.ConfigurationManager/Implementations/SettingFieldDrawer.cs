@@ -163,7 +163,7 @@ namespace ConfigurationManager.Implementations
         private static void DrawListField(SettingEntryBase setting)
         {
             var acceptableValues = setting.AcceptableValues;
-            if (acceptableValues.Length == 0)
+            if (acceptableValues.Count == 0)
             {
                 throw new ArgumentException(
                     "AcceptableValueListAttribute returned an empty list of acceptable values. You need to supply at least 1 option."
@@ -172,7 +172,7 @@ namespace ConfigurationManager.Implementations
 
             if (
                 !setting.SettingType.IsInstanceOfType(
-                    acceptableValues.FirstOrDefault(x => x != null)
+                    acceptableValues.Cast<object>().FirstOrDefault(x => x != null)
                 )
             )
             {
@@ -187,7 +187,11 @@ namespace ConfigurationManager.Implementations
             }
             else
             {
-                DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
+                DrawComboboxField(
+                    setting,
+                    (IList)acceptableValues,
+                    _instance.SettingWindowRect.yMax
+                );
             }
         }
 
@@ -515,10 +519,11 @@ namespace ConfigurationManager.Implementations
             }
             else
             {
-                var acceptableValues =
-                    setting.AcceptableValues?.Length > 1
-                        ? setting.AcceptableValues
-                        : Enum.GetValues(setting.SettingType);
+                var acceptableValues = (IList)(
+                    setting.AcceptableValues?.Count > 1
+                        ? (IList)setting.AcceptableValues
+                        : Enum.GetValues(setting.SettingType)
+                );
                 DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
 
                 if (

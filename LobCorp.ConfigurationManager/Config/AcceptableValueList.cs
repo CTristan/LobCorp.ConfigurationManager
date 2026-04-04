@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ConfigurationManager.Config
@@ -15,7 +16,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Array of valid values for this setting
         /// </summary>
-        public T[] AcceptableValues { get; }
+        public IList<T> AcceptableValues { get; }
 
         /// <summary>
         /// Creates a new constraint limiting values to the specified list.
@@ -28,7 +29,7 @@ namespace ConfigurationManager.Config
                 throw new ArgumentException("At least one acceptable value is needed");
             }
 
-            AcceptableValues = acceptableValues;
+            AcceptableValues = Array.AsReadOnly((T[])acceptableValues.Clone());
         }
 
         /// <inheritdoc />

@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+using System;
+using System.Collections.Generic;
+
 namespace ConfigurationManager.Config
 {
     /// <summary>
@@ -20,7 +23,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Attribute objects applied to the entry (e.g. <see cref="ConfigurationManagerAttributes"/>)
         /// </summary>
-        public object[] Tags { get; }
+        public IList<object> Tags { get; }
 
         /// <summary>
         /// Creates a new config description with optional value constraints and tags.
@@ -36,7 +39,7 @@ namespace ConfigurationManager.Config
         {
             Description = description;
             AcceptableValues = acceptableValues;
-            Tags = tags ?? new object[0];
+            Tags = Array.AsReadOnly((object[])(tags ?? new object[0]).Clone());
         }
     }
 }
