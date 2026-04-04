@@ -2,11 +2,8 @@
 
 #region
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using AwesomeAssertions;
-using ConfigurationManager;
 using ConfigurationManager.Config;
 using ConfigurationManager.Implementations;
 using Xunit;

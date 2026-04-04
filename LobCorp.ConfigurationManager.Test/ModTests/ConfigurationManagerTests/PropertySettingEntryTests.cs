@@ -4,7 +4,6 @@
 
 using System.ComponentModel;
 using AwesomeAssertions;
-using ConfigurationManager;
 using ConfigurationManager.Implementations;
 using Xunit;
 

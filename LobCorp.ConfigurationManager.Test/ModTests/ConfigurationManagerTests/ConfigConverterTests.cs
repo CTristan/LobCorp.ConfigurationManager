@@ -4,7 +4,6 @@
 
 using System;
 using AwesomeAssertions;
-using ConfigurationManager;
 using ConfigurationManager.Config;
 using ConfigurationManager.Input;
 using UnityEngine;

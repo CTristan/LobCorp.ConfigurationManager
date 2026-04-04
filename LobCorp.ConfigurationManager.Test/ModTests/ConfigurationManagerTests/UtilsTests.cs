@@ -2,7 +2,6 @@
 
 #region
 
-using System;
 using AwesomeAssertions;
 using ConfigurationManager.Utilities;
 using Xunit;
