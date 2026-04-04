@@ -127,12 +127,12 @@ namespace ConfigurationManager.Config
                 var dir = Path.GetDirectoryName(ConfigFilePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 {
-                    Directory.CreateDirectory(dir);
+                    _ = Directory.CreateDirectory(dir);
                 }
 
                 var sb = new StringBuilder();
-                sb.AppendLine("## Settings file");
-                sb.AppendLine();
+                _ = sb.AppendLine("## Settings file");
+                _ = sb.AppendLine();
 
                 string currentSection = null;
 
@@ -145,11 +145,11 @@ namespace ConfigurationManager.Config
                     {
                         if (currentSection != null)
                         {
-                            sb.AppendLine();
+                            _ = sb.AppendLine();
                         }
 
-                        sb.AppendLine("[" + def.Section + "]");
-                        sb.AppendLine();
+                        _ = sb.AppendLine("[" + def.Section + "]");
+                        _ = sb.AppendLine();
                         currentSection = def.Section;
                     }
 
@@ -158,11 +158,11 @@ namespace ConfigurationManager.Config
                         && !string.IsNullOrEmpty(entry.Description.Description)
                     )
                     {
-                        sb.AppendLine("## " + entry.Description.Description);
+                        _ = sb.AppendLine("## " + entry.Description.Description);
                     }
 
-                    sb.AppendLine("## Setting type: " + entry.SettingType.Name);
-                    sb.AppendLine(
+                    _ = sb.AppendLine("## Setting type: " + entry.SettingType.Name);
+                    _ = sb.AppendLine(
                         "## Default value: "
                             + ConfigConverter.ConvertToString(entry.DefaultValue, entry.SettingType)
                     );
@@ -171,8 +171,8 @@ namespace ConfigurationManager.Config
                         entry.BoxedValue,
                         entry.SettingType
                     );
-                    sb.AppendLine(def.Key + " = " + value);
-                    sb.AppendLine();
+                    _ = sb.AppendLine(def.Key + " = " + value);
+                    _ = sb.AppendLine();
                 }
 
                 File.WriteAllText(ConfigFilePath, sb.ToString(), Encoding.UTF8);

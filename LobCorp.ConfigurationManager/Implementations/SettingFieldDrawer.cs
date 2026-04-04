@@ -465,7 +465,7 @@ namespace ConfigurationManager
                 }
                 else
                 {
-                    GUILayout.TextArea(value, GUILayout.MaxWidth(rightColumnWidth));
+                    _ = GUILayout.TextArea(value, GUILayout.MaxWidth(rightColumnWidth));
                 }
             }
 
@@ -483,7 +483,7 @@ namespace ConfigurationManager
 
             try
             {
-                Convert.ChangeType(value, type);
+                _ = Convert.ChangeType(value, type);
                 _canCovertCache[type] = true;
                 return true;
             }
@@ -649,7 +649,7 @@ namespace ConfigurationManager
         {
             GUILayout.Label(label, GUILayout.ExpandWidth(false));
             float x;
-            float.TryParse(
+            _ = float.TryParse(
                 GUILayout.TextField(
                     setting.ToString("F", CultureInfo.InvariantCulture),
                     GUILayout.ExpandWidth(true)

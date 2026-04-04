@@ -38,7 +38,7 @@ namespace ConfigurationManager
                         detected.Add(new LmmSettingEntry(kvp.Value, pluginInfo, null));
                     }
 
-                    detected.RemoveAll(x => x.Browsable == false);
+                    _ = detected.RemoveAll(x => x.Browsable == false);
 
                     if (detected.Count == 0)
                     {

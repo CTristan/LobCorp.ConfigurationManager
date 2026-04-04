@@ -268,7 +268,7 @@ namespace ConfigurationManager
             {
                 if (pluginSetting.Collapsed != settingsAreCollapsed)
                 {
-                    nonDefaultCollpasingStateByPluginName.Add(pluginSetting.Info.Name);
+                    _ = nonDefaultCollpasingStateByPluginName.Add(pluginSetting.Info.Name);
                 }
             }
 

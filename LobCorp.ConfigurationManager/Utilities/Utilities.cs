@@ -195,7 +195,7 @@ namespace ConfigurationManager.Utilities
 
             try
             {
-                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                _ = Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
                 return true;
             }
             catch
@@ -263,7 +263,7 @@ namespace ConfigurationManager.Utilities
                     throw new Exception("Empty URL");
                 }
 
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                _ = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
             catch (Exception ex)
             {

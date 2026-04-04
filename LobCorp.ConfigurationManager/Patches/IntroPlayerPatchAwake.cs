@@ -30,7 +30,7 @@ namespace ConfigurationManager.Patches
                 }
 
                 var go = new GameObject("LobCorp_ConfigurationManager");
-                go.AddComponent<ConfigManagerBehaviour>();
+                _ = go.AddComponent<ConfigManagerBehaviour>();
             }
             catch (Exception ex)
             {
