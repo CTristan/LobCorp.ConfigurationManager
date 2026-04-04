@@ -100,7 +100,7 @@ namespace ConfigurationManager.Config
             return RegisteredMods.Values;
         }
 
-        internal class RegisteredMod
+        internal sealed class RegisteredMod
         {
             public string ModId;
             public string ModName;

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ConfigurationManager.Utilities
 {
     [ExcludeFromCodeCoverage(Justification = "ImGUI dropdown control")]
-    internal class ComboBox
+    internal sealed class ComboBox
     {
         private static bool forceToUnShow;
         private static int useControlID = -1;
