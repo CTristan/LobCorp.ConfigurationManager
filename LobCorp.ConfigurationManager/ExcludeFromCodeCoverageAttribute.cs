@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 #if !NETCOREAPP && !NET5_0_OR_GREATER
 

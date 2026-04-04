@@ -1,7 +1,4 @@
-// Popup list created by Eric Haines
-// ComboBox Extended by Hyungseok Seo.(Jerry) sdragoon@nate.com
-// this oop version of ComboBox is refactored by zhujiangbo jumbozhu@gmail.com
-// Modified by MarC0 / ManlyMarco
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 using System;
 using System.Diagnostics.CodeAnalysis;

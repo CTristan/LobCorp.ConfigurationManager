@@ -1,10 +1,9 @@
 root = true
 
-# Temporary Suppressions, remove this file when all cleared
-
 [*.cs]
-# Count: 56 - A source file is missing a required header.
-dotnet_diagnostic.IDE0073.severity = none
+file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
+
+# Temporary Suppressions, remove this file when all cleared
 # Count: 38 - Expression value is never used
 dotnet_diagnostic.IDE0058.severity = none
 # Count: 32 - Null check can be simplified

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
 /// <summary>
 /// Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.
 ///
