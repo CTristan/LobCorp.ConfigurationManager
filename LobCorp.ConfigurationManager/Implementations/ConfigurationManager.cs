@@ -325,7 +325,7 @@ namespace ConfigurationManager.Implementations
                 + "\n"
                 + setting.DefaultValue
                 + "\n"
-                + setting.Get();
+                + setting.GetValue();
 
             return searchStrings.All(s =>
                 combinedSearchTarget.IndexOf(s, StringComparison.InvariantCultureIgnoreCase) >= 0

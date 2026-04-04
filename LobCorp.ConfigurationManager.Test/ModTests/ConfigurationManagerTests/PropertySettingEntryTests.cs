@@ -35,14 +35,14 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void Get_ShouldDelegateToPropertyInfoGetValue()
+        public void GetValue_ShouldDelegateToPropertyInfoGetValue()
         {
             var obj = new TestObject { ReadWriteProperty = "hello" };
             var prop = typeof(TestObject).GetProperty("ReadWriteProperty")!;
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
-            entry.Get().Should().Be("hello");
+            entry.GetValue().Should().Be("hello");
         }
 
         [Fact]

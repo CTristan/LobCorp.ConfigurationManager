@@ -118,7 +118,7 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// Get the value of this setting.
         /// </summary>
-        public abstract object Get();
+        public abstract object GetValue();
 
         /// <summary>
         /// Set the value of this setting.

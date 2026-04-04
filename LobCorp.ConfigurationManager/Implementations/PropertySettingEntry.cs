@@ -61,7 +61,7 @@ namespace ConfigurationManager.Implementations
         public override Type SettingType => _settingType ?? (_settingType = Property.PropertyType);
 
         /// <inheritdoc />
-        public override object Get()
+        public override object GetValue()
         {
             return Property.GetValue(Instance, null);
         }

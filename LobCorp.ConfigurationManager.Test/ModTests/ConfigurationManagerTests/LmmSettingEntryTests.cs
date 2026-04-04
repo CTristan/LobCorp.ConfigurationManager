@@ -139,13 +139,13 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void Get_ShouldDelegateToEntryBoxedValue()
+        public void GetValue_ShouldDelegateToEntryBoxedValue()
         {
             var entry = _configFile.Bind("General", "Volume", 50);
             var pluginInfo = new PluginInfo("test", "TestMod", "1.0");
             var setting = new LmmSettingEntry(entry, pluginInfo, null);
 
-            setting.Get().Should().Be(50);
+            setting.GetValue().Should().Be(50);
         }
 
         [Fact]

@@ -376,7 +376,7 @@ namespace ConfigurationManager.Implementations
 
         public override Type SettingType => _settingType;
 
-        public override object Get()
+        public override object GetValue()
         {
             return _boxedValueProperty?.GetValue(_configEntry, null);
         }

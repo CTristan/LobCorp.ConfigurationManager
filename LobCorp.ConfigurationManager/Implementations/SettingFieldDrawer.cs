@@ -207,7 +207,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawBoolField(SettingEntryBase setting)
         {
-            var boolVal = (bool)setting.Get();
+            var boolVal = (bool)setting.GetValue();
             var result = GUILayout.Toggle(
                 boolVal,
                 boolVal ? "Enabled" : "Disabled",
@@ -241,7 +241,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
         {
-            var currentValue = Convert.ToInt64(setting.Get(), CultureInfo.InvariantCulture);
+            var currentValue = Convert.ToInt64(setting.GetValue(), CultureInfo.InvariantCulture);
             var allValues = enumValues
                 .Cast<Enum>()
                 .Select(x => new
@@ -303,7 +303,7 @@ namespace ConfigurationManager.Implementations
             float windowYmax
         )
         {
-            var buttonText = ObjectToGuiContent(setting.Get());
+            var buttonText = ObjectToGuiContent(setting.GetValue());
             var dispRect = GUILayoutUtility.GetRect(
                 buttonText,
                 GUI.skin.button,
@@ -358,7 +358,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawRangeField(SettingEntryBase setting)
         {
-            var value = setting.Get();
+            var value = setting.GetValue();
             var converted = (float)Convert.ToDouble(value, CultureInfo.InvariantCulture);
             var leftValue = (float)
                 Convert.ToDouble(setting.AcceptableValueRange.Key, CultureInfo.InvariantCulture);
@@ -420,7 +420,9 @@ namespace ConfigurationManager.Implementations
         {
             if (setting.ObjToStr != null && setting.StrToObj != null)
             {
-                var text = setting.ObjToStr(setting.Get()).AppendZeroIfFloat(setting.SettingType);
+                var text = setting
+                    .ObjToStr(setting.GetValue())
+                    .AppendZeroIfFloat(setting.SettingType);
                 var result = GUILayout.TextField(
                     text,
                     GUILayout.Width(rightColumnWidth),
@@ -434,7 +436,7 @@ namespace ConfigurationManager.Implementations
             }
             else
             {
-                var rawValue = setting.Get();
+                var rawValue = setting.GetValue();
                 var value =
                     rawValue == null
                         ? "NULL"
@@ -576,7 +578,7 @@ namespace ConfigurationManager.Implementations
             }
             else
             {
-                if (GUILayout.Button(setting.Get().ToString(), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button(setting.GetValue().ToString(), GUILayout.ExpandWidth(true)))
                 {
                     _currentKeyboardShortcutToSet = setting;
                 }
@@ -591,7 +593,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawVector2(SettingEntryBase obj)
         {
-            var setting = (Vector2)obj.Get();
+            var setting = (Vector2)obj.GetValue();
             var copy = setting;
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
@@ -603,7 +605,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawVector3(SettingEntryBase obj)
         {
-            var setting = (Vector3)obj.Get();
+            var setting = (Vector3)obj.GetValue();
             var copy = setting;
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
@@ -616,7 +618,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawVector4(SettingEntryBase obj)
         {
-            var setting = (Vector4)obj.Get();
+            var setting = (Vector4)obj.GetValue();
             var copy = setting;
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
@@ -630,7 +632,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawQuaternion(SettingEntryBase obj)
         {
-            var setting = (Quaternion)obj.Get();
+            var setting = (Quaternion)obj.GetValue();
             var copy = setting;
             setting.x = DrawSingleVectorSlider(setting.x, "X");
             setting.y = DrawSingleVectorSlider(setting.y, "Y");
@@ -661,7 +663,7 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawColor(SettingEntryBase obj)
         {
-            var colorValue = (Color)obj.Get();
+            var colorValue = (Color)obj.GetValue();
 
             GUI.changed = false;
 

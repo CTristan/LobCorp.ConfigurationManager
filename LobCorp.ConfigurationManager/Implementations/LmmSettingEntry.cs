@@ -107,7 +107,7 @@ namespace ConfigurationManager.Implementations
         public override Type SettingType => Entry.SettingType;
 
         /// <inheritdoc />
-        public override object Get()
+        public override object GetValue()
         {
             return Entry.BoxedValue;
         }
