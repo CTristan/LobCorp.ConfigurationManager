@@ -93,6 +93,11 @@ namespace ConfigurationManager.Input
         /// <param name="str">Serialized key combination string (e.g. "LeftControl + F1") to parse.</param>
         public static KeyboardShortcut Deserialize(string str)
         {
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
             try
             {
                 var parts = str.Split(

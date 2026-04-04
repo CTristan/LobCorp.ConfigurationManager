@@ -2,6 +2,7 @@
 
 #region
 
+using System;
 using System.IO;
 using AwesomeAssertions;
 using ConfigurationManager.Config;
@@ -226,6 +227,15 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             var setting = new LmmSettingEntry(entry, pluginInfo, null);
 
             setting.DefaultValue.Should().Be(42);
+        }
+
+        [Fact]
+        public void Constructor_NullEntry_ShouldThrowArgumentNullException()
+        {
+            var pluginInfo = new PluginInfo("test", "TestMod", "1.0");
+            Action act = () => _ = new LmmSettingEntry(null!, pluginInfo, null);
+
+            act.Should().Throw<ArgumentNullException>();
         }
     }
 }

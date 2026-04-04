@@ -286,6 +286,11 @@ namespace ConfigurationManager.Config
         /// <param name="type">The CLR type to look up</param>
         public static TypeConverter GetConverter(Type type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if (Converters.TryGetValue(type, out var converter))
             {
                 return converter;

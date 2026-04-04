@@ -95,6 +95,14 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void Deserialize_NullString_ShouldThrowArgumentNullException()
+        {
+            Action act = () => KeyboardShortcut.Deserialize(null!);
+
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void Constructor_NoneWithModifiers_ShouldThrowArgumentException()
         {
             Action act = () => _ = new KeyboardShortcut(KeyCode.None, KeyCode.LeftControl);

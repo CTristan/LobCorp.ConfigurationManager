@@ -184,12 +184,12 @@ namespace ConfigurationManager.Implementations
         {
             if (settingType == null)
             {
-                throw new ArgumentNullException("settingType");
+                throw new ArgumentNullException(nameof(settingType));
             }
 
             if (onGuiDrawer == null)
             {
-                throw new ArgumentNullException("onGuiDrawer");
+                throw new ArgumentNullException(nameof(onGuiDrawer));
             }
 
             if (SettingFieldDrawer.SettingDrawHandlers.ContainsKey(settingType))

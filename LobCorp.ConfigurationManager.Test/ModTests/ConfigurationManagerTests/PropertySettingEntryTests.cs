@@ -2,7 +2,9 @@
 
 #region
 
+using System;
 using System.ComponentModel;
+using System.Reflection;
 using AwesomeAssertions;
 using ConfigurationManager.Implementations;
 using Xunit;
@@ -122,6 +124,15 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             // PropertySettingEntry sets ReadOnly = settingProp.CanWrite
             writableEntry.ReadOnly.Should().BeTrue();
             readOnlyEntry.ReadOnly.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Constructor_NullProperty_ShouldThrowArgumentNullException()
+        {
+            var obj = new TestObject();
+            Action act = () => _ = new PropertySettingEntry(obj, (PropertyInfo)null!, null);
+
+            act.Should().Throw<ArgumentNullException>();
         }
     }
 }

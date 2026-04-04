@@ -168,6 +168,14 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void GetConverter_NullType_ShouldThrowArgumentNullException()
+        {
+            Action act = () => ConfigConverter.GetConverter(null!);
+
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void GetConverter_EnumType_ShouldHandleGenerically()
         {
             var converter = ConfigConverter.GetConverter(typeof(StringComparison));

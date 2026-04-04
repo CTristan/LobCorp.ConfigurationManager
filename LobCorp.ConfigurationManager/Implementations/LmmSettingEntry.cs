@@ -30,7 +30,7 @@ namespace ConfigurationManager.Implementations
             object pluginInstance
         )
         {
-            Entry = entry;
+            Entry = entry ?? throw new ArgumentNullException(nameof(entry));
 
             DispName = entry.Definition.Key;
             Category = entry.Definition.Section;

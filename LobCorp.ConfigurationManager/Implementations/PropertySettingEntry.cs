@@ -24,6 +24,11 @@ namespace ConfigurationManager.Implementations
             object pluginInstance
         )
         {
+            if (settingProp == null)
+            {
+                throw new ArgumentNullException(nameof(settingProp));
+            }
+
             SetFromAttributes(settingProp.GetCustomAttributes(false), pluginInstance);
             if (Browsable == null)
             {

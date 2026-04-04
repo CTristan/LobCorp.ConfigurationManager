@@ -2,8 +2,10 @@
 
 #region
 
+using System;
 using AwesomeAssertions;
 using ConfigurationManager.Utilities;
+using UnityEngine;
 using Xunit;
 
 #endregion
@@ -55,6 +57,14 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void AppendZero_Null_ShouldThrowArgumentNullException()
+        {
+            Action act = () => ((string)null!).AppendZero();
+
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
         public void AppendZeroIfFloat_FloatType_ShouldAppend()
         {
             "42".AppendZeroIfFloat(typeof(float)).Should().Be("42.0");
@@ -76,6 +86,22 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void AppendZeroIfFloat_IntType_ShouldReturnUnchanged()
         {
             "42".AppendZeroIfFloat(typeof(int)).Should().Be("42");
+        }
+
+        [Fact]
+        public void FillTexture_NullTexture_ShouldThrowArgumentNullException()
+        {
+            Action act = () => ((Texture2D)null!).FillTexture(Color.white);
+
+            act.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void FillTextureCheckerboard_NullTexture_ShouldThrowArgumentNullException()
+        {
+            Action act = () => ((Texture2D)null!).FillTextureCheckerboard();
+
+            act.Should().Throw<ArgumentNullException>();
         }
     }
 }

@@ -52,6 +52,11 @@ namespace ConfigurationManager.Utilities
         /// <param name="s">The numeric string to check</param>
         public static string AppendZero(this string s)
         {
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
             return !s.Contains(".") ? s + ".0" : s;
         }
 
@@ -77,6 +82,11 @@ namespace ConfigurationManager.Utilities
         )]
         public static void FillTexture(this Texture2D tex, Color color)
         {
+            if (tex == null)
+            {
+                throw new ArgumentNullException(nameof(tex));
+            }
+
             if (color.a < 1f)
             {
                 for (var x = 0; x < tex.width; x++)
@@ -113,6 +123,11 @@ namespace ConfigurationManager.Utilities
         )]
         public static void FillTextureCheckerboard(this Texture2D tex)
         {
+            if (tex == null)
+            {
+                throw new ArgumentNullException(nameof(tex));
+            }
+
             for (var x = 0; x < tex.width; x++)
             {
                 for (var y = 0; y < tex.height; y++)
