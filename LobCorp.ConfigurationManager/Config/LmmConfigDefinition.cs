@@ -31,8 +31,7 @@ namespace ConfigurationManager.Config
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            var other = obj as LmmConfigDefinition;
-            if (other == null)
+            if (!(obj is LmmConfigDefinition other))
             {
                 return false;
             }

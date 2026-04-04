@@ -161,12 +161,9 @@ namespace ConfigurationManager.Implementations
                         _previousCursorVisible = (bool)_curVisible.GetValue(null, null);
                     }
                 }
-                else
+                else if (!_previousCursorVisible || _previousCursorLockState != 0)
                 {
-                    if (!_previousCursorVisible || _previousCursorLockState != 0)
-                    {
-                        SetUnlockCursor(_previousCursorLockState, _previousCursorVisible);
-                    }
+                    SetUnlockCursor(_previousCursorLockState, _previousCursorVisible);
                 }
                 DisplayingWindowChanged?.Invoke(this, new ValueChangedEventArgs<bool>(value));
             }
@@ -373,7 +370,7 @@ namespace ConfigurationManager.Implementations
                 var newRect = GUILayout.Window(
                     WindowId,
                     SettingWindowRect,
-                    (GUI.WindowFunction)SettingsWindow,
+                    SettingsWindow,
                     "Plugin / mod settings"
                 );
 

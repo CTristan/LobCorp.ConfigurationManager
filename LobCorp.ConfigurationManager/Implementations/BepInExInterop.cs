@@ -350,7 +350,6 @@ namespace ConfigurationManager.Implementations
     internal sealed class BepInExSettingEntry : SettingEntryBase
     {
         private readonly object _configEntry;
-        private readonly Type _settingType;
         private readonly PropertyInfo _boxedValueProperty;
 
         public BepInExSettingEntry(
@@ -364,7 +363,7 @@ namespace ConfigurationManager.Implementations
         )
         {
             _configEntry = configEntry;
-            _settingType = settingType;
+            SettingType = settingType;
             _boxedValueProperty = configEntry.GetType().GetProperty("BoxedValue");
 
             DispName = key;
@@ -374,7 +373,7 @@ namespace ConfigurationManager.Implementations
             PluginInfo = pluginInfo;
         }
 
-        public override Type SettingType => _settingType;
+        public override Type SettingType { get; }
 
         public override object GetValue()
         {

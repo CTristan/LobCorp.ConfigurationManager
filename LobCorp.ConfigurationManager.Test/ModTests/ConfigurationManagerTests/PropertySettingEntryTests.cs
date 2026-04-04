@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Reflection;
 using AwesomeAssertions;
 using ConfigurationManager.Implementations;
 using Xunit;
@@ -130,7 +129,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Constructor_NullProperty_ShouldThrowArgumentNullException()
         {
             var obj = new TestObject();
-            Action act = () => _ = new PropertySettingEntry(obj, (PropertyInfo)null!, null);
+            Action act = () => _ = new PropertySettingEntry(obj, null!, null);
 
             act.Should().Throw<ArgumentNullException>();
         }

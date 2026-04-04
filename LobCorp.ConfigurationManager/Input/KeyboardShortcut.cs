@@ -12,7 +12,7 @@ namespace ConfigurationManager.Input
     /// A keyboard shortcut that can be used in Update method to check if user presses a key combo.
     /// The shortcut is only triggered when the user presses the exact combination.
     /// </summary>
-    public struct KeyboardShortcut : IEquatable<KeyboardShortcut>
+    public readonly struct KeyboardShortcut : IEquatable<KeyboardShortcut>
     {
         /// <summary>
         /// Shortcut that never triggers.

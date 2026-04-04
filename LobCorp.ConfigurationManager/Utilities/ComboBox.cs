@@ -49,13 +49,13 @@ namespace ConfigurationManager.Utilities
             var controlID = GUIUtility.GetControlID(FocusType.Passive);
 
             var currentMousePosition = Vector2.zero;
-            if (Event.current.GetTypeForControl(controlID) == EventType.MouseUp)
+            if (
+                Event.current.GetTypeForControl(controlID) == EventType.MouseUp
+                && isClickedComboButton
+            )
             {
-                if (isClickedComboButton)
-                {
-                    done = true;
-                    currentMousePosition = Event.current.mousePosition;
-                }
+                done = true;
+                currentMousePosition = Event.current.mousePosition;
             }
 
             if (GUI.Button(Rect, ButtonContent, buttonStyle))

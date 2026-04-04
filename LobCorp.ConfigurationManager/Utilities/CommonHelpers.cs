@@ -276,13 +276,14 @@ namespace ConfigurationManager.Utilities
         )]
         public static void OpenWebsite(string url)
         {
+            if (string.IsNullOrEmpty(url))
+            {
+                SimpleLogger.LogWarning("Failed to open URL - URL is null or empty");
+                return;
+            }
+
             try
             {
-                if (string.IsNullOrEmpty(url))
-                {
-                    throw new Exception("Empty URL");
-                }
-
                 _ = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
             catch (Exception ex)

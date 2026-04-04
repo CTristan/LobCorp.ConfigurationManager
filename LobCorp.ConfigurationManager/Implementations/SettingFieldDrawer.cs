@@ -521,11 +521,10 @@ namespace ConfigurationManager.Implementations
             }
             else
             {
-                var acceptableValues = (IList)(
+                var acceptableValues =
                     setting.AcceptableValues?.Count > 1
                         ? (IList)setting.AcceptableValues
-                        : Enum.GetValues(setting.SettingType)
-                );
+                        : Enum.GetValues(setting.SettingType);
                 DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
 
                 if (

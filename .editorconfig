@@ -5,26 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 2 - Exception type System.Exception is not sufficiently specific
-dotnet_diagnostic.CA2201.severity = none
-# Count: 2 - Implement the equality operators and make their behavior identical to that of the Equals method
-dotnet_diagnostic.CA2231.severity = none
-# Count: 2 - Cast is redundant.
-dotnet_diagnostic.IDE0004.severity = none
-# Count: 2 - Use pattern matching
-dotnet_diagnostic.IDE0019.severity = none
-# Count: 2 - Lambda expression can be removed
-dotnet_diagnostic.IDE0200.severity = none
-# Count: 2 - Struct can be made 'readonly'
-dotnet_diagnostic.IDE0250.severity = none
-# Count: 2 - Merge 'else' with nested 'if'
-dotnet_diagnostic.RCS1006.severity = none
-# Count: 2 - Use compound assignment
-dotnet_diagnostic.RCS1058.severity = none
-# Count: 2 - Merge 'if' with nested 'if'
-dotnet_diagnostic.RCS1061.severity = none
-# Count: 2 - Use auto-implemented property
-dotnet_diagnostic.RCS1085.severity = none
 # Count: 2 - Declare 'ConfigurationManagerAttributes' inside namespace
 dotnet_diagnostic.RCS1110.severity = none
 # Count: 2 - Use string.Length instead of comparison with empty string
