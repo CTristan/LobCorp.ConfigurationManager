@@ -55,8 +55,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Bind_ShouldLoadSavedValueFromExistingConfigFile()
         {
             var content = new StringBuilder();
-            content.AppendLine("[General]");
-            content.AppendLine("Volume = 80");
+            content.AppendLine("[General]").AppendLine("Volume = 80");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             var configFile = new LmmConfigFile(_tempPath);
@@ -86,8 +85,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         {
             // Write an initial config with a value
             var content = new StringBuilder();
-            content.AppendLine("[General]");
-            content.AppendLine("Volume = 80");
+            content.AppendLine("[General]").AppendLine("Volume = 80");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             // Bind will load the saved value (80), which sets _disableSaving temporarily.
@@ -109,8 +107,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             // Manually overwrite file
             var content = new StringBuilder();
-            content.AppendLine("[General]");
-            content.AppendLine("Volume = 99");
+            content.AppendLine("[General]").AppendLine("Volume = 99");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             configFile.Reload();
@@ -134,13 +131,14 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void ReadValueFromFile_ShouldSkipCommentsAndEmptyLines()
         {
             var content = new StringBuilder();
-            content.AppendLine("## Settings file");
-            content.AppendLine("");
-            content.AppendLine("[General]");
-            content.AppendLine("");
-            content.AppendLine("## The volume level");
-            content.AppendLine("## Setting type: Int32");
-            content.AppendLine("Volume = 42");
+            content
+                .AppendLine("## Settings file")
+                .AppendLine("")
+                .AppendLine("[General]")
+                .AppendLine("")
+                .AppendLine("## The volume level")
+                .AppendLine("## Setting type: Int32")
+                .AppendLine("Volume = 42");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             var configFile = new LmmConfigFile(_tempPath);
@@ -153,8 +151,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Bind_StringType_ShouldLoadSavedValue()
         {
             var content = new StringBuilder();
-            content.AppendLine("[General]");
-            content.AppendLine("Name = Hello World");
+            content.AppendLine("[General]").AppendLine("Name = Hello World");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             var configFile = new LmmConfigFile(_tempPath);
@@ -167,8 +164,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Bind_BoolType_ShouldLoadSavedValue()
         {
             var content = new StringBuilder();
-            content.AppendLine("[General]");
-            content.AppendLine("Enabled = True");
+            content.AppendLine("[General]").AppendLine("Enabled = True");
             File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
 
             var configFile = new LmmConfigFile(_tempPath);
