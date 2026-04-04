@@ -43,6 +43,8 @@ namespace ConfigurationManager
         /// <summary>
         /// Custom hotkey drawer delegate.
         /// </summary>
+        /// <param name="setting">The config entry being drawn.</param>
+        /// <param name="isCurrentlyAcceptingInput">Ref flag indicating whether the control is actively capturing keyboard input.</param>
         public delegate void CustomHotkeyDrawerFunc(
             LmmConfigEntryBase setting,
             ref bool isCurrentlyAcceptingInput
@@ -121,6 +123,7 @@ namespace ConfigurationManager
         /// <summary>
         /// Set the value of this setting.
         /// </summary>
+        /// <param name="newVal">The new value to assign to this setting (ignored if the setting is read-only).</param>
         public void Set(object newVal)
         {
             if (ReadOnly != true)
@@ -132,6 +135,7 @@ namespace ConfigurationManager
         /// <summary>
         /// Implementation of Set.
         /// </summary>
+        /// <param name="newVal">The new value to assign, already validated as writable by the caller.</param>
         protected abstract void SetValue(object newVal);
 
         /// <summary>

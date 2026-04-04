@@ -130,6 +130,8 @@ namespace ConfigurationManager
         /// <summary>
         /// Parse a config.cfg file and create read-only setting entries from it.
         /// </summary>
+        /// <param name="configPath">Absolute path to the config.cfg file to parse.</param>
+        /// <param name="modName">Mod display name used to identify settings from this file.</param>
         private static List<SettingEntryBase> ParseConfigFile(string configPath, string modName)
         {
             var entries = new List<SettingEntryBase>();

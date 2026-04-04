@@ -51,6 +51,8 @@ internal sealed class ConfigurationManagerAttributes
     /// <summary>
     /// Custom setting draw action that allows polling keyboard input with the Input class.
     /// </summary>
+    /// <param name="setting">The config entry being drawn in the settings window.</param>
+    /// <param name="isCurrentlyAcceptingInput">Ref flag indicating whether the control is actively capturing keyboard input.</param>
     public delegate void CustomHotkeyDrawerFunc(
         ConfigurationManager.Config.LmmConfigEntryBase setting,
         ref bool isCurrentlyAcceptingInput

@@ -22,6 +22,8 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Get or create a config file for a mod.
         /// </summary>
+        /// <param name="modId">Unique mod identifier, used as the subdirectory name under BaseMods.</param>
+        /// <param name="modName">Human-readable mod name for display in the settings UI.</param>
         public static LmmConfigFile GetConfigFile(string modId, string modName)
         {
             if (RegisteredMods.TryGetValue(modId, out var mod))
@@ -48,6 +50,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting for a mod.
         /// </summary>
+        /// <param name="modId">Unique mod identifier.</param>
+        /// <param name="modName">Human-readable mod name for display.</param>
+        /// <param name="section">Config section name to group the setting under.</param>
+        /// <param name="key">Setting key within the section.</param>
+        /// <param name="defaultValue">Default value used when no saved value exists.</param>
+        /// <param name="description">Optional plain-text description shown in the settings UI.</param>
         public static LmmConfigEntry<T> Register<T>(
             string modId,
             string modName,
@@ -64,6 +72,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Register a single setting with full description.
         /// </summary>
+        /// <param name="modId">Unique mod identifier.</param>
+        /// <param name="modName">Human-readable mod name for display.</param>
+        /// <param name="section">Config section name to group the setting under.</param>
+        /// <param name="key">Setting key within the section.</param>
+        /// <param name="defaultValue">Default value used when no saved value exists.</param>
+        /// <param name="description">Full description including acceptable value constraints.</param>
         public static LmmConfigEntry<T> Register<T>(
             string modId,
             string modName,

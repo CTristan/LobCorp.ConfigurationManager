@@ -49,6 +49,8 @@ namespace ConfigurationManager
         /// <summary>
         /// Create a new keyboard shortcut.
         /// </summary>
+        /// <param name="mainKey">Primary key of the shortcut (must not be None if modifiers are specified).</param>
+        /// <param name="modifiers">Zero or more modifier keys that must be held alongside the main key.</param>
         public KeyboardShortcut(KeyCode mainKey, params KeyCode[] modifiers)
             : this(new[] { mainKey }.Concat(modifiers).ToArray())
         {
@@ -93,6 +95,7 @@ namespace ConfigurationManager
         /// <summary>
         /// Attempt to deserialize key combination from the string.
         /// </summary>
+        /// <param name="str">Serialized key combination string (e.g. "LeftControl + F1") to parse.</param>
         public static KeyboardShortcut Deserialize(string str)
         {
             try

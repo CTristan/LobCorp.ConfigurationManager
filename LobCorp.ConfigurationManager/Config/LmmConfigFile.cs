@@ -34,6 +34,10 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Bind a config entry, creating it if it doesn't exist, or reading its value from the config file.
         /// </summary>
+        /// <param name="section">Config section name.</param>
+        /// <param name="key">Setting key within the section.</param>
+        /// <param name="defaultValue">Default value used when no saved value exists.</param>
+        /// <param name="description">Optional plain-text description shown in the settings UI.</param>
         public LmmConfigEntry<T> Bind<T>(
             string section,
             string key,
@@ -52,6 +56,10 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Bind a config entry with a full description.
         /// </summary>
+        /// <param name="section">Config section name.</param>
+        /// <param name="key">Setting key within the section.</param>
+        /// <param name="defaultValue">Default value used when no saved value exists.</param>
+        /// <param name="description">Full description including acceptable value constraints.</param>
         public LmmConfigEntry<T> Bind<T>(
             string section,
             string key,

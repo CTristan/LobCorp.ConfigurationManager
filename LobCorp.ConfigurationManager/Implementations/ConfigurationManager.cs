@@ -183,6 +183,8 @@ namespace ConfigurationManager
         /// <summary>
         /// Register a custom setting drawer for a given type.
         /// </summary>
+        /// <param name="settingType">The setting value type this drawer handles.</param>
+        /// <param name="onGuiDrawer">ImGUI draw callback invoked when rendering settings of this type.</param>
         public static void RegisterCustomSettingDrawer(
             Type settingType,
             Action<SettingEntryBase> onGuiDrawer
