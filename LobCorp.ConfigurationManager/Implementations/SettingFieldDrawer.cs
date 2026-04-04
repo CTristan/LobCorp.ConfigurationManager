@@ -237,10 +237,14 @@ namespace ConfigurationManager.Implementations
 
         private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
         {
-            var currentValue = Convert.ToInt64(setting.Get());
+            var currentValue = Convert.ToInt64(setting.Get(), CultureInfo.InvariantCulture);
             var allValues = enumValues
                 .Cast<Enum>()
-                .Select(x => new { name = x.ToString(), val = Convert.ToInt64(x) })
+                .Select(x => new
+                {
+                    name = x.ToString(),
+                    val = Convert.ToInt64(x, CultureInfo.InvariantCulture),
+                })
                 .ToArray();
 
             GUILayout.BeginVertical(GUILayout.MaxWidth(maxWidth));
@@ -471,7 +475,7 @@ namespace ConfigurationManager.Implementations
 
             try
             {
-                _ = Convert.ChangeType(value, type);
+                _ = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
                 _canCovertCache[type] = true;
                 return true;
             }

@@ -3,6 +3,7 @@
 #region
 
 using System;
+using System.Globalization;
 using AwesomeAssertions;
 using ConfigurationManager.Config;
 using ConfigurationManager.Input;
@@ -222,7 +223,10 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             {
                 ConvertToString = (o, _) => "custom:" + o,
                 ConvertToObject = (s, _) =>
-                    int.Parse(s.Replace("custom:", "", StringComparison.Ordinal)),
+                    int.Parse(
+                        s.Replace("custom:", "", StringComparison.Ordinal),
+                        CultureInfo.InvariantCulture
+                    ),
             };
 
             try
