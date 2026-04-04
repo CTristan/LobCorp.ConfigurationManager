@@ -196,7 +196,7 @@ namespace ConfigurationManager.Input
             return MainKey != KeyCode.None
                 ? _allKeys.Aggregate(
                     _allKeys.Length,
-                    (current, item) => unchecked(current * 31 + (int)item)
+                    (current, item) => unchecked((current * 31) + (int)item)
                 )
                 : 0;
         }

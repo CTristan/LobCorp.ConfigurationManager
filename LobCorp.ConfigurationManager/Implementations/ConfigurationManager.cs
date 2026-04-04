@@ -459,8 +459,10 @@ namespace ConfigurationManager.Implementations
                 {
                     var visible =
                         plugin.Height == 0
-                        || currentHeight + plugin.Height >= scrollPosition
-                            && currentHeight <= scrollPosition + scrollHeight;
+                        || (
+                            currentHeight + plugin.Height >= scrollPosition
+                            && currentHeight <= scrollPosition + scrollHeight
+                        );
 
                     if (visible)
                     {

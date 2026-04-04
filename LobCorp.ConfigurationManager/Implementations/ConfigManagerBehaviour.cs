@@ -49,7 +49,7 @@ namespace ConfigurationManager.Implementations
             );
 
             var buttonRect = new Rect(
-                rect.x + (rect.width - 100f) / 2f,
+                rect.x + ((rect.width - 100f) / 2f),
                 rect.y + rect.height - 40f,
                 100f,
                 30f

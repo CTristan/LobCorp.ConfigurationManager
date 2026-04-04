@@ -117,7 +117,7 @@ namespace ConfigurationManager.Utilities
             {
                 for (var y = 0; y < tex.height; y++)
                 {
-                    tex.SetPixel(x, y, (x / 10 + y / 10) % 2 == 1 ? Color.black : Color.white);
+                    tex.SetPixel(x, y, ((x / 10) + (y / 10)) % 2 == 1 ? Color.black : Color.white);
                 }
             }
 
