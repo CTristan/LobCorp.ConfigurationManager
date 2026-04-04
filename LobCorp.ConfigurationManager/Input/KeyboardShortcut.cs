@@ -79,8 +79,7 @@ namespace ConfigurationManager.Input
         /// <summary>
         /// Main key of the key combination.
         /// </summary>
-        public KeyCode MainKey =>
-            _allKeys != null && _allKeys.Length > 0 ? _allKeys[0] : KeyCode.None;
+        public KeyCode MainKey => _allKeys?.Length > 0 ? _allKeys[0] : KeyCode.None;
 
         /// <summary>
         /// Modifiers of the key combination, if any.

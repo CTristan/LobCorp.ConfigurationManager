@@ -513,7 +513,7 @@ namespace ConfigurationManager.Implementations
             else
             {
                 var acceptableValues =
-                    setting.AcceptableValues != null && setting.AcceptableValues.Length > 1
+                    setting.AcceptableValues?.Length > 1
                         ? setting.AcceptableValues
                         : Enum.GetValues(setting.SettingType);
                 DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
