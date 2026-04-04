@@ -373,10 +373,7 @@ namespace ConfigurationManager
             PluginInfo = pluginInfo;
         }
 
-        public override Type SettingType
-        {
-            get { return _settingType; }
-        }
+        public override Type SettingType => _settingType;
 
         public override object Get()
         {

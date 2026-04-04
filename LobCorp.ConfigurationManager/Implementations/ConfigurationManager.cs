@@ -57,10 +57,7 @@ namespace ConfigurationManager
         /// <summary>
         /// Window is visible and blocking full screen.
         /// </summary>
-        public bool IsWindowFullscreen
-        {
-            get { return DisplayingWindow && !_windowWasMoved; }
-        }
+        public bool IsWindowFullscreen => DisplayingWindow && !_windowWasMoved;
 
         private bool _tipsPluginHeaderWasClicked,
             _tipsWindowWasMoved;

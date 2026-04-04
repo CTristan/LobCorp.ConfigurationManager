@@ -27,10 +27,7 @@ namespace ConfigurationManager
         private static ConfigurationManager _instance;
 
         private static SettingEntryBase _currentKeyboardShortcutToSet;
-        public static bool SettingKeyboardShortcut
-        {
-            get { return _currentKeyboardShortcutToSet != null; }
-        }
+        public static bool SettingKeyboardShortcut => _currentKeyboardShortcutToSet != null;
 
         static SettingFieldDrawer()
         {

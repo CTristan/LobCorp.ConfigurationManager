@@ -95,10 +95,7 @@ namespace ConfigurationManager
         }
 
         /// <inheritdoc />
-        public override Type SettingType
-        {
-            get { return Entry.SettingType; }
-        }
+        public override Type SettingType => Entry.SettingType;
 
         /// <inheritdoc />
         public override object Get()

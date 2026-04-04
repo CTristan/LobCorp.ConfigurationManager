@@ -24,10 +24,7 @@ namespace ConfigurationManager.Config
         }
 
         /// <inheritdoc />
-        public override Type SettingType
-        {
-            get { return typeof(T); }
-        }
+        public override Type SettingType => typeof(T);
 
         /// <summary>
         /// The typed setting value; triggers auto-save and change event on set

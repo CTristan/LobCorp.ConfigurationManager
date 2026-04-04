@@ -31,10 +31,7 @@ namespace ConfigurationManager.Config
         }
 
         /// <inheritdoc />
-        public override Type ValueType
-        {
-            get { return typeof(T); }
-        }
+        public override Type ValueType => typeof(T);
 
         /// <summary>
         /// Checks whether a value is contained in the acceptable list.

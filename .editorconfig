@@ -5,10 +5,6 @@ file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
 
 # Temporary Suppressions, remove this file when all cleared
 
-# Count: 20 - Use expression body for property
-dotnet_diagnostic.IDE0025.severity = none
-# Count: 20 - 'new' expression can be simplified
-dotnet_diagnostic.IDE0090.severity = none
 # Count: 20 - Namespace "ConfigurationManager" does not match folder structure, expected "ConfigurationManager.Implementations"
 dotnet_diagnostic.IDE0130.severity = none
 # Count: 20 - Collection initialization can be simplified
