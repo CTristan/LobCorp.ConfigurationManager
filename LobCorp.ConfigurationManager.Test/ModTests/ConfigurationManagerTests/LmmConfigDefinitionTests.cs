@@ -40,11 +40,11 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void Equals_Null_ShouldReturnFalse()
+        public void Equals_NonDefinitionObject_ShouldReturnFalse()
         {
             var a = new LmmConfigDefinition("Section", "Key");
 
-            a.Equals(null).Should().BeFalse();
+            a.Equals(new object()).Should().BeFalse();
         }
 
         [Fact]

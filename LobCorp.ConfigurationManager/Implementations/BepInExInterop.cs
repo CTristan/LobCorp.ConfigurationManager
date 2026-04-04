@@ -208,8 +208,13 @@ namespace ConfigurationManager.Implementations
                         {
                             try
                             {
-                                var settingEntry = CreateBepInExSettingEntry(entryObj, pluginInfo);
-                                if (settingEntry != null)
+                                if (
+                                    TryCreateBepInExSettingEntry(
+                                        entryObj,
+                                        pluginInfo,
+                                        out var settingEntry
+                                    )
+                                )
                                 {
                                     results.Add(settingEntry);
                                 }
@@ -285,11 +290,13 @@ namespace ConfigurationManager.Implementations
             return result;
         }
 
-        private static SettingEntryBase CreateBepInExSettingEntry(
+        private static bool TryCreateBepInExSettingEntry(
             object configEntryBase,
-            PluginInfo pluginInfo
+            PluginInfo pluginInfo,
+            out SettingEntryBase settingEntry
         )
         {
+            settingEntry = null;
             var definition = _configEntryDefinitionProperty?.GetValue(configEntryBase, null);
             var settingType =
                 _configEntrySettingTypeProperty != null
@@ -299,7 +306,7 @@ namespace ConfigurationManager.Implementations
 
             if (definition == null || settingType == null)
             {
-                return null;
+                return false;
             }
 
             var section =
@@ -320,7 +327,7 @@ namespace ConfigurationManager.Implementations
                     ?? "";
             }
 
-            return new BepInExSettingEntry(
+            settingEntry = new BepInExSettingEntry(
                 configEntryBase,
                 settingType,
                 section,
@@ -329,6 +336,8 @@ namespace ConfigurationManager.Implementations
                 defaultValue,
                 pluginInfo
             );
+
+            return true;
         }
     }
 
