@@ -38,7 +38,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_NoAttributes_ShouldLeaveDefaultValues()
         {
             var obj = new PlainPropertyHolder();
-            var prop = typeof(PlainPropertyHolder).GetProperty("Plain")!;
+            var prop = typeof(PlainPropertyHolder).GetProperty("Plain");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -49,7 +49,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_DisplayNameAttribute_ShouldSetDispName()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -60,7 +60,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_CategoryAttribute_ShouldSetCategory()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -71,7 +71,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_DescriptionAttribute_ShouldSetDescription()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -82,7 +82,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_DefaultValueAttribute_ShouldSetDefaultValue()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -93,7 +93,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_ReadOnlyAttribute_ShouldSetReadOnly()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -106,7 +106,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SetFromAttributes_BrowsableAttribute_ShouldSetBrowsable()
         {
             var obj = new AttributedPropertyHolder();
-            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed")!;
+            var prop = typeof(AttributedPropertyHolder).GetProperty("FullyAttributed");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -119,7 +119,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             // PropertySettingEntry sets ReadOnly = CanWrite for writable properties (true)
             // When ReadOnly == true, Set() should not call SetValue
             var obj = new PlainPropertyHolder { Plain = "original" };
-            var prop = typeof(PlainPropertyHolder).GetProperty("Plain")!;
+            var prop = typeof(PlainPropertyHolder).GetProperty("Plain");
             var entry = new PropertySettingEntry(obj, prop, null);
 
             // ReadOnly is true (CanWrite=true), so Set should be blocked
@@ -135,7 +135,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             // When ReadOnly == false (not true), Set() should call SetValue
             // But a read-only property can't actually be set... so this tests the guard logic
             var obj = new NonWritableHolder("original");
-            var prop = typeof(NonWritableHolder).GetProperty("ReadOnlyValue")!;
+            var prop = typeof(NonWritableHolder).GetProperty("ReadOnlyValue");
             var entry = new PropertySettingEntry(obj, prop, null);
 
             // ReadOnly = false (CanWrite=false), so Set() will try to call SetValue

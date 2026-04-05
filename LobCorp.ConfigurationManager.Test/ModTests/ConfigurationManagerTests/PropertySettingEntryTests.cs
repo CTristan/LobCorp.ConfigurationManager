@@ -37,7 +37,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void GetValue_ShouldDelegateToPropertyInfoGetValue()
         {
             var obj = new TestObject { ReadWriteProperty = "hello" };
-            var prop = typeof(TestObject).GetProperty("ReadWriteProperty")!;
+            var prop = typeof(TestObject).GetProperty("ReadWriteProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -48,7 +48,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void DispName_ShouldFallBackToPropertyName_WhenNotSetViaAttributes()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("ReadWriteProperty")!;
+            var prop = typeof(TestObject).GetProperty("ReadWriteProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -59,7 +59,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void DispName_ShouldUseDisplayNameAttribute_WhenSet()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("NamedProperty")!;
+            var prop = typeof(TestObject).GetProperty("NamedProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -70,7 +70,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Browsable_ShouldDefaultToTrue_WhenCanReadAndCanWrite()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("ReadWriteProperty")!;
+            var prop = typeof(TestObject).GetProperty("ReadWriteProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -81,7 +81,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Browsable_ShouldDefaultToFalse_WhenReadOnly()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("ReadOnlyProperty")!;
+            var prop = typeof(TestObject).GetProperty("ReadOnlyProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -92,7 +92,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Browsable_ShouldRespectBrowsableAttribute()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("HiddenProperty")!;
+            var prop = typeof(TestObject).GetProperty("HiddenProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -103,7 +103,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void SettingType_ShouldReturnPropertyType()
         {
             var obj = new TestObject();
-            var prop = typeof(TestObject).GetProperty("NamedProperty")!;
+            var prop = typeof(TestObject).GetProperty("NamedProperty");
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
@@ -114,8 +114,8 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void ReadOnly_ShouldBeSetToCanWrite()
         {
             var obj = new TestObject();
-            var writableProp = typeof(TestObject).GetProperty("ReadWriteProperty")!;
-            var readOnlyProp = typeof(TestObject).GetProperty("ReadOnlyProperty")!;
+            var writableProp = typeof(TestObject).GetProperty("ReadWriteProperty");
+            var readOnlyProp = typeof(TestObject).GetProperty("ReadOnlyProperty");
 
             var writableEntry = new PropertySettingEntry(obj, writableProp, null);
             var readOnlyEntry = new PropertySettingEntry(obj, readOnlyProp, null);
