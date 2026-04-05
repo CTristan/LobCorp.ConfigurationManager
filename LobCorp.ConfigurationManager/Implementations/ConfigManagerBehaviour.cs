@@ -13,14 +13,40 @@ namespace ConfigurationManager.Implementations
     public sealed class ConfigManagerBehaviour : MonoBehaviour
     {
         private static bool _warningDismissed;
+        private SettingsWindowController _controller;
+
+        private void Awake()
+        {
+            _controller = new SettingsWindowController();
+        }
+
+        private void Start()
+        {
+            _controller.Start();
+        }
+
+        private void Update()
+        {
+            _controller.Update();
+        }
+
+        private void LateUpdate()
+        {
+            _controller.LateUpdate();
+        }
 
         private void OnGUI()
         {
-            if (_warningDismissed || !DuplicateAssemblyDetector.IsDuplicateLoaded)
+            if (!_warningDismissed && DuplicateAssemblyDetector.IsDuplicateLoaded)
             {
-                return;
+                DrawDuplicateWarning();
             }
 
+            _controller.OnGUI();
+        }
+
+        private static void DrawDuplicateWarning()
+        {
             const float boxWidth = 500f;
             const float boxHeight = 200f;
             var rect = new Rect(
