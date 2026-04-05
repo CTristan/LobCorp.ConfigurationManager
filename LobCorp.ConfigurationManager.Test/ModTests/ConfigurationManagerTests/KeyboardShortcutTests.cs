@@ -97,9 +97,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         [Fact]
         public void Deserialize_NullString_ShouldThrowArgumentNullException()
         {
-#pragma warning disable IDE0370
             Action act = () => KeyboardShortcut.Deserialize(null!);
-#pragma warning restore IDE0370
 
             act.Should().Throw<ArgumentNullException>();
         }
