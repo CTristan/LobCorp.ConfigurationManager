@@ -233,7 +233,9 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Constructor_NullEntry_ShouldThrowArgumentNullException()
         {
             var pluginInfo = new PluginInfo("test", "TestMod", "1.0");
+#pragma warning disable IDE0370
             Action act = () => _ = new LmmSettingEntry(null!, pluginInfo, null);
+#pragma warning restore IDE0370
 
             act.Should().Throw<ArgumentNullException>();
         }

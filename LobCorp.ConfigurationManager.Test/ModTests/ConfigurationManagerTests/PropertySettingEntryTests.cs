@@ -129,7 +129,9 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         public void Constructor_NullProperty_ShouldThrowArgumentNullException()
         {
             var obj = new TestObject();
+#pragma warning disable IDE0370
             Action act = () => _ = new PropertySettingEntry(obj, null!, null);
+#pragma warning restore IDE0370
 
             act.Should().Throw<ArgumentNullException>();
         }

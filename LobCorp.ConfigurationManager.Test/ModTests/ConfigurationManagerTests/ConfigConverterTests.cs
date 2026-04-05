@@ -170,7 +170,9 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         [Fact]
         public void GetConverter_NullType_ShouldThrowArgumentNullException()
         {
+#pragma warning disable IDE0370
             Action act = () => ConfigConverter.GetConverter(null!);
+#pragma warning restore IDE0370
 
             act.Should().Throw<ArgumentNullException>();
         }
