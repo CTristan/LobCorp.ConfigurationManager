@@ -24,6 +24,11 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         public const string PluginId = "com.lobcorp.configurationmanager";
 
+        /// <summary>
+        /// Static accessor for external tools (e.g. LobotomyPlaywright reflect command).
+        /// </summary>
+        public static SettingsWindowController Instance { get; private set; }
+
         private static SettingFieldDrawer _fieldDrawer;
 
         private static readonly Color _advancedSettingColor = new Color(1f, 0.95f, 0.67f, 1f);
@@ -88,6 +93,7 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         public SettingsWindowController()
         {
+            Instance = this;
             _fieldDrawer = new SettingFieldDrawer(this);
 
             // Create config file for ConfigurationManager's own settings
