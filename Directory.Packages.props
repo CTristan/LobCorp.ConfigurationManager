@@ -18,10 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <GlobalPackageReference Include="LobotomyCorporation.Mods.Analyzers" Version="1.0.0-preview.6">
+    <GlobalPackageReference Include="LobotomyCorporation.Mods.Analyzers" Version="0.1.0-preview.9">
       <PrivateAssets>all</PrivateAssets>
     </GlobalPackageReference>
-    <GlobalPackageReference Include="OpenLobotomy.Standards" Version="1.0.0-preview.6">
+    <GlobalPackageReference Include="OpenLobotomy.Standards" Version="0.1.0-preview.9">
       <PrivateAssets>all</PrivateAssets>
     </GlobalPackageReference>
   </ItemGroup>
