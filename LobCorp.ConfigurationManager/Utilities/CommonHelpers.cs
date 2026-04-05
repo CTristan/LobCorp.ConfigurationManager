@@ -32,19 +32,20 @@ namespace ConfigurationManager.Utilities
                 return str;
             }
 
-            var result = str.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture);
+            var sb = new System.Text.StringBuilder(str.Length + 4);
+            _ = sb.Append(char.ToUpper(str[0], CultureInfo.CurrentCulture));
 
             for (var i = 1; i < str.Length; i++)
             {
                 if (char.IsUpper(str[i]))
                 {
-                    result += " ";
+                    _ = sb.Append(' ');
                 }
 
-                result += str[i];
+                _ = sb.Append(str[i]);
             }
 
-            return result;
+            return sb.ToString();
         }
 
         /// <summary>

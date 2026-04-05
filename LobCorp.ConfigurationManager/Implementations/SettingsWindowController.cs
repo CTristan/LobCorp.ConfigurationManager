@@ -422,7 +422,7 @@ namespace ConfigurationManager.Implementations
                         : mousePosition.y + 25;
 
                 var position = new Rect(x, y, width, height);
-                ImguiUtils.DrawContolBackground(position);
+                ImguiUtils.DrawControlBackground(position);
                 style.Draw(position, content, -1);
             }
         }

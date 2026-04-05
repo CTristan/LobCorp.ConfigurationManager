@@ -28,7 +28,7 @@ namespace ConfigurationManager.Utilities
             );
         }
 
-        public static void DrawContolBackground(Rect position)
+        public static void DrawControlBackground(Rect position)
         {
             if (!_tooltipBg)
             {

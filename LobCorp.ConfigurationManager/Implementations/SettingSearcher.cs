@@ -146,8 +146,6 @@ namespace ConfigurationManager.Implementations
             {
                 var line = rawLine.Trim();
 
-                string currentTypeName;
-                string currentDefault;
                 if (
                     line.StartsWith("[", StringComparison.Ordinal)
                     && line.EndsWith("]", StringComparison.Ordinal)
@@ -155,20 +153,14 @@ namespace ConfigurationManager.Implementations
                 {
                     currentSection = line.Substring(1, line.Length - 2);
                     currentDescription = null;
-                    currentTypeName = null;
-                    currentDefault = null;
                     continue;
                 }
 
-                if (line.StartsWith("## Setting type: ", StringComparison.Ordinal))
+                if (
+                    line.StartsWith("## Setting type: ", StringComparison.Ordinal)
+                    || line.StartsWith("## Default value: ", StringComparison.Ordinal)
+                )
                 {
-                    currentTypeName = line.Substring("## Setting type: ".Length).Trim();
-                    continue;
-                }
-
-                if (line.StartsWith("## Default value: ", StringComparison.Ordinal))
-                {
-                    currentDefault = line.Substring("## Default value: ".Length).Trim();
                     continue;
                 }
 
@@ -208,8 +200,6 @@ namespace ConfigurationManager.Implementations
                 entries.Add(settingEntry);
 
                 currentDescription = null;
-                currentTypeName = null;
-                currentDefault = null;
             }
 
             return entries;

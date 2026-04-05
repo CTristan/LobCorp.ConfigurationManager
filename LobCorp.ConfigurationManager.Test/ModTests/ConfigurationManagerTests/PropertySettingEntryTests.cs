@@ -111,7 +111,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void ReadOnly_ShouldBeSetToCanWrite()
+        public void ReadOnly_ShouldBeInverseOfCanWrite()
         {
             var obj = new TestObject();
             var writableProp = typeof(TestObject).GetProperty("ReadWriteProperty");
@@ -120,9 +120,8 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             var writableEntry = new PropertySettingEntry(obj, writableProp, null);
             var readOnlyEntry = new PropertySettingEntry(obj, readOnlyProp, null);
 
-            // PropertySettingEntry sets ReadOnly = settingProp.CanWrite
-            writableEntry.ReadOnly.Should().BeTrue();
-            readOnlyEntry.ReadOnly.Should().BeFalse();
+            writableEntry.ReadOnly.Should().BeFalse();
+            readOnlyEntry.ReadOnly.Should().BeTrue();
         }
 
         [Fact]

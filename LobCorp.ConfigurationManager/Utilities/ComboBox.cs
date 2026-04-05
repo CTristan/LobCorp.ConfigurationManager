@@ -116,7 +116,7 @@ namespace ConfigurationManager.Utilities
                         outerRectScreen.height
                     );
 
-                    ImguiUtils.DrawContolBackground(outerRectLocal);
+                    ImguiUtils.DrawControlBackground(outerRectLocal);
 
                     _scrollPosition = GUI.BeginScrollView(
                         outerRectLocal,

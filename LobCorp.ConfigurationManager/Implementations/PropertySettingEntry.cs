@@ -35,7 +35,10 @@ namespace ConfigurationManager.Implementations
                 Browsable = settingProp.CanRead && settingProp.CanWrite;
             }
 
-            ReadOnly = settingProp.CanWrite;
+            if (ReadOnly == null)
+            {
+                ReadOnly = !settingProp.CanWrite;
+            }
             Property = settingProp;
             Instance = instance;
         }

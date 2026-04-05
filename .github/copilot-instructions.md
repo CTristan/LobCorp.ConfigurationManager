@@ -17,7 +17,7 @@ dotnet build
 
 Output goes to `bin/net35/`. Dependencies in `lib/` are symlinks to `../lobotomy-corporation-mods/external/LobotomyCorp_Data/Managed/` — the game's managed assemblies plus Harmony must be present there.
 
-No test projects exist yet. The test infrastructure (xunit.v3, Moq, AwesomeAssertions) is configured in `Directory.Packages.props` for future use.
+Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAssertions). Run with `dotnet test`.
 
 ## Architecture
 
@@ -53,7 +53,7 @@ No test projects exist yet. The test infrastructure (xunit.v3, Moq, AwesomeAsser
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/nuget.yml`) packs and pushes to IllusionMods Azure DevOps NuGet feed on release publish.
+GitHub Actions workflow (`.github/workflows/ci.yml`) packs and pushes to IllusionMods Azure DevOps NuGet feed on release publish.
 
 ## Analyzers
 

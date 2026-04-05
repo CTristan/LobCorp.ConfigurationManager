@@ -97,8 +97,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             var entry = new PropertySettingEntry(obj, prop, null);
 
-            // ReadOnlyAttribute(true) is applied, then PropertySettingEntry overwrites
-            // with CanWrite (which is true). Net result: ReadOnly = true
+            // ReadOnlyAttribute(true) takes priority over CanWrite
             entry.ReadOnly.Should().BeTrue();
         }
 
@@ -114,36 +113,29 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void Set_WhenReadOnlyIsTrue_ShouldNotCallSetValue()
+        public void Set_WhenWritableProperty_ShouldCallSetValue()
         {
-            // PropertySettingEntry sets ReadOnly = CanWrite for writable properties (true)
-            // When ReadOnly == true, Set() should not call SetValue
             var obj = new PlainPropertyHolder { Plain = "original" };
             var prop = typeof(PlainPropertyHolder).GetProperty("Plain");
             var entry = new PropertySettingEntry(obj, prop, null);
 
-            // ReadOnly is true (CanWrite=true), so Set should be blocked
+            // Writable property: ReadOnly = !CanWrite = false, so Set succeeds
             entry.Set("newValue");
 
-            obj.Plain.Should().Be("original");
+            obj.Plain.Should().Be("newValue");
         }
 
         [Fact]
-        public void Set_WhenReadOnlyIsFalse_ShouldCallSetValue()
+        public void Set_WhenReadOnlyProperty_ShouldNotCallSetValue()
         {
-            // For a non-writable property, ReadOnly = CanWrite = false
-            // When ReadOnly == false (not true), Set() should call SetValue
-            // But a read-only property can't actually be set... so this tests the guard logic
             var obj = new NonWritableHolder("original");
             var prop = typeof(NonWritableHolder).GetProperty("ReadOnlyValue");
             var entry = new PropertySettingEntry(obj, prop, null);
 
-            // ReadOnly = false (CanWrite=false), so Set() will try to call SetValue
-            // But the property has no setter, so it throws
-            var act = () => entry.Set("newValue");
+            // Non-writable property: ReadOnly = !CanWrite = true, so Set is blocked
+            entry.Set("newValue");
 
-            // The property has no setter, so PropertyInfo.SetValue throws ArgumentException
-            act.Should().Throw<System.ArgumentException>();
+            obj.ReadOnlyValue.Should().Be("original");
         }
     }
 }
