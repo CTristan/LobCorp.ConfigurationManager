@@ -357,7 +357,13 @@ namespace ConfigurationManager.Implementations
                 if (
                     !OverrideHotkey
                     && Event.current.type == EventType.KeyUp
-                    && Event.current.keyCode == KeyCode.Escape
+                    && (
+                        Event.current.keyCode == KeyCode.Escape
+                        || (
+                            Event.current.keyCode == _keybind.Value.MainKey
+                            && _keybind.Value.ModifierKeyTest()
+                        )
+                    )
                 )
                 {
                     DisplayingWindow = false;
@@ -867,9 +873,9 @@ namespace ConfigurationManager.Implementations
                 return;
             }
 
-            if (_keybind.Value.IsUp())
+            if (!DisplayingWindow && _keybind.Value.IsUp())
             {
-                DisplayingWindow = !DisplayingWindow;
+                DisplayingWindow = true;
             }
         }
 

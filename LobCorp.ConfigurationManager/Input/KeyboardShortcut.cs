@@ -180,7 +180,7 @@ namespace ConfigurationManager.Input
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
             Justification = "Requires Unity Input runtime"
         )]
-        private bool ModifierKeyTest()
+        internal bool ModifierKeyTest()
         {
             var mainKey = MainKey;
             return _allKeys.All(key => key == mainKey || UnityEngine.Input.GetKey(key))
