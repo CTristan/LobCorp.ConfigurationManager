@@ -185,6 +185,11 @@ namespace ConfigurationManager.Implementations
                 rightValue,
                 GUILayout.ExpandWidth(true)
             );
+            if (setting.UseIntegerSlider == true)
+            {
+                result = Mathf.Round(result);
+            }
+
             if (Math.Abs(result - converted) > Mathf.Abs(rightValue - leftValue) / 1000)
             {
                 var newValue = Convert.ChangeType(

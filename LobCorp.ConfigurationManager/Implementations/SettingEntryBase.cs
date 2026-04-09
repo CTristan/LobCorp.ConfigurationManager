@@ -31,6 +31,11 @@ namespace ConfigurationManager.Implementations
         public bool? ShowRangeAsPercent { get; protected set; }
 
         /// <summary>
+        /// Should the slider snap to integer values (only applies to value range settings)
+        /// </summary>
+        public bool? UseIntegerSlider { get; protected set; }
+
+        /// <summary>
         /// Custom setting draw action.
         /// </summary>
         public Action<LmmConfigEntryBase> CustomDrawer { get; private set; }

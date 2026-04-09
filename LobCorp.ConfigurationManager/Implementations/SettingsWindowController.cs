@@ -354,6 +354,20 @@ namespace ConfigurationManager.Implementations
             {
                 SetUnlockCursor(0, true);
 
+                if (
+                    !OverrideHotkey
+                    && Event.current.type == EventType.KeyUp
+                    && (
+                        Event.current.keyCode == KeyCode.Escape
+                        || Event.current.keyCode == _keybind.Value.MainKey
+                    )
+                )
+                {
+                    DisplayingWindow = false;
+
+                    return;
+                }
+
                 var mousePosition = UnityEngine.Input.mousePosition;
                 mousePosition.y = Screen.height - mousePosition.y;
 
@@ -856,9 +870,9 @@ namespace ConfigurationManager.Implementations
                 return;
             }
 
-            if (_keybind.Value.IsDown())
+            if (!DisplayingWindow && _keybind.Value.IsUp())
             {
-                DisplayingWindow = !DisplayingWindow;
+                DisplayingWindow = true;
             }
         }
 

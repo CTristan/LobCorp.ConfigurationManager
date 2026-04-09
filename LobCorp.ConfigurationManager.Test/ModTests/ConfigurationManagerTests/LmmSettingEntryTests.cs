@@ -230,6 +230,22 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void Constructor_ConfigurationManagerAttributes_UseIntegerSlider_ShouldSetUseIntegerSlider()
+        {
+            var attrs = new global::ConfigurationManager.ConfigurationManagerAttributes
+            {
+                UseIntegerSlider = true,
+            };
+            var desc = new LmmConfigDescription("test", null, attrs);
+            var entry = _configFile.Bind("General", "IntSlider", 50, desc);
+            var pluginInfo = new PluginInfo("test", "TestMod", "1.0");
+
+            var setting = new LmmSettingEntry(entry, pluginInfo, null);
+
+            setting.UseIntegerSlider.Should().BeTrue();
+        }
+
+        [Fact]
         public void Constructor_NullEntry_ShouldThrowArgumentNullException()
         {
             var pluginInfo = new PluginInfo("test", "TestMod", "1.0");

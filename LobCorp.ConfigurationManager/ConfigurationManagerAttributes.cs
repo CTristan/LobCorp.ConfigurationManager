@@ -46,6 +46,11 @@ namespace ConfigurationManager
         public bool? ShowRangeAsPercent;
 
         /// <summary>
+        /// If true, the slider snaps to whole numbers while the text field still accepts decimals.
+        /// </summary>
+        public bool? UseIntegerSlider;
+
+        /// <summary>
         /// Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).
         /// See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing.
         /// </summary>
