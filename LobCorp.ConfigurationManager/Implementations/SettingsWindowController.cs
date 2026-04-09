@@ -54,7 +54,7 @@ namespace ConfigurationManager.Implementations
         private string _modsWithoutSettings;
 
         private List<SettingEntryBase> _allSettings;
-        private List<PluginSettingsData> _filteredSetings = new List<PluginSettingsData>();
+        private List<PluginSettingsData> _filteredSettings = new List<PluginSettingsData>();
 
         internal Rect SettingWindowRect { get; private set; }
         private bool _windowWasMoved;
@@ -159,7 +159,7 @@ namespace ConfigurationManager.Implementations
 
                     _focusSearchBox = true;
 
-                    if (_curLockState != null)
+                    if (_curLockState != null && _curVisible != null)
                     {
                         _previousCursorLockState = _obsoleteCursor
                             ? Convert.ToInt32((bool)_curLockState.GetValue(null, null))
@@ -261,7 +261,7 @@ namespace ConfigurationManager.Implementations
             var settingsAreCollapsed = _pluginConfigCollapsedDefault.Value;
 
             var nonDefaultCollpasingStateByPluginName = new HashSet<string>();
-            foreach (var pluginSetting in _filteredSetings)
+            foreach (var pluginSetting in _filteredSettings)
             {
                 if (pluginSetting.Collapsed != settingsAreCollapsed)
                 {
@@ -269,7 +269,7 @@ namespace ConfigurationManager.Implementations
                 }
             }
 
-            _filteredSetings = results
+            _filteredSettings = results
                 .GroupBy(x => x.PluginInfo)
                 .Select(pluginSettings =>
                 {
@@ -454,7 +454,7 @@ namespace ConfigurationManager.Implementations
 
                 var currentHeight = _tipsHeight;
 
-                foreach (var plugin in _filteredSetings)
+                foreach (var plugin in _filteredSettings)
                 {
                     var visible =
                         plugin.Height == 0
@@ -469,6 +469,7 @@ namespace ConfigurationManager.Implementations
                         {
                             DrawSinglePlugin(plugin);
                         }
+                        // Unity ImGUI throws ArgumentException on layout/repaint event mismatch — safe to ignore
                         catch (ArgumentException) { }
 
                         if (plugin.Height == 0 && Event.current.type == EventType.Repaint)
@@ -482,6 +483,7 @@ namespace ConfigurationManager.Implementations
                         {
                             GUILayout.Space(plugin.Height);
                         }
+                        // Unity ImGUI throws ArgumentException on layout/repaint event mismatch — safe to ignore
                         catch (ArgumentException) { }
                     }
 
@@ -629,7 +631,7 @@ namespace ConfigurationManager.Implementations
                 {
                     var newValue = !_pluginConfigCollapsedDefault.Value;
                     _pluginConfigCollapsedDefault.Value = newValue;
-                    foreach (var plugin in _filteredSetings)
+                    foreach (var plugin in _filteredSettings)
                     {
                         plugin.Collapsed = newValue;
                     }
@@ -873,7 +875,7 @@ namespace ConfigurationManager.Implementations
 
         private void SetUnlockCursor(int lockState, bool cursorVisible)
         {
-            if (_curLockState != null)
+            if (_curLockState != null && _curVisible != null)
             {
                 if (_obsoleteCursor)
                 {

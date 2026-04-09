@@ -100,5 +100,39 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             entry.SettingType.Should().Be<int>();
         }
+
+        [Fact]
+        public void BeginBatchSave_ShouldSuppressSavesDuringScope()
+        {
+            var entry = _configFile.Bind("General", "Volume", 50);
+
+            using (_configFile.BeginBatchSave())
+            {
+                entry.Value = 75;
+
+                var text = File.ReadAllText(_tempPath);
+                text.Should().NotContain("Volume = 75");
+            }
+
+            var finalText = File.ReadAllText(_tempPath);
+            finalText.Should().Contain("Volume = 75");
+        }
+
+        [Fact]
+        public void BeginBatchSave_ShouldSaveAllValuesOnDispose()
+        {
+            var entry1 = _configFile.Bind("General", "Volume", 50);
+            var entry2 = _configFile.Bind("General", "Brightness", 100);
+
+            using (_configFile.BeginBatchSave())
+            {
+                entry1.Value = 75;
+                entry2.Value = 200;
+            }
+
+            var text = File.ReadAllText(_tempPath);
+            text.Should().Contain("Volume = 75");
+            text.Should().Contain("Brightness = 200");
+        }
     }
 }

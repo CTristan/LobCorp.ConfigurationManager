@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using ConfigurationManager.Input;
 using ConfigurationManager.Utilities;
 using UnityEngine;
@@ -16,27 +13,24 @@ namespace ConfigurationManager.Implementations
     [ExcludeFromCodeCoverage(Justification = "ImGUI field drawing")]
     internal sealed class SettingFieldDrawer
     {
-        private static IEnumerable<KeyCode> _keysToCheck;
         public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers { get; }
-
-        private static readonly Dictionary<SettingEntryBase, ComboBox> _comboBoxCache =
-            new Dictionary<SettingEntryBase, ComboBox>();
-        private static readonly Dictionary<SettingEntryBase, ColorCacheEntry> _colorCache =
-            new Dictionary<SettingEntryBase, ColorCacheEntry>();
 
         private static SettingsWindowController _instance;
 
-        private static SettingEntryBase _currentKeyboardShortcutToSet;
-        public static bool SettingKeyboardShortcut => _currentKeyboardShortcutToSet != null;
+        public static bool SettingKeyboardShortcut =>
+            KeyboardShortcutDrawer.SettingKeyboardShortcut;
 
         static SettingFieldDrawer()
         {
             SettingDrawHandlers = new Dictionary<Type, Action<SettingEntryBase>>
             {
                 { typeof(bool), DrawBoolField },
-                { typeof(KeyboardShortcut), DrawKeyboardShortcut },
-                { typeof(KeyCode), DrawKeyCode },
-                { typeof(Color), DrawColor },
+                { typeof(KeyboardShortcut), KeyboardShortcutDrawer.DrawKeyboardShortcut },
+                {
+                    typeof(KeyCode),
+                    s => KeyboardShortcutDrawer.DrawKeyCode(s, _instance.SettingWindowRect.yMax)
+                },
+                { typeof(Color), ColorFieldDrawer.DrawColor },
                 { typeof(Vector2), DrawVector2 },
                 { typeof(Vector3), DrawVector3 },
                 { typeof(Vector4), DrawVector4 },
@@ -58,7 +52,7 @@ namespace ConfigurationManager.Implementations
             }
             else if (setting.CustomHotkeyDrawer != null)
             {
-                var isBeingSet = _currentKeyboardShortcutToSet == setting;
+                var isBeingSet = KeyboardShortcutDrawer.IsSettingBeingSet(setting);
                 var isBeingSetOriginal = isBeingSet;
 
                 var configEntry = setting is LmmSettingEntry lmmEntry ? lmmEntry.Entry : null;
@@ -66,7 +60,7 @@ namespace ConfigurationManager.Implementations
 
                 if (isBeingSet != isBeingSetOriginal)
                 {
-                    _currentKeyboardShortcutToSet = isBeingSet ? setting : null;
+                    KeyboardShortcutDrawer.SetCurrentShortcutTarget(isBeingSet ? setting : null);
                 }
             }
             else if (setting.ShowRangeAsPercent != null && setting.AcceptableValueRange.Key != null)
@@ -75,7 +69,7 @@ namespace ConfigurationManager.Implementations
             }
             else if (setting.AcceptableValues != null)
             {
-                DrawListField(setting);
+                ComboboxDrawer.DrawListField(setting, _instance.SettingWindowRect.yMax);
             }
             else if (DrawFieldBasedOnValueType(setting))
             {
@@ -83,7 +77,11 @@ namespace ConfigurationManager.Implementations
             }
             else if (setting.SettingType.IsEnum)
             {
-                DrawEnumField(setting);
+                ComboboxDrawer.DrawEnumField(
+                    setting,
+                    _instance.RightColumnWidth,
+                    _instance.SettingWindowRect.yMax
+                );
             }
             else
             {
@@ -93,14 +91,8 @@ namespace ConfigurationManager.Implementations
 
         public static void ClearCache()
         {
-            _comboBoxCache.Clear();
-
-            foreach (var tex in _colorCache)
-            {
-                UnityEngine.Object.Destroy(tex.Value.Tex);
-            }
-
-            _colorCache.Clear();
+            ComboboxDrawer.ClearCache();
+            ColorFieldDrawer.ClearCache();
         }
 
         public static void DrawCenteredLabel(string text, params GUILayoutOption[] options)
@@ -151,48 +143,7 @@ namespace ConfigurationManager.Implementations
 
         public static bool DrawCurrentDropdown()
         {
-            if (ComboBox.CurrentDropdownDrawer != null)
-            {
-                ComboBox.CurrentDropdownDrawer.Invoke();
-                ComboBox.CurrentDropdownDrawer = null;
-                return true;
-            }
-            return false;
-        }
-
-        private static void DrawListField(SettingEntryBase setting)
-        {
-            var acceptableValues = setting.AcceptableValues;
-            if (acceptableValues.Count == 0)
-            {
-                throw new ArgumentException(
-                    "AcceptableValueListAttribute returned an empty list of acceptable values. You need to supply at least 1 option."
-                );
-            }
-
-            if (
-                !setting.SettingType.IsInstanceOfType(
-                    acceptableValues.Cast<object>().FirstOrDefault(x => x != null)
-                )
-            )
-            {
-                throw new ArgumentException(
-                    "AcceptableValueListAttribute returned a list with items of type other than the setting type itself."
-                );
-            }
-
-            if (setting.SettingType == typeof(KeyCode))
-            {
-                DrawKeyCode(setting);
-            }
-            else
-            {
-                DrawComboboxField(
-                    setting,
-                    (IList)acceptableValues,
-                    _instance.SettingWindowRect.yMax
-                );
-            }
+            return ComboboxDrawer.DrawCurrentDropdown();
         }
 
         private static bool DrawFieldBasedOnValueType(SettingEntryBase setting)
@@ -217,143 +168,6 @@ namespace ConfigurationManager.Implementations
             {
                 setting.Set(result);
             }
-        }
-
-        private static void DrawEnumField(SettingEntryBase setting)
-        {
-            if (setting.SettingType.GetCustomAttributes(typeof(FlagsAttribute), false).Length != 0)
-            {
-                DrawFlagsField(
-                    setting,
-                    Enum.GetValues(setting.SettingType),
-                    _instance.RightColumnWidth
-                );
-            }
-            else
-            {
-                DrawComboboxField(
-                    setting,
-                    Enum.GetValues(setting.SettingType),
-                    _instance.SettingWindowRect.yMax
-                );
-            }
-        }
-
-        private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
-        {
-            var currentValue = Convert.ToInt64(setting.GetValue(), CultureInfo.InvariantCulture);
-            var allValues = enumValues
-                .Cast<Enum>()
-                .Select(x => new
-                {
-                    name = x.ToString(),
-                    val = Convert.ToInt64(x, CultureInfo.InvariantCulture),
-                })
-                .ToArray();
-
-            GUILayout.BeginVertical(GUILayout.MaxWidth(maxWidth));
-            {
-                for (var index = 0; index < allValues.Length; )
-                {
-                    GUILayout.BeginHorizontal();
-                    {
-                        var currentWidth = 0;
-                        for (; index < allValues.Length; index++)
-                        {
-                            var value = allValues[index];
-
-                            if (value.val != 0)
-                            {
-                                var textDimension = (int)
-                                    GUI.skin.toggle.CalcSize(new GUIContent(value.name)).x;
-                                currentWidth += textDimension;
-                                if (currentWidth > maxWidth)
-                                {
-                                    break;
-                                }
-
-                                GUI.changed = false;
-                                var newVal = GUILayout.Toggle(
-                                    (currentValue & value.val) == value.val,
-                                    value.name,
-                                    GUILayout.ExpandWidth(false)
-                                );
-                                if (GUI.changed)
-                                {
-                                    var newValue = newVal
-                                        ? currentValue | value.val
-                                        : currentValue & ~value.val;
-                                    setting.Set(Enum.ToObject(setting.SettingType, newValue));
-                                }
-                            }
-                        }
-                    }
-                    GUILayout.EndHorizontal();
-                }
-
-                GUI.changed = false;
-            }
-            GUILayout.EndVertical();
-            GUILayout.FlexibleSpace();
-        }
-
-        private static void DrawComboboxField(
-            SettingEntryBase setting,
-            IList list,
-            float windowYmax
-        )
-        {
-            var buttonText = ObjectToGuiContent(setting.GetValue());
-            var dispRect = GUILayoutUtility.GetRect(
-                buttonText,
-                GUI.skin.button,
-                GUILayout.ExpandWidth(true)
-            );
-
-            if (!_comboBoxCache.TryGetValue(setting, out var box))
-            {
-                box = new ComboBox(
-                    dispRect,
-                    buttonText,
-                    list.Cast<object>().Select(ObjectToGuiContent).ToArray(),
-                    GUI.skin.button,
-                    windowYmax
-                );
-                _comboBoxCache[setting] = box;
-            }
-            else
-            {
-                box.Rect = dispRect;
-                box.ButtonContent = buttonText;
-            }
-
-            box.Show(id =>
-            {
-                if (id >= 0 && id < list.Count)
-                {
-                    setting.Set(list[id]);
-                }
-            });
-        }
-
-        private static GUIContent ObjectToGuiContent(object x)
-        {
-            if (x is Enum)
-            {
-                var enumType = x.GetType();
-                var enumMember = enumType.GetMember(x.ToString()).FirstOrDefault();
-                var attr = enumMember
-                    ?.GetCustomAttributes(typeof(DescriptionAttribute), false)
-                    .Cast<DescriptionAttribute>()
-                    .FirstOrDefault();
-                if (attr != null)
-                {
-                    return new GUIContent(attr.Description);
-                }
-
-                return new GUIContent(x.ToString().ToProperCase());
-            }
-            return new GUIContent(x.ToString());
         }
 
         private static void DrawRangeField(SettingEntryBase setting)
@@ -411,6 +225,7 @@ namespace ConfigurationManager.Implementations
                             )
                         );
                     }
+                    // User may type partial/invalid numeric input — keep previous value until valid
                     catch (FormatException) { }
                 }
             }
@@ -492,104 +307,6 @@ namespace ConfigurationManager.Implementations
             }
         }
 
-        private static void DrawKeyCode(SettingEntryBase setting)
-        {
-            if (ReferenceEquals(_currentKeyboardShortcutToSet, setting))
-            {
-                GUILayout.Label("Press any key", GUILayout.ExpandWidth(true));
-                GUIUtility.keyboardControl = -1;
-
-                if (_keysToCheck == null)
-                {
-                    _keysToCheck = KeyboardShortcut.ModifierBlockKeyCodes;
-                }
-
-                foreach (var key in _keysToCheck)
-                {
-                    if (UnityEngine.Input.GetKeyUp(key))
-                    {
-                        setting.Set(key);
-                        _currentKeyboardShortcutToSet = null;
-                        break;
-                    }
-                }
-
-                if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
-                {
-                    _currentKeyboardShortcutToSet = null;
-                }
-            }
-            else
-            {
-                var acceptableValues =
-                    setting.AcceptableValues?.Count > 1
-                        ? (IList)setting.AcceptableValues
-                        : Enum.GetValues(setting.SettingType);
-                DrawComboboxField(setting, acceptableValues, _instance.SettingWindowRect.yMax);
-
-                if (
-                    GUILayout.Button(
-                        new GUIContent(
-                            "Set...",
-                            null,
-                            "Set the key by pressing any key on your keyboard."
-                        ),
-                        GUILayout.ExpandWidth(false)
-                    )
-                )
-                {
-                    _currentKeyboardShortcutToSet = setting;
-                }
-            }
-        }
-
-        private static void DrawKeyboardShortcut(SettingEntryBase setting)
-        {
-            if (ReferenceEquals(_currentKeyboardShortcutToSet, setting))
-            {
-                GUILayout.Label("Press any key combination", GUILayout.ExpandWidth(true));
-                GUIUtility.keyboardControl = -1;
-
-                if (_keysToCheck == null)
-                {
-                    _keysToCheck = KeyboardShortcut.ModifierBlockKeyCodes;
-                }
-
-                foreach (var key in _keysToCheck)
-                {
-                    if (UnityEngine.Input.GetKeyUp(key))
-                    {
-                        setting.Set(
-                            new KeyboardShortcut(
-                                key,
-                                _keysToCheck.Where(x => UnityEngine.Input.GetKey(x)).ToArray()
-                            )
-                        );
-                        _currentKeyboardShortcutToSet = null;
-                        break;
-                    }
-                }
-
-                if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
-                {
-                    _currentKeyboardShortcutToSet = null;
-                }
-            }
-            else
-            {
-                if (GUILayout.Button(setting.GetValue().ToString(), GUILayout.ExpandWidth(true)))
-                {
-                    _currentKeyboardShortcutToSet = setting;
-                }
-
-                if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
-                {
-                    setting.Set(KeyboardShortcut.Empty);
-                    _currentKeyboardShortcutToSet = null;
-                }
-            }
-        }
-
         private static void DrawVector2(SettingEntryBase obj)
         {
             var setting = (Vector2)obj.GetValue();
@@ -656,130 +373,6 @@ namespace ConfigurationManager.Implementations
                 out var x
             );
             return x;
-        }
-
-        private static bool _drawColorHex;
-
-        private static void DrawColor(SettingEntryBase obj)
-        {
-            var colorValue = (Color)obj.GetValue();
-
-            GUI.changed = false;
-
-            if (!_colorCache.TryGetValue(obj, out var cacheEntry))
-            {
-                var tex = new Texture2D(100, 20, TextureFormat.ARGB32, false);
-                cacheEntry = new ColorCacheEntry { Tex = tex, Last = colorValue };
-                FillTex(colorValue, tex);
-                _colorCache[obj] = cacheEntry;
-            }
-
-            GUILayout.BeginVertical();
-            {
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label(cacheEntry.Tex, GUILayout.ExpandWidth(false));
-
-                    var colorStr = _drawColorHex
-                        ? "#" + ColorUtility.ToHtmlStringRGBA(colorValue)
-                        : string.Format(
-                            CultureInfo.InvariantCulture,
-                            "{0:F2} {1:F2} {2:F2} {3:F2}",
-                            colorValue.r,
-                            colorValue.g,
-                            colorValue.b,
-                            colorValue.a
-                        );
-                    var newColorStr = GUILayout.TextField(colorStr, GUILayout.ExpandWidth(true));
-                    if (GUI.changed && colorStr != newColorStr)
-                    {
-                        if (_drawColorHex)
-                        {
-                            if (ColorUtility.TryParseHtmlString(newColorStr, out var parsedColor))
-                            {
-                                colorValue = parsedColor;
-                            }
-                        }
-                        else
-                        {
-                            var split = newColorStr.Split(' ');
-                            if (
-                                split.Length == 4
-                                && float.TryParse(split[0], out var r)
-                                && float.TryParse(split[1], out var g)
-                                && float.TryParse(split[2], out var b)
-                                && float.TryParse(split[3], out var a)
-                            )
-                            {
-                                colorValue = new Color(r, g, b, a);
-                            }
-                        }
-                    }
-
-                    _drawColorHex = GUILayout.Toggle(
-                        _drawColorHex,
-                        "Hex",
-                        GUILayout.ExpandWidth(false)
-                    );
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("R", GUILayout.ExpandWidth(false));
-                    colorValue.r = GUILayout.HorizontalSlider(
-                        colorValue.r,
-                        0f,
-                        1f,
-                        GUILayout.ExpandWidth(true)
-                    );
-                    GUILayout.Label("G", GUILayout.ExpandWidth(false));
-                    colorValue.g = GUILayout.HorizontalSlider(
-                        colorValue.g,
-                        0f,
-                        1f,
-                        GUILayout.ExpandWidth(true)
-                    );
-                    GUILayout.Label("B", GUILayout.ExpandWidth(false));
-                    colorValue.b = GUILayout.HorizontalSlider(
-                        colorValue.b,
-                        0f,
-                        1f,
-                        GUILayout.ExpandWidth(true)
-                    );
-                    GUILayout.Label("A", GUILayout.ExpandWidth(false));
-                    colorValue.a = GUILayout.HorizontalSlider(
-                        colorValue.a,
-                        0f,
-                        1f,
-                        GUILayout.ExpandWidth(true)
-                    );
-                }
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
-
-            if (colorValue != cacheEntry.Last)
-            {
-                obj.Set(colorValue);
-                FillTex(colorValue, cacheEntry.Tex);
-                cacheEntry.Last = colorValue;
-            }
-        }
-
-        private static void FillTex(Color color, Texture2D tex)
-        {
-            if (color.a < 1f)
-            {
-                tex.FillTextureCheckerboard();
-            }
-
-            tex.FillTexture(color);
-        }
-
-        private sealed class ColorCacheEntry
-        {
-            public Color Last;
-            public Texture2D Tex;
         }
     }
 }

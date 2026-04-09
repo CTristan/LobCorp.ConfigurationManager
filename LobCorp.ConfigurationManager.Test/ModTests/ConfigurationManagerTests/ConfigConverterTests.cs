@@ -223,6 +223,97 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             result.Should().Be(42u);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("1")]
+        [InlineData("1 2")]
+        public void ConvertToObject_Color_TooFewComponents_ShouldThrowFormatException(string input)
+        {
+            Action act = () => ConfigConverter.ConvertToObject(input, typeof(Color));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Fact]
+        public void ConvertToObject_Color_ThreeComponents_ShouldDefaultAlphaToOne()
+        {
+            var parsed = (Color)ConfigConverter.ConvertToObject("0.5 0.25 0.75", typeof(Color));
+
+            parsed.r.Should().Be(0.5f);
+            parsed.g.Should().Be(0.25f);
+            parsed.b.Should().Be(0.75f);
+            parsed.a.Should().Be(1f);
+        }
+
+        [Fact]
+        public void ConvertToObject_Color_NonNumericValue_ShouldThrowFormatException()
+        {
+            Action act = () => ConfigConverter.ConvertToObject("abc 0.5 0.5", typeof(Color));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("1")]
+        public void ConvertToObject_Vector2_TooFewComponents_ShouldThrowFormatException(
+            string input
+        )
+        {
+            Action act = () => ConfigConverter.ConvertToObject(input, typeof(Vector2));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Fact]
+        public void ConvertToObject_Vector2_NonNumericValue_ShouldThrowFormatException()
+        {
+            Action act = () => ConfigConverter.ConvertToObject("abc 1", typeof(Vector2));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("1")]
+        [InlineData("1 2")]
+        public void ConvertToObject_Vector3_TooFewComponents_ShouldThrowFormatException(
+            string input
+        )
+        {
+            Action act = () => ConfigConverter.ConvertToObject(input, typeof(Vector3));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("1")]
+        [InlineData("1 2")]
+        [InlineData("1 2 3")]
+        public void ConvertToObject_Vector4_TooFewComponents_ShouldThrowFormatException(
+            string input
+        )
+        {
+            Action act = () => ConfigConverter.ConvertToObject(input, typeof(Vector4));
+
+            act.Should().Throw<FormatException>();
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("1")]
+        [InlineData("1 2")]
+        [InlineData("1 2 3")]
+        public void ConvertToObject_Quaternion_TooFewComponents_ShouldThrowFormatException(
+            string input
+        )
+        {
+            Action act = () => ConfigConverter.ConvertToObject(input, typeof(Quaternion));
+
+            act.Should().Throw<FormatException>();
+        }
+
         [Fact]
         public void AddConverter_ShouldOverwriteExistingConverter()
         {

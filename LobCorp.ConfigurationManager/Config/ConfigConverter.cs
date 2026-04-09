@@ -32,6 +32,25 @@ namespace ConfigurationManager.Config
         private static readonly Dictionary<Type, TypeConverter> Converters =
             new Dictionary<Type, TypeConverter>();
 
+        private static string[] SplitAndValidate(string input, int minParts, string typeName)
+        {
+            var parts = input.Split(' ');
+            if (parts.Length < minParts)
+            {
+                throw new FormatException(
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Expected at least {0} components for {1}, got {2}",
+                        minParts,
+                        typeName,
+                        parts.Length
+                    )
+                );
+            }
+
+            return parts;
+        }
+
         static ConfigConverter()
         {
             AddConverter(
@@ -151,7 +170,7 @@ namespace ConfigurationManager.Config
                     },
                     ConvertToObject = (s, _) =>
                     {
-                        var parts = s.Split(' ');
+                        var parts = SplitAndValidate(s, 3, "Color");
                         return new Color(
                             float.Parse(parts[0], CultureInfo.InvariantCulture),
                             float.Parse(parts[1], CultureInfo.InvariantCulture),
@@ -175,7 +194,7 @@ namespace ConfigurationManager.Config
                     },
                     ConvertToObject = (s, _) =>
                     {
-                        var parts = s.Split(' ');
+                        var parts = SplitAndValidate(s, 2, "Vector2");
                         return new Vector2(
                             float.Parse(parts[0], CultureInfo.InvariantCulture),
                             float.Parse(parts[1], CultureInfo.InvariantCulture)
@@ -201,7 +220,7 @@ namespace ConfigurationManager.Config
                     },
                     ConvertToObject = (s, _) =>
                     {
-                        var parts = s.Split(' ');
+                        var parts = SplitAndValidate(s, 3, "Vector3");
                         return new Vector3(
                             float.Parse(parts[0], CultureInfo.InvariantCulture),
                             float.Parse(parts[1], CultureInfo.InvariantCulture),
@@ -229,7 +248,7 @@ namespace ConfigurationManager.Config
                     },
                     ConvertToObject = (s, _) =>
                     {
-                        var parts = s.Split(' ');
+                        var parts = SplitAndValidate(s, 4, "Vector4");
                         return new Vector4(
                             float.Parse(parts[0], CultureInfo.InvariantCulture),
                             float.Parse(parts[1], CultureInfo.InvariantCulture),
@@ -258,7 +277,7 @@ namespace ConfigurationManager.Config
                     },
                     ConvertToObject = (s, _) =>
                     {
-                        var parts = s.Split(' ');
+                        var parts = SplitAndValidate(s, 4, "Quaternion");
                         return new Quaternion(
                             float.Parse(parts[0], CultureInfo.InvariantCulture),
                             float.Parse(parts[1], CultureInfo.InvariantCulture),

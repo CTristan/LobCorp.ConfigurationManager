@@ -15,7 +15,6 @@ namespace ConfigurationManager.Config
     {
         private readonly Dictionary<LmmConfigDefinition, LmmConfigEntryBase> _entries =
             new Dictionary<LmmConfigDefinition, LmmConfigEntryBase>();
-        private bool _disableSaving;
 
         /// <summary>
         /// Absolute path to the INI config file on disk
@@ -90,14 +89,14 @@ namespace ConfigurationManager.Config
                         var converter = ConfigConverter.GetConverter(typeof(T));
                         if (converter != null)
                         {
-                            _disableSaving = true;
+                            DisableSaving = true;
                             try
                             {
                                 entry.Value = (T)converter.ConvertToObject(savedValue, typeof(T));
                             }
                             finally
                             {
-                                _disableSaving = false;
+                                DisableSaving = false;
                             }
                         }
                     }
@@ -124,7 +123,7 @@ namespace ConfigurationManager.Config
         /// </summary>
         public void Save()
         {
-            if (_disableSaving)
+            if (DisableSaving)
             {
                 return;
             }
@@ -200,7 +199,7 @@ namespace ConfigurationManager.Config
                 return;
             }
 
-            _disableSaving = true;
+            DisableSaving = true;
             try
             {
                 foreach (var kvp in _entries)
@@ -225,9 +224,22 @@ namespace ConfigurationManager.Config
             }
             finally
             {
-                _disableSaving = false;
+                DisableSaving = false;
             }
         }
+
+        /// <summary>
+        /// Begins a batch operation. Saves are suppressed until the returned scope is disposed,
+        /// at which point a single <see cref="Save"/> is performed.
+        /// Nesting is not supported — disposing an inner scope will trigger a save and re-enable auto-saving.
+        /// </summary>
+        /// <returns>A disposable scope. Use in a <c>using</c> block.</returns>
+        public BatchSaveScope BeginBatchSave()
+        {
+            return new BatchSaveScope(this);
+        }
+
+        internal bool DisableSaving { get; set; }
 
         private string ReadValueFromFile(string section, string key)
         {
