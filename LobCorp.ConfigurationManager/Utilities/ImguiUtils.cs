@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+
+using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+
+namespace ConfigurationManager.Utilities
+{
+    [ExcludeFromCodeCoverage(Justification = "ImGUI utility functions")]
+    internal static class ImguiUtils
+    {
+        private static Texture2D _tooltipBg;
+        private static Texture2D _windowBackground;
+
+        public static void DrawWindowBackground(Rect position)
+        {
+            if (!_windowBackground)
+            {
+                var windowBackground = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                windowBackground.SetPixel(0, 0, new Color(0.5f, 0.5f, 0.5f, 1));
+                windowBackground.Apply();
+                _windowBackground = windowBackground;
+            }
+
+            GUI.Box(
+                position,
+                GUIContent.none,
+                new GUIStyle { normal = new GUIStyleState { background = _windowBackground } }
+            );
+        }
+
+        public static void DrawControlBackground(Rect position)
+        {
+            if (!_tooltipBg)
+            {
+                var background = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                background.SetPixel(0, 0, Color.black);
+                background.Apply();
+                _tooltipBg = background;
+            }
+
+            GUI.Box(
+                position,
+                GUIContent.none,
+                new GUIStyle { normal = new GUIStyleState { background = _tooltipBg } }
+            );
+        }
+    }
+}

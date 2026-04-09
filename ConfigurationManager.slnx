@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/_Solution/">
+    <File Path="Directory.Build.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="LobCorp.ConfigurationManager/LobCorp.ConfigurationManager.csproj" />
+  <Project Path="LobCorp.ConfigurationManager.Test/LobCorp.ConfigurationManager.Test.csproj" />
+</Solution>

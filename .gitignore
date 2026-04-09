@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+.claude
 *.suo
 *.user
 *.userosscache
@@ -329,3 +330,19 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# Game DLL references
+external/
+
+# Local NuGet packages
+nupkg/
+
+# Code coverage reports
+**/coverage.opencover.xml
+**/coverage.cobertura.xml
+coverage-report/
+format.log
+
+# TSO (The Silent Orchestrator)
+.tso/
+tso.json
