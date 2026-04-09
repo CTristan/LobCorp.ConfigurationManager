@@ -14,12 +14,24 @@ namespace ConfigurationManager
     public sealed class Harmony_Patch
     {
         /// <summary>
-        /// Singleton created by the static initializer, triggers Harmony patching on first access
+        /// Singleton created by the static initializer, triggers Harmony patching on first access.
         /// </summary>
-        public static readonly Harmony_Patch Instance = new Harmony_Patch();
+        public static readonly Harmony_Patch Instance = new Harmony_Patch(true);
 
-        private Harmony_Patch()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Harmony_Patch"/> class without triggering
+        /// patch application. Used by the Basemod loader.
+        /// </summary>
+        public Harmony_Patch()
+            : this(false) { }
+
+        private Harmony_Patch(bool initialize)
         {
+            if (!initialize)
+            {
+                return;
+            }
+
             try
             {
                 var harmony = HarmonyInstance.Create("com.lobcorp.configurationmanager");
