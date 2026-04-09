@@ -29,7 +29,12 @@ namespace ConfigurationManager.Config
         /// </summary>
         /// <param name="modId">Unique mod identifier, used as the subdirectory name.</param>
         /// <param name="modName">Human-readable mod name for display in the settings UI.</param>
-        public static LmmConfigFile GetConfigFile(string modId, string modName)
+        /// <param name="modVersion">Optional version string shown alongside the mod name.</param>
+        public static LmmConfigFile GetConfigFile(
+            string modId,
+            string modName,
+            string modVersion = ""
+        )
         {
             if (RegisteredMods.TryGetValue(modId, out var mod))
             {
@@ -43,6 +48,7 @@ namespace ConfigurationManager.Config
             {
                 ModId = modId,
                 ModName = modName,
+                ModVersion = modVersion ?? string.Empty,
                 ConfigFile = configFile,
             };
             RegisteredMods[modId] = mod;
@@ -60,16 +66,18 @@ namespace ConfigurationManager.Config
         /// <param name="key">Setting key within the section.</param>
         /// <param name="defaultValue">Default value used when no saved value exists.</param>
         /// <param name="description">Optional plain-text description shown in the settings UI.</param>
+        /// <param name="modVersion">Optional version string shown alongside the mod name.</param>
         public static LmmConfigEntry<T> Register<T>(
             string modId,
             string modName,
             string section,
             string key,
             T defaultValue,
-            string description = null
+            string description = null,
+            string modVersion = ""
         )
         {
-            var configFile = GetConfigFile(modId, modName);
+            var configFile = GetConfigFile(modId, modName, modVersion);
             return configFile.Bind(section, key, defaultValue, description);
         }
 
@@ -83,16 +91,18 @@ namespace ConfigurationManager.Config
         /// <param name="key">Setting key within the section.</param>
         /// <param name="defaultValue">Default value used when no saved value exists.</param>
         /// <param name="description">Full description including acceptable value constraints.</param>
+        /// <param name="modVersion">Optional version string shown in the settings UI.</param>
         public static LmmConfigEntry<T> Register<T>(
             string modId,
             string modName,
             string section,
             string key,
             T defaultValue,
-            LmmConfigDescription description
+            LmmConfigDescription description,
+            string modVersion = ""
         )
         {
-            var configFile = GetConfigFile(modId, modName);
+            var configFile = GetConfigFile(modId, modName, modVersion);
             return configFile.Bind(section, key, defaultValue, description);
         }
 
@@ -108,6 +118,7 @@ namespace ConfigurationManager.Config
         {
             public string ModId;
             public string ModName;
+            public string ModVersion;
             public LmmConfigFile ConfigFile;
         }
     }

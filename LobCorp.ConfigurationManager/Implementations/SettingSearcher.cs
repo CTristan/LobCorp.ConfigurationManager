@@ -28,7 +28,7 @@ namespace ConfigurationManager.Implementations
             {
                 foreach (var mod in LmmConfigRegistration.GetRegisteredMods())
                 {
-                    var pluginInfo = new PluginInfo(mod.ModId, mod.ModName, "1.0.0");
+                    var pluginInfo = new PluginInfo(mod.ModId, mod.ModName, mod.ModVersion ?? "");
                     var detected = new List<SettingEntryBase>();
 
                     foreach (var kvp in mod.ConfigFile.Entries)

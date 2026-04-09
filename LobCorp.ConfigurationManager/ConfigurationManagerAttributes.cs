@@ -36,9 +36,9 @@ namespace ConfigurationManager
     /// You can optionally remove fields that you won't use from this class, it's the same as leaving them null.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
-        Justification = "Internal data holder class copied by plugins"
+        Justification = "Data holder class for plugin configuration attributes"
     )]
-    internal sealed class ConfigurationManagerAttributes
+    public sealed class ConfigurationManagerAttributes
     {
         /// <summary>
         /// Should the setting be shown as a percentage (only use with value range settings).
