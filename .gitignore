@@ -342,3 +342,7 @@ nupkg/
 **/coverage.cobertura.xml
 coverage-report/
 format.log
+
+# TSO (The Silent Orchestrator)
+.tso/
+tso.json
