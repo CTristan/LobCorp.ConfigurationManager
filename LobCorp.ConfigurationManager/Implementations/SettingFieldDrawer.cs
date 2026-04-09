@@ -263,7 +263,7 @@ namespace ConfigurationManager.Implementations
                         : Convert
                             .ToString(rawValue, CultureInfo.InvariantCulture)
                             .AppendZeroIfFloat(setting.SettingType);
-                if (CanCovert(value, setting.SettingType))
+                if (CanConvert(value, setting.SettingType))
                 {
                     var result = GUILayout.TextField(
                         value,
@@ -290,11 +290,11 @@ namespace ConfigurationManager.Implementations
             GUILayout.FlexibleSpace();
         }
 
-        private readonly Dictionary<Type, bool> _canCovertCache = new Dictionary<Type, bool>();
+        private readonly Dictionary<Type, bool> _canConvertCache = new Dictionary<Type, bool>();
 
-        private bool CanCovert(string value, Type type)
+        private bool CanConvert(string value, Type type)
         {
-            if (_canCovertCache.TryGetValue(type, out var value1))
+            if (_canConvertCache.TryGetValue(type, out var value1))
             {
                 return value1;
             }
@@ -302,12 +302,12 @@ namespace ConfigurationManager.Implementations
             try
             {
                 _ = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
-                _canCovertCache[type] = true;
+                _canConvertCache[type] = true;
                 return true;
             }
             catch
             {
-                _canCovertCache[type] = false;
+                _canConvertCache[type] = false;
                 return false;
             }
         }
@@ -368,16 +368,13 @@ namespace ConfigurationManager.Implementations
         private static float DrawSingleVectorSlider(float setting, string label)
         {
             GUILayout.Label(label, GUILayout.ExpandWidth(false));
-            _ = float.TryParse(
-                GUILayout.TextField(
-                    setting.ToString("F", CultureInfo.InvariantCulture),
-                    GUILayout.ExpandWidth(true)
-                ),
-                NumberStyles.Any,
-                CultureInfo.InvariantCulture,
-                out var x
+            var text = GUILayout.TextField(
+                setting.ToString("F", CultureInfo.InvariantCulture),
+                GUILayout.ExpandWidth(true)
             );
-            return x;
+            return float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out var x)
+                ? x
+                : setting;
         }
     }
 }
