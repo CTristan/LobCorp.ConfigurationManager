@@ -16,6 +16,8 @@ namespace ConfigurationManager.Config
         private readonly Dictionary<LmmConfigDefinition, LmmConfigEntryBase> _entries =
             new Dictionary<LmmConfigDefinition, LmmConfigEntryBase>();
 
+        private Dictionary<LmmConfigDefinition, string> _fileCache;
+
         /// <summary>
         /// Absolute path to the INI config file on disk
         /// </summary>
@@ -142,7 +144,20 @@ namespace ConfigurationManager.Config
 
                 string currentSection = null;
 
-                foreach (var kvp in _entries)
+                var sortedEntries = new List<KeyValuePair<LmmConfigDefinition, LmmConfigEntryBase>>(
+                    _entries
+                );
+                sortedEntries.Sort(
+                    (a, b) =>
+                    {
+                        var sectionCmp = string.CompareOrdinal(a.Key.Section, b.Key.Section);
+                        return sectionCmp != 0
+                            ? sectionCmp
+                            : string.CompareOrdinal(a.Key.Key, b.Key.Key);
+                    }
+                );
+
+                foreach (var kvp in sortedEntries)
                 {
                     var def = kvp.Key;
                     var entry = kvp.Value;
@@ -199,6 +214,7 @@ namespace ConfigurationManager.Config
                 return;
             }
 
+            _fileCache = null;
             DisableSaving = true;
             try
             {
@@ -243,51 +259,51 @@ namespace ConfigurationManager.Config
 
         private string ReadValueFromFile(string section, string key)
         {
-            if (!File.Exists(ConfigFilePath))
+            if (_fileCache == null)
             {
-                return null;
+                _fileCache = new Dictionary<LmmConfigDefinition, string>();
+
+                if (File.Exists(ConfigFilePath))
+                {
+                    var lines = File.ReadAllLines(ConfigFilePath, Encoding.UTF8);
+                    string currentSection = null;
+
+                    foreach (var rawLine in lines)
+                    {
+                        var line = rawLine.Trim();
+
+                        if (
+                            line.StartsWith("[", StringComparison.Ordinal)
+                            && line.EndsWith("]", StringComparison.Ordinal)
+                        )
+                        {
+                            currentSection = line.Substring(1, line.Length - 2);
+                            continue;
+                        }
+
+                        if (
+                            line.StartsWith("#", StringComparison.Ordinal)
+                            || string.IsNullOrEmpty(line)
+                            || currentSection == null
+                        )
+                        {
+                            continue;
+                        }
+
+                        var eqIndex = line.IndexOf('=');
+                        if (eqIndex >= 0)
+                        {
+                            var lineKey = line.Substring(0, eqIndex).Trim();
+                            _fileCache[new LmmConfigDefinition(currentSection, lineKey)] =
+                                line.Substring(eqIndex + 1).Trim();
+                        }
+                    }
+                }
             }
 
-            var lines = File.ReadAllLines(ConfigFilePath, Encoding.UTF8);
-            string currentSection = null;
-
-            foreach (var rawLine in lines)
-            {
-                var line = rawLine.Trim();
-
-                if (
-                    line.StartsWith("[", StringComparison.Ordinal)
-                    && line.EndsWith("]", StringComparison.Ordinal)
-                )
-                {
-                    currentSection = line.Substring(1, line.Length - 2);
-                    continue;
-                }
-
-                if (line.StartsWith("#", StringComparison.Ordinal) || string.IsNullOrEmpty(line))
-                {
-                    continue;
-                }
-
-                if (currentSection != section)
-                {
-                    continue;
-                }
-
-                var eqIndex = line.IndexOf('=');
-                if (eqIndex < 0)
-                {
-                    continue;
-                }
-
-                var lineKey = line.Substring(0, eqIndex).Trim();
-                if (lineKey == key)
-                {
-                    return line.Substring(eqIndex + 1).Trim();
-                }
-            }
-
-            return null;
+            return _fileCache.TryGetValue(new LmmConfigDefinition(section, key), out var val)
+                ? val
+                : null;
         }
     }
 }

@@ -172,5 +172,51 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             entry.Value.Should().BeTrue();
         }
+
+        [Fact]
+        public void Reload_ShouldPickUpNewValuesAfterFileChange()
+        {
+            // Bind entries, save, then externally modify the file and reload.
+            // This verifies that any read cache is properly invalidated on Reload().
+            var configFile = new LmmConfigFile(_tempPath);
+            var volume = configFile.Bind("General", "Volume", 50);
+            var name = configFile.Bind("General", "Name", "default");
+            configFile.Save();
+
+            // Externally modify both values
+            var content = new StringBuilder();
+            content.AppendLine("[General]").AppendLine("Volume = 77").AppendLine("Name = changed");
+            File.WriteAllText(_tempPath, content.ToString(), Encoding.UTF8);
+
+            configFile.Reload();
+
+            volume.Value.Should().Be(77);
+            name.Value.Should().Be("changed");
+        }
+
+        [Fact]
+        public void Save_WithInterleavedSections_ShouldNotProduceDuplicateHeaders()
+        {
+            var configFile = new LmmConfigFile(_tempPath);
+
+            // Bind entries from different sections in interleaved order
+            configFile.Bind("Audio", "Volume", 50);
+            configFile.Bind("Video", "Resolution", "1080p");
+            configFile.Bind("Audio", "Mute", false);
+            configFile.Bind("Video", "Fullscreen", true);
+
+            configFile.Save();
+
+            var text = File.ReadAllText(_tempPath);
+            var lines = text.Split('\n');
+            var sectionHeaders = lines
+                .Select(l => l.Trim())
+                .Where(l => l.StartsWith('[') && l.EndsWith(']'))
+                .ToList();
+
+            // Each section should appear exactly once
+            sectionHeaders.Should().HaveCount(2);
+            sectionHeaders.Distinct().Should().HaveCount(2);
+        }
     }
 }
