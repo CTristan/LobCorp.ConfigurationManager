@@ -19,9 +19,15 @@ namespace ConfigurationManager.Config
             new Dictionary<string, RegisteredMod>();
 
         /// <summary>
+        /// Root directory for mod config files, matching LMM's persistent data location.
+        /// </summary>
+        internal static string ConfigBasePath =>
+            Path.Combine(Application.persistentDataPath, "LobotomyBaseMod");
+
+        /// <summary>
         /// Get or create a config file for a mod.
         /// </summary>
-        /// <param name="modId">Unique mod identifier, used as the subdirectory name under BaseMods.</param>
+        /// <param name="modId">Unique mod identifier, used as the subdirectory name.</param>
         /// <param name="modName">Human-readable mod name for display in the settings UI.</param>
         public static LmmConfigFile GetConfigFile(string modId, string modName)
         {
@@ -30,9 +36,7 @@ namespace ConfigurationManager.Config
                 return mod.ConfigFile;
             }
 
-            // Default config file path in BaseMods directory
-            var baseModsPath = Path.Combine(Application.dataPath, "BaseMods");
-            var configPath = Path.Combine(Path.Combine(baseModsPath, modId), "config.cfg");
+            var configPath = Path.Combine(Path.Combine(ConfigBasePath, modId), "config.cfg");
 
             var configFile = new LmmConfigFile(configPath);
             mod = new RegisteredMod

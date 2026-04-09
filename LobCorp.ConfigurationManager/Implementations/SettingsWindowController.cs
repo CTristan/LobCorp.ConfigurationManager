@@ -98,10 +98,7 @@ namespace ConfigurationManager.Implementations
 
             // Create config file for ConfigurationManager's own settings
             var configPath = Path.Combine(
-                Path.Combine(
-                    Path.Combine(Application.dataPath, "BaseMods"),
-                    "ConfigurationManager"
-                ),
+                Path.Combine(LmmConfigRegistration.ConfigBasePath, "ConfigurationManager"),
                 "config.cfg"
             );
             _configFile = new LmmConfigFile(configPath);

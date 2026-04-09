@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using ConfigurationManager.Config;
 using ConfigurationManager.Utilities;
-using UnityEngine;
 
 namespace ConfigurationManager.Implementations
 {
@@ -57,7 +56,7 @@ namespace ConfigurationManager.Implementations
             // 2. Auto-discover config.cfg files from BaseMods directories
             try
             {
-                var baseModsPath = Path.Combine(Application.dataPath, "BaseMods");
+                var baseModsPath = LmmConfigRegistration.ConfigBasePath;
                 if (Directory.Exists(baseModsPath))
                 {
                     foreach (var modDir in Directory.GetDirectories(baseModsPath))
