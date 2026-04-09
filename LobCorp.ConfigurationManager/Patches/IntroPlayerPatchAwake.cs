@@ -40,6 +40,7 @@ namespace ConfigurationManager.Patches
                 }
 
                 var go = new GameObject("LobCorp_ConfigurationManager");
+                UnityEngine.Object.DontDestroyOnLoad(go);
                 _ = go.AddComponent<ConfigManagerBehaviour>();
             }
             catch (Exception ex)
