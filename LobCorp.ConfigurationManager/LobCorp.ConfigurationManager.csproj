@@ -15,6 +15,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="LobotomyCorporation.Mods.Common">
+			<Private>false</Private>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Reference Include="0Harmony">
 			<HintPath>..\external\LobotomyCorp_Data\Managed\0Harmony.dll</HintPath>
 			<Private>false</Private>

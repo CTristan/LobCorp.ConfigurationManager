@@ -2,7 +2,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using ConfigurationManager.Implementations;
 using Harmony;
+using LobotomyCorporation.Mods.Common.Implementations;
 
 namespace ConfigurationManager
 {
@@ -36,6 +38,8 @@ namespace ConfigurationManager
             {
                 var harmony = HarmonyInstance.Create("com.lobcorp.configurationmanager");
                 harmony.PatchAll(typeof(Harmony_Patch).Assembly);
+
+                ConfigurationRegistry.SetProvider(new LmmConfigurationProvider());
             }
             catch (Exception ex)
             {
