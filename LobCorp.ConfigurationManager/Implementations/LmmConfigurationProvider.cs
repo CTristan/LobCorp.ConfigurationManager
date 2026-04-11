@@ -20,6 +20,22 @@ namespace ConfigurationManager.Implementations
         private readonly Dictionary<string, LmmConfigFile> _configFiles =
             new Dictionary<string, LmmConfigFile>();
 
+        private readonly Func<string, string, string, LmmConfigFile> _configFileFactory;
+
+        /// <summary>
+        /// Creates a provider that persists through <see cref="LmmConfigRegistration.GetConfigFile"/>.
+        /// </summary>
+        public LmmConfigurationProvider()
+            : this(LmmConfigRegistration.GetConfigFile) { }
+
+        internal LmmConfigurationProvider(
+            Func<string, string, string, LmmConfigFile> configFileFactory
+        )
+        {
+            _configFileFactory =
+                configFileFactory ?? throw new ArgumentNullException(nameof(configFileFactory));
+        }
+
         /// <inheritdoc />
         public void LoadPersistedValues(IEnumerable<IConfigurationEntry> entries)
         {
@@ -94,7 +110,7 @@ namespace ConfigurationManager.Implementations
                 return existing;
             }
 
-            var configFile = LmmConfigRegistration.GetConfigFile(modId, modName, modVersion);
+            var configFile = _configFileFactory(modId, modName, modVersion);
             _configFiles[modId] = configFile;
 
             return configFile;
@@ -143,7 +159,7 @@ namespace ConfigurationManager.Implementations
             }
 
             // Acceptable value constraints
-            AcceptableValueBase acceptableValues = null;
+            IAcceptableValue acceptableValues = null;
             if (entry.AcceptableValueRange != null)
             {
                 acceptableValues = CreateAcceptableValueRange(
@@ -176,7 +192,7 @@ namespace ConfigurationManager.Implementations
             }
         }
 
-        private static AcceptableValueBase CreateAcceptableValueRange(
+        private static IAcceptableValue CreateAcceptableValueRange(
             Type settingType,
             object min,
             object max
@@ -185,7 +201,7 @@ namespace ConfigurationManager.Implementations
             var openType = typeof(AcceptableValueRange<>);
             var closedType = openType.MakeGenericType(settingType);
 
-            return (AcceptableValueBase)Activator.CreateInstance(closedType, new[] { min, max });
+            return (IAcceptableValue)Activator.CreateInstance(closedType, new[] { min, max });
         }
 
         private static MethodInfo FindBindMethod()

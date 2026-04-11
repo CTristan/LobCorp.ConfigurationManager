@@ -2,6 +2,7 @@
 
 #region
 
+using System;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Xunit3;
@@ -10,6 +11,7 @@ using AutoFixture.Xunit3;
 
 namespace LobCorp.ConfigurationManager.Test.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public sealed class LobotomyInlineAutoDataAttribute(params object[] values)
         : InlineAutoDataAttribute(CreateFixture, values)
     {

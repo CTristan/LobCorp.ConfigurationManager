@@ -222,12 +222,12 @@ namespace ConfigurationManager.Implementations
                         var attrType = attrib.GetType();
                         if (attrType.Name == "ConfigurationManagerAttributes")
                         {
-                            var otherFields = attrType.GetFields(
+                            var otherProperties = attrType.GetProperties(
                                 BindingFlags.Instance | BindingFlags.Public
                             );
                             foreach (
                                 var propertyPair in _myProperties.Join(
-                                    otherFields,
+                                    otherProperties,
                                     my => my.Name,
                                     other => other.Name,
                                     (my, other) => new { my, other }
@@ -236,12 +236,12 @@ namespace ConfigurationManager.Implementations
                             {
                                 try
                                 {
-                                    var val = propertyPair.other.GetValue(attrib);
+                                    var val = propertyPair.other.GetValue(attrib, null);
                                     if (val != null)
                                     {
                                         if (
                                             propertyPair.my.PropertyType
-                                                != propertyPair.other.FieldType
+                                                != propertyPair.other.PropertyType
                                             && typeof(Delegate).IsAssignableFrom(
                                                 propertyPair.my.PropertyType
                                             )

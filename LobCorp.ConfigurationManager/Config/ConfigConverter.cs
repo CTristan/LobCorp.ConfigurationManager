@@ -16,12 +16,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Delegate that serializes a value of the given type to a string
         /// </summary>
-        public Func<object, Type, string> ConvertToString;
+        public Func<object, Type, string> ConvertToString { get; set; }
 
         /// <summary>
         /// Delegate that deserializes a string back into a value of the given type
         /// </summary>
-        public Func<string, Type, object> ConvertToObject;
+        public Func<string, Type, object> ConvertToObject { get; set; }
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,9 +11,12 @@ namespace ConfigurationManager.Config
     /// Specifies the list of acceptable values for a setting.
     /// </summary>
     /// <typeparam name="T">The equatable type of the setting value (e.g. string, enum).</typeparam>
-    public class AcceptableValueList<T> : AcceptableValueBase
+    public sealed class AcceptableValueList<T> : IAcceptableValueList
         where T : IEquatable<T>
     {
+        /// <inheritdoc />
+        IEnumerable IAcceptableValueList.BoxedAcceptableValues => AcceptableValues;
+
         /// <summary>
         /// Array of valid values for this setting
         /// </summary>
@@ -33,7 +37,7 @@ namespace ConfigurationManager.Config
         }
 
         /// <inheritdoc />
-        public override Type ValueType => typeof(T);
+        public Type ValueType => typeof(T);
 
         /// <summary>
         /// Checks whether a value is contained in the acceptable list.

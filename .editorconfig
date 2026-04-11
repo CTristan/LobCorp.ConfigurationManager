@@ -2,38 +2,3 @@ root = true
 
 [*.cs]
 file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
-
-# Temporarily suppress Sonar analyzer rules introduced by Analyzers 0.1.0-preview.17.
-# Each rule should be fixed and re-enabled over time.
-# S101:  Types should be named in PascalCase
-dotnet_diagnostic.S101.severity = suggestion
-# S108:  Empty block of code
-dotnet_diagnostic.S108.severity = suggestion
-# S1066: Merge collapsible if statements
-dotnet_diagnostic.S1066.severity = suggestion
-# S1104: Public fields should be properties
-dotnet_diagnostic.S1104.severity = suggestion
-# S1168: Return empty collection instead of null
-dotnet_diagnostic.S1168.severity = suggestion
-# S1199: Nested code blocks should be extracted
-dotnet_diagnostic.S1199.severity = suggestion
-# S1450: Private fields only used as local variables
-dotnet_diagnostic.S1450.severity = suggestion
-# S1694: Abstract class without abstract members
-dotnet_diagnostic.S1694.severity = suggestion
-# S1905: Unnecessary cast
-dotnet_diagnostic.S1905.severity = suggestion
-# S2386: Mutable fields should not be public static
-dotnet_diagnostic.S2386.severity = suggestion
-# S2696: Static field set from instance method
-dotnet_diagnostic.S2696.severity = suggestion
-# S3010: Static field assigned in non-static constructor
-dotnet_diagnostic.S3010.severity = suggestion
-# S3626: Redundant jump statement
-dotnet_diagnostic.S3626.severity = suggestion
-# S3887: Mutable non-private fields should not be readonly
-dotnet_diagnostic.S3887.severity = suggestion
-# S3993: Specify AttributeUsage on derived attributes
-dotnet_diagnostic.S3993.severity = suggestion
-# S4136: Method overloads should be adjacent
-dotnet_diagnostic.S4136.severity = suggestion

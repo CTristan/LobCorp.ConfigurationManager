@@ -1,11 +1,5 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
-// CS0169 (field never used), CS0414 (field assigned but never read), CS0649 (field never assigned):
-// These fields form a public API contract for external plugins. Plugins create instances of this class
-// and assign fields to customize how their settings appear in the configuration window. This assembly
-// then reads the values via reflection in SettingEntryBase.SetFromAttributes(). The compiler cannot see
-// either side of this interaction within this assembly, so the warnings are expected and intentional.
-#pragma warning disable 0169, 0414, 0649
 namespace ConfigurationManager
 {
     /// <summary>
@@ -13,11 +7,11 @@ namespace ConfigurationManager
     /// <para>
     /// Usage:
     /// This class template has to be copied inside the plugin's project and referenced by its code directly.
-    /// Make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.
+    /// Make a new instance, assign any properties that you want to override, and pass it as a tag for your setting.
     /// </para>
     /// <para>
-    /// If a field is null (default), it will be ignored and won't change how the setting is displayed.
-    /// If a field is non-null (you assigned a value to it), it will override default behavior.
+    /// If a property is null (default), it will be ignored and won't change how the setting is displayed.
+    /// If a property is non-null (you assigned a value to it), it will override default behavior.
     /// </para>
     /// </summary>
     ///
@@ -32,8 +26,10 @@ namespace ConfigurationManager
     /// </example>
     ///
     /// <remarks>
-    /// You can read more and see examples in the readme at https://github.com/BepInEx/BepInEx.ConfigurationManager
-    /// You can optionally remove fields that you won't use from this class, it's the same as leaving them null.
+    /// This fork of ConfigurationManager reads attribute values from a plugin's copy of this class via public
+    /// properties (<c>Type.GetProperties</c>). Upstream BepInEx.ConfigurationManager uses public fields, so its
+    /// template is not directly compatible — if copying from upstream, convert the fields to auto-properties.
+    /// You can optionally remove properties that you won't use from this class, it's the same as leaving them null.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
         Justification = "Data holder class for plugin configuration attributes"
@@ -43,24 +39,24 @@ namespace ConfigurationManager
         /// <summary>
         /// Should the setting be shown as a percentage (only use with value range settings).
         /// </summary>
-        public bool? ShowRangeAsPercent;
+        public bool? ShowRangeAsPercent { get; set; }
 
         /// <summary>
         /// If true, the slider snaps to whole numbers while the text field still accepts decimals.
         /// </summary>
-        public bool? UseIntegerSlider;
+        public bool? UseIntegerSlider { get; set; }
 
         /// <summary>
         /// Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).
         /// See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing.
         /// </summary>
-        public System.Action<Config.LmmConfigEntryBase> CustomDrawer;
+        public System.Action<Config.LmmConfigEntryBase> CustomDrawer { get; set; }
 
         /// <summary>
         /// Custom setting editor that allows polling keyboard input with the Input class.
         /// Use either CustomDrawer or CustomHotkeyDrawer, using both at the same time leads to undefined behaviour.
         /// </summary>
-        public CustomHotkeyDrawerFunc CustomHotkeyDrawer;
+        public CustomHotkeyDrawerFunc CustomHotkeyDrawer { get; set; }
 
         /// <summary>
         /// Custom setting draw action that allows polling keyboard input with the Input class.
@@ -75,62 +71,62 @@ namespace ConfigurationManager
         /// <summary>
         /// Show this setting in the settings screen at all? If false, don't show.
         /// </summary>
-        public bool? Browsable;
+        public bool? Browsable { get; set; }
 
         /// <summary>
         /// Category the setting is under. Null to be directly under the plugin.
         /// </summary>
-        public string Category;
+        public string Category { get; set; }
 
         /// <summary>
         /// If set, a "Default" button will be shown next to the setting to allow resetting to default.
         /// </summary>
-        public object DefaultValue;
+        public object DefaultValue { get; set; }
 
         /// <summary>
         /// Force the "Reset" button to not be displayed, even if a valid DefaultValue is available.
         /// </summary>
-        public bool? HideDefaultButton;
+        public bool? HideDefaultButton { get; set; }
 
         /// <summary>
         /// Force the setting name to not be displayed.
         /// </summary>
-        public bool? HideSettingName;
+        public bool? HideSettingName { get; set; }
 
         /// <summary>
         /// Optional description shown when hovering over the setting.
         /// </summary>
-        public string Description;
+        public string Description { get; set; }
 
         /// <summary>
         /// Name of the setting.
         /// </summary>
-        public string DispName;
+        public string DispName { get; set; }
 
         /// <summary>
         /// Order of the setting on the settings list relative to other settings in a category.
         /// 0 by default, higher number is higher on the list.
         /// </summary>
-        public int? Order;
+        public int? Order { get; set; }
 
         /// <summary>
         /// Only show the value, don't allow editing it.
         /// </summary>
-        public bool? ReadOnly;
+        public bool? ReadOnly { get; set; }
 
         /// <summary>
         /// If true, don't show the setting by default. User has to turn on showing advanced settings or search for it.
         /// </summary>
-        public bool? IsAdvanced;
+        public bool? IsAdvanced { get; set; }
 
         /// <summary>
         /// Custom converter from setting type to string for the built-in editor textboxes.
         /// </summary>
-        public System.Func<object, string> ObjToStr;
+        public System.Func<object, string> ObjToStr { get; set; }
 
         /// <summary>
         /// Custom converter from string to setting type for the built-in editor textboxes.
         /// </summary>
-        public System.Func<string, object> StrToObj;
+        public System.Func<string, object> StrToObj { get; set; }
     }
 }

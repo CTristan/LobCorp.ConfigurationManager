@@ -8,9 +8,15 @@ namespace ConfigurationManager.Config
     /// Specifies the valid range for a setting value.
     /// </summary>
     /// <typeparam name="T">The comparable type of the setting value (e.g. int, float).</typeparam>
-    public class AcceptableValueRange<T> : AcceptableValueBase
+    public sealed class AcceptableValueRange<T> : IAcceptableValueRange
         where T : IComparable
     {
+        /// <inheritdoc />
+        object IAcceptableValueRange.BoxedMinValue => MinValue;
+
+        /// <inheritdoc />
+        object IAcceptableValueRange.BoxedMaxValue => MaxValue;
+
         /// <summary>
         /// Inclusive lower bound of the valid range
         /// </summary>
@@ -38,7 +44,7 @@ namespace ConfigurationManager.Config
         }
 
         /// <inheritdoc />
-        public override Type ValueType => typeof(T);
+        public Type ValueType => typeof(T);
 
         /// <summary>
         /// Clamps a value to within the valid range.

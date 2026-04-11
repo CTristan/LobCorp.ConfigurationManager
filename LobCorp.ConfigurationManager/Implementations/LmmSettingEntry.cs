@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using ConfigurationManager.Config;
 
 namespace ConfigurationManager.Implementations
@@ -56,50 +55,30 @@ namespace ConfigurationManager.Implementations
             SetFromAttributes(tags, pluginInstance);
         }
 
-        private void GetAcceptableValues(AcceptableValueBase values)
+        private void GetAcceptableValues(IAcceptableValue values)
         {
-            var t = values.GetType();
-            var listProp = t.GetProperty(
-                "AcceptableValues",
-                BindingFlags.Instance | BindingFlags.Public
-            );
-            if (listProp != null)
+            if (values is IAcceptableValueList list)
             {
                 SetAcceptableValues(
-                    ((IEnumerable)listProp.GetValue(values, null))
-                        .Cast<object>()
-                        .ToList()
-                        .AsReadOnly()
+                    list.BoxedAcceptableValues.Cast<object>().ToList().AsReadOnly()
                 );
+                return;
             }
-            else
+
+            if (values is IAcceptableValueRange range)
             {
-                var minProp = t.GetProperty(
-                    "MinValue",
-                    BindingFlags.Instance | BindingFlags.Public
+                AcceptableValueRange = new KeyValuePair<object, object>(
+                    range.BoxedMinValue,
+                    range.BoxedMaxValue
                 );
-                var maxProp = t.GetProperty(
-                    "MaxValue",
-                    BindingFlags.Instance | BindingFlags.Public
-                );
-                if (minProp != null && maxProp != null)
-                {
-                    AcceptableValueRange = new System.Collections.Generic.KeyValuePair<
-                        object,
-                        object
-                    >(minProp.GetValue(values, null), maxProp.GetValue(values, null));
-                    ShowRangeAsPercent =
-                        (
-                            (
-                                AcceptableValueRange.Key.Equals(0)
-                                || AcceptableValueRange.Key.Equals(1)
-                            ) && AcceptableValueRange.Value.Equals(100)
-                        )
-                        || (
-                            AcceptableValueRange.Key.Equals(0f)
-                            && AcceptableValueRange.Value.Equals(1f)
-                        );
-                }
+                ShowRangeAsPercent =
+                    (
+                        (AcceptableValueRange.Key.Equals(0) || AcceptableValueRange.Key.Equals(1))
+                        && AcceptableValueRange.Value.Equals(100)
+                    )
+                    || (
+                        AcceptableValueRange.Key.Equals(0f) && AcceptableValueRange.Value.Equals(1f)
+                    );
             }
         }
 

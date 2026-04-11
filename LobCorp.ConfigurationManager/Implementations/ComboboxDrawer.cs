@@ -46,7 +46,7 @@ namespace ConfigurationManager.Implementations
 
             if (
                 !setting.SettingType.IsInstanceOfType(
-                    acceptableValues.Cast<object>().FirstOrDefault(x => x != null)
+                    acceptableValues.FirstOrDefault(x => x != null)
                 )
             )
             {
@@ -116,62 +116,90 @@ namespace ConfigurationManager.Implementations
             });
         }
 
+        private readonly struct FlagEntry
+        {
+            public string Name { get; }
+            public long Value { get; }
+
+            public FlagEntry(string name, long value)
+            {
+                Name = name;
+                Value = value;
+            }
+        }
+
         private static void DrawFlagsField(SettingEntryBase setting, IList enumValues, int maxWidth)
         {
             var currentValue = Convert.ToInt64(setting.GetValue(), CultureInfo.InvariantCulture);
             var allValues = enumValues
                 .Cast<Enum>()
-                .Select(x => new
-                {
-                    name = x.ToString(),
-                    val = Convert.ToInt64(x, CultureInfo.InvariantCulture),
-                })
+                .Select(x => new FlagEntry(
+                    x.ToString(),
+                    Convert.ToInt64(x, CultureInfo.InvariantCulture)
+                ))
                 .ToArray();
 
             GUILayout.BeginVertical(GUILayout.MaxWidth(maxWidth));
+            DrawFlagsRows(setting, allValues, currentValue, maxWidth);
+            GUI.changed = false;
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+        }
+
+        private static void DrawFlagsRows(
+            SettingEntryBase setting,
+            FlagEntry[] allValues,
+            long currentValue,
+            int maxWidth
+        )
+        {
+            for (var index = 0; index < allValues.Length; )
             {
-                for (var index = 0; index < allValues.Length; )
+                GUILayout.BeginHorizontal();
+                DrawFlagsRow(setting, allValues, currentValue, maxWidth, ref index);
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        private static void DrawFlagsRow(
+            SettingEntryBase setting,
+            FlagEntry[] allValues,
+            long currentValue,
+            int maxWidth,
+            ref int index
+        )
+        {
+            var currentWidth = 0;
+            for (; index < allValues.Length; index++)
+            {
+                var value = allValues[index];
+
+                if (value.Value == 0)
                 {
-                    GUILayout.BeginHorizontal();
-                    {
-                        var currentWidth = 0;
-                        for (; index < allValues.Length; index++)
-                        {
-                            var value = allValues[index];
+                    continue;
+                }
 
-                            if (value.val != 0)
-                            {
-                                var textDimension = (int)
-                                    GUI.skin.toggle.CalcSize(new GUIContent(value.name)).x;
-                                currentWidth += textDimension;
-                                if (currentWidth > maxWidth)
-                                {
-                                    break;
-                                }
-
-                                GUI.changed = false;
-                                var newVal = GUILayout.Toggle(
-                                    (currentValue & value.val) == value.val,
-                                    value.name,
-                                    GUILayout.ExpandWidth(false)
-                                );
-                                if (GUI.changed)
-                                {
-                                    var newValue = newVal
-                                        ? currentValue | value.val
-                                        : currentValue & ~value.val;
-                                    setting.Set(Enum.ToObject(setting.SettingType, newValue));
-                                }
-                            }
-                        }
-                    }
-                    GUILayout.EndHorizontal();
+                var textDimension = (int)GUI.skin.toggle.CalcSize(new GUIContent(value.Name)).x;
+                currentWidth += textDimension;
+                if (currentWidth > maxWidth)
+                {
+                    break;
                 }
 
                 GUI.changed = false;
+                var newVal = GUILayout.Toggle(
+                    (currentValue & value.Value) == value.Value,
+                    value.Name,
+                    GUILayout.ExpandWidth(false)
+                );
+                if (GUI.changed)
+                {
+                    var newValue = newVal
+                        ? currentValue | value.Value
+                        : currentValue & ~value.Value;
+                    setting.Set(Enum.ToObject(setting.SettingType, newValue));
+                }
             }
-            GUILayout.EndVertical();
-            GUILayout.FlexibleSpace();
         }
 
         private static GUIContent ObjectToGuiContent(object x)

@@ -25,6 +25,9 @@
     <ProjectReference Include="..\LobCorp.ConfigurationManager\LobCorp.ConfigurationManager.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="LobotomyCorporation.Mods.Common">
+      <HintPath>$(NuGetPackageRoot)lobotomycorporation.mods.common\0.1.0-preview.18\lib\net35\LobotomyCorporation.Mods.Common.0.1.0-preview.18.dll</HintPath>
+    </Reference>
     <Reference Include="0Harmony">
       <HintPath>..\external\LobotomyCorp_Data\Managed\0Harmony.dll</HintPath>
     </Reference>
