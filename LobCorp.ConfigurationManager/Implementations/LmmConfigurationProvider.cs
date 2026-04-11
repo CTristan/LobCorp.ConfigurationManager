@@ -60,7 +60,7 @@ namespace ConfigurationManager.Implementations
                             + ":"
                             + entry.Key
                             + " - "
-                            + ex.Message
+                            + ex
                     );
                 }
             }
@@ -158,7 +158,7 @@ namespace ConfigurationManager.Implementations
                 tags.Add(attrs);
             }
 
-            // Acceptable value constraints
+            // Acceptable value constraints. Range takes precedence over list if both are set.
             IAcceptableValue acceptableValues = null;
             if (entry.AcceptableValueRange != null)
             {
@@ -166,6 +166,13 @@ namespace ConfigurationManager.Implementations
                     entry.SettingType,
                     entry.AcceptableValueRange.Min,
                     entry.AcceptableValueRange.Max
+                );
+            }
+            else if (entry.AcceptableValues?.Length > 0)
+            {
+                acceptableValues = CreateAcceptableValueList(
+                    entry.SettingType,
+                    entry.AcceptableValues
                 );
             }
 
@@ -202,6 +209,21 @@ namespace ConfigurationManager.Implementations
             var closedType = openType.MakeGenericType(settingType);
 
             return (IAcceptableValue)Activator.CreateInstance(closedType, new[] { min, max });
+        }
+
+        private static IAcceptableValue CreateAcceptableValueList(Type settingType, object[] values)
+        {
+            var typedArray = Array.CreateInstance(settingType, values.Length);
+            for (var i = 0; i < values.Length; i++)
+            {
+                typedArray.SetValue(values[i], i);
+            }
+
+            var openType = typeof(AcceptableValueList<>);
+            var closedType = openType.MakeGenericType(settingType);
+
+            return (IAcceptableValue)
+                Activator.CreateInstance(closedType, new object[] { typedArray });
         }
 
         private static MethodInfo FindBindMethod()

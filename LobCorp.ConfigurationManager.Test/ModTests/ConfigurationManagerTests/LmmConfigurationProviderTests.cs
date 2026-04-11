@@ -279,6 +279,49 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void LoadPersistedValues_EntryWithAcceptableValuesList_ShouldSetAcceptableValueList()
+        {
+            var file = CreateTempConfigFile();
+            var provider = CreateProvider(file);
+            var entry = new StubConfigurationEntry
+            {
+                ModId = "mod1",
+                Section = "General",
+                Key = "Mode",
+                SettingType = typeof(int),
+                DefaultValue = 1,
+                AcceptableValues = [1, 2, 3],
+            };
+
+            provider.LoadPersistedValues([entry]);
+
+            var bound = file.Bind("General", "Mode", 0);
+            bound.Description.AcceptableValues.Should().BeOfType<AcceptableValueList<int>>();
+        }
+
+        [Fact]
+        public void LoadPersistedValues_EntryWithRangeAndList_ShouldPreferRange()
+        {
+            var file = CreateTempConfigFile();
+            var provider = CreateProvider(file);
+            var entry = new StubConfigurationEntry
+            {
+                ModId = "mod1",
+                Section = "General",
+                Key = "Mode",
+                SettingType = typeof(int),
+                DefaultValue = 1,
+                AcceptableValueRange = new CommonAbstractions.AcceptableValueRange(0, 10),
+                AcceptableValues = [1, 2, 3],
+            };
+
+            provider.LoadPersistedValues([entry]);
+
+            var bound = file.Bind("General", "Mode", 0);
+            bound.Description.AcceptableValues.Should().BeOfType<AcceptableValueRange<int>>();
+        }
+
+        [Fact]
         public void GetOrCreateConfigFile_SameModId_ShouldReuseFile()
         {
             var factoryCallCount = 0;
