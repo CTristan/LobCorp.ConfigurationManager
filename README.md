@@ -1,116 +1,115 @@
-## Plugin / mod configuration manager for BepInEx
-An easy way to let user configure how a plugin behaves without the need to make your own GUI. The user can change any of the settings you expose, even keyboard shortcuts.
+# In-game configuration manager for Lobotomy Corporation (LMM)
 
-The configuration manager can be accessed in-game by pressing the hotkey (by default F1). Hover over the setting names to see their descriptions, if any.
+Fork of [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager) adapted for Lobotomy Corporation's mod loader (LMM) and Harmony 1. Provides an in-game ImGUI settings window for LMM and BepInEx mods. Press **F1** to open. Hover over setting names to see their descriptions.
 
 ![Configuration manager](Screenshot.PNG)
 
-## How to use
-There are two versions of this plugin, for BepInEx 5 (version 5.4.20 or newer, mono only) and BepInEx 6 (nightly build 664 or newer, IL2CPP only).
+## Installation
 
-- Install and configure the correct BepInEx version for your game (see above).
-- Download latest release for your BepInEx from the [Releases](https://github.com/BepInEx/BepInEx.ConfigurationManager/releases).
-- Extract the plugin directly into your game directory, where the BepInEx folder is (the .dll should end up inside your BepInEx\Plugins folder).
-- Start the game and press F1.
+Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods folder. The configuration manager will load automatically via LMM.
 
-Note: The .xml file include in the release zip is useful for plugin developers when referencing ConfigurationManager.dll in your plugin, it will provide descriptions for types and methods to your IDE. Users can ignore it.
+## How to make my mod compatible
 
-### Known issues
-- If no text is visible anywhere in RUE windows, most likely the `Arial.ttf` font is missing from the system (Unity UI default font, may be different in some games). This can happen when running a game on Linux with [misconfigured wine](https://github.com/ManlyMarco/RuntimeUnityEditor/issues/55).
-- The IL2CPP version currently only works in some games that have unstripped `UnityEngine.IMGUIModule.dll` (support for some of the games can be added with a patcher that restores missing members, [example](https://github.com/IllusionMods/BepisPlugins/tree/fe2c5e14c8bcb14602ba5380226aee3ddd20b2f8/src/IMGUIModule.Il2Cpp.CoreCLR.Patcher)).
+### Registering settings
 
-## How to make my mod compatible?
-ConfigurationManager will automatically display all settings from your plugin's `Config`. All metadata (e.g. description, value range) will be used by ConfigurationManager to display the settings to the user.
+Use `LmmConfigRegistration` to register your mod's settings. ConfigurationManager will display them automatically, including any metadata (descriptions, value ranges, acceptable value lists).
 
-In most cases you don't have to reference ConfigurationManager.dll or do anything special with your settings. Simply make sure to add as much metadata as possible (doing so will help all users, even if they use the config files directly). Always add descriptive section and key names, descriptions, and acceptable value lists or ranges (wherever applicable).
-
-### How to make my setting into a slider?
-Specify `AcceptableValueRange` when creating your setting. If the range is 0f - 1f or 0 - 100 the slider will be shown as % (this can be overridden below).
 ```c#
-CaptureWidth = Config.Bind("Section", "Key", 1, new ConfigDescription("Description", new AcceptableValueRange<int>(0, 100)));
-```
+using ConfigurationManager.Config;
 
-### How to make my setting into a drop-down list?
-Specify `AcceptableValueList` when creating your setting. If you use an enum you don't need to specify AcceptableValueList, all of the enum values will be shown. If you want to hide some values, you will have to use the attribute.
-
-Note: You can add `System.ComponentModel.DescriptionAttribute` to your enum's items to override their displayed names. For example:
-```c#
-public enum MyEnum
+public class Harmony_Patch
 {
-    // Entry1 will be shown in the combo box as Entry1
-    Entry1,
-    [Description("Entry2 will be shown in the combo box as this string")]
-    Entry2
-}
-```
+    private static LmmConfigEntry<int> _volume;
+    private static LmmConfigEntry<bool> _enabled;
 
-### How to allow user to change my keyboard shorcuts / How to easily check for key presses?
-Add a setting of type KeyboardShortcut. Use the value of this setting to check for inputs (recommend using IsDown) inside of your Update method.
-
-The KeyboardShortcut class supports modifier keys - Shift, Control and Alt. They are properly handled, preventing common problems like K+Shift+Control triggering K+Shift when it shouldn't have.
-```c#
-private ConfigEntry<KeyboardShortcut> ShowCounter { get; set; }
-
-public Constructor()
-{
-    ShowCounter = Config.Bind("Hotkeys", "Show FPS counter", new KeyboardShortcut(KeyCode.U, KeyCode.LeftShift));
-}
-
-private void Update()
-{
-    if (ShowCounter.Value.IsDown())
+    static Harmony_Patch()
     {
-        // Handle the key press
+        var config = LmmConfigRegistration.GetConfigFile("MyMod", "My Mod", "1.0.0");
+        _volume = config.Bind("Audio", "Volume", 50, "Master volume level");
+        _enabled = config.Bind("General", "Enabled", true, "Enable the mod");
     }
 }
 ```
 
-## Overriding default Configuration Manager behavior
-You can change how a setting is shown inside the configuration manager window by passing an instance of a special class as a tag of the setting. The special class code can be downloaded [here](ConfigurationManagerAttributes.cs). Simply download the .cs file and drag it into your project.
-- You do not have to reference ConfigurationManager.dll for this to work.
-- The class will work as long as name of the class and declarations of its fields remain unchanged. 
-- Avoid making the class public to prevent conflicts with other plugins. If you want to share it between your plugins either give each a copy, or move it to your custom namespace.
-- If the ConfigurationManager plugin is not installed in the game, this class will be safely ignored and your plugin will work as normal.
+You can also register individual settings without managing the config file directly:
 
-Here's an example of overriding order of settings and marking one of the settings as advanced:
 ```c#
-// Override IsAdvanced and Order
-Config.Bind("X", "1", 1, new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
-// Override only Order, IsAdvanced stays as the default value assigned by ConfigManager
-Config.Bind("X", "2", 2, new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 1 }));
-Config.Bind("X", "3", 3, new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 2 }));
+var volume = LmmConfigRegistration.Register<int>(
+    "MyMod", "My Mod", "Audio", "Volume", 50, "Master volume level", "1.0.0"
+);
 ```
 
-### How to make a custom editor for my setting?
-If you are using a setting type that is not supported by ConfigurationManager, you can add a drawer Action for it. The Action will be executed inside OnGUI, use GUILayout to draw your setting as shown in the example below.
+### How to make a slider
 
-To use a custom seting drawer for an individual setting, use the `CustomDrawer` field in the attribute class. See above for more info on the attribute class.
+Specify `AcceptableValueRange` when creating your setting. If the range is 0f–1f or 0–100 the slider will be shown as a percentage (this can be overridden with `ConfigurationManagerAttributes`).
+
 ```c#
-void Start()
-{
-    // Add the drawer as a tag to this setting.
-    Config.Bind("Section", "Key", "Some value" 
-        new ConfigDescription("Desc", null, new ConfigurationManagerAttributes{ CustomDrawer = MyDrawer });
-}
+var volume = config.Bind(
+    "Audio", "Volume", 50,
+    new LmmConfigDescription("Master volume", new AcceptableValueRange<int>(0, 100))
+);
+```
 
-static void MyDrawer(BepInEx.Configuration.ConfigEntryBase entry)
+### How to make a drop-down list
+
+Specify `AcceptableValueList` when creating your setting. If you use an enum you don't need to specify `AcceptableValueList` — all enum values will be shown automatically.
+
+You can add `System.ComponentModel.DescriptionAttribute` to enum items to override their displayed names:
+
+```c#
+public enum Difficulty
 {
-    // Make sure to use GUILayout.ExpandWidth(true) to use all available space
-    GUILayout.Label(entry.BoxedValue, GUILayout.ExpandWidth(true));
+    Easy,
+    [Description("Standard difficulty")]
+    Normal,
+    Hard
 }
 ```
-#### Add a custom editor globally
-You can specify a drawer for all settings of a setting type. Do this by using `ConfigurationManager.RegisterCustomSettingDrawer(Type, Action<SettingEntryBase>)`.
 
-**Warning:** This requires you to reference ConfigurationManager.dll in your project and is not recommended unless you are sure all users will have it installed. It's usually better to use the above method to add the custom drawer to each setting individually instead.
+### How to use keyboard shortcuts
+
+Add a setting of type `KeyboardShortcut`. Use `IsDown()` in your `Update` method to check for presses. The class handles modifier keys (Shift, Control, Alt) properly.
+
 ```c#
-void Start()
-{
-    ConfigurationManager.RegisterCustomSettingDrawer(typeof(MyType), CustomDrawer);
-}
+var hotkey = config.Bind("Hotkeys", "Toggle", new KeyboardShortcut(KeyCode.U, KeyCode.LeftShift));
 
-static void CustomDrawer(SettingEntryBase entry)
+// In Update():
+if (hotkey.Value.IsDown()) { /* handle press */ }
+```
+
+## Overriding default display behavior
+
+You can customize how a setting appears in the configuration manager by passing a `ConfigurationManagerAttributes` instance as a tag. Copy the [`ConfigurationManagerAttributes.cs`](LobCorp.ConfigurationManager/ConfigurationManagerAttributes.cs) file into your project and use it like this:
+
+```c#
+config.Bind("X", "1", 1, new LmmConfigDescription("", null,
+    new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+config.Bind("X", "2", 2, new LmmConfigDescription("", null,
+    new ConfigurationManagerAttributes { Order = 1 }));
+```
+
+Important notes about the attributes class:
+
+- You do **not** need to reference ConfigurationManager.dll for this to work — it is read via reflection.
+- This fork uses **public auto-properties** (not public fields). If copying from upstream BepInEx.ConfigurationManager, convert fields to auto-properties.
+- Keep the class name `ConfigurationManagerAttributes` unchanged. You can remove properties you don't use.
+- Avoid making the class public to prevent conflicts with other mods.
+
+### Custom setting editors
+
+For unsupported types, you can provide a custom ImGUI drawer:
+
+```c#
+config.Bind("Section", "Key", "value",
+    new LmmConfigDescription("Description", null,
+        new ConfigurationManagerAttributes { CustomDrawer = MyDrawer }));
+
+static void MyDrawer(LmmConfigEntryBase entry)
 {
-    GUILayout.Label((MyType)entry.Get(), GUILayout.ExpandWidth(true));
+    GUILayout.Label((string)entry.BoxedValue, GUILayout.ExpandWidth(true));
 }
 ```
+
+## BepInEx plugin compatibility
+
+ConfigurationManager also discovers BepInEx plugins via reflection — no hard dependency is required. BepInEx plugins using `Config.Bind` will have their settings shown automatically.

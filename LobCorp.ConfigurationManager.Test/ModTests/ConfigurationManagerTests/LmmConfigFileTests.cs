@@ -160,6 +160,26 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             entry.Value.Should().Be("Hello World");
         }
 
+        [Theory]
+        [InlineData("Hello World", "Hello World")]
+        [InlineData("key=value", "key=value")]
+        [InlineData("a = b = c", "a = b = c")]
+        [InlineData("  padded  ", "padded")]
+        [InlineData("", "")]
+        public void SaveAndReload_StringValues_ShouldRoundTripPerIniConvention(
+            string input,
+            string expected
+        )
+        {
+            var configFile = new LmmConfigFile(_tempPath);
+            var entry = configFile.Bind("General", "Name", "default");
+            entry.Value = input;
+
+            configFile.Reload();
+
+            entry.Value.Should().Be(expected);
+        }
+
         [Fact]
         public void Bind_BoolType_ShouldLoadSavedValue()
         {
