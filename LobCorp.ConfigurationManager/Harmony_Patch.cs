@@ -49,9 +49,10 @@ namespace ConfigurationManager
                         "[ConfigurationManager] Failed to apply Harmony patches: " + ex
                     );
                 }
-                catch
+                catch (Exception)
                 {
-                    // Unity logging unavailable (e.g. running in unit tests)
+                    // Unity logging is unavailable; no alternative output target exists
+                    _ = ex;
                 }
             }
         }

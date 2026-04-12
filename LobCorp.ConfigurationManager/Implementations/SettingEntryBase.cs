@@ -271,7 +271,7 @@ namespace ConfigurationManager.Implementations
                             }
                             break;
                         }
-                        return;
+                        break;
                 }
             }
         }

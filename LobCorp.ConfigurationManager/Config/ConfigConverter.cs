@@ -319,11 +319,13 @@ namespace ConfigurationManager.Config
             // Handle enums generically
             if (type.IsEnum)
             {
-                return new TypeConverter
+                var enumConverter = new TypeConverter
                 {
                     ConvertToString = (o, _) => o.ToString(),
                     ConvertToObject = (s, _) => Enum.Parse(type, s),
                 };
+                Converters[type] = enumConverter;
+                return enumConverter;
             }
 
             return null;
