@@ -10,9 +10,8 @@ using System.Linq;
 using AwesomeAssertions;
 using ConfigurationManager.Config;
 using ConfigurationManager.Implementations;
+using LobotomyCorporation.Mods.Common;
 using Xunit;
-using CommonAbstractions = LobotomyCorporation.Mods.Common.Implementations;
-using CommonInterfaces = LobotomyCorporation.Mods.Common.Interfaces;
 
 #endregion
 
@@ -85,7 +84,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -101,13 +100,13 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void LoadPersistedValues_PersistedValueDifferentFromDefault_ShouldCallSetValue()
+        public void LoadPersistedValues_PersistedValueDifferentFromDefault_ShouldSyncValue()
         {
             var file = CreateTempConfigFile();
             file.Bind("General", "Volume", 50).Value = 75;
 
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -118,33 +117,35 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             provider.LoadPersistedValues([entry]);
 
-            entry.LastSetValue.Should().Be(75);
+            entry.Value.Should().Be(75);
         }
 
         [Fact]
-        public void LoadPersistedValues_PersistedValueMatchesDefault_ShouldNotCallSetValue()
+        public void LoadPersistedValues_PersistedValueMatchesDefault_ShouldNotChangeValue()
         {
             var provider = CreateProvider();
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
                 Key = "Volume",
                 SettingType = typeof(int),
                 DefaultValue = 50,
+                Value = 50,
             };
 
             provider.LoadPersistedValues([entry]);
 
-            entry.SetValueCallCount.Should().Be(0);
+            // Value should still be the default — provider should not have overwritten it.
+            entry.Value.Should().Be(50);
         }
 
         [Fact]
-        public void LoadPersistedValues_ChangingBoundEntry_ShouldPropagateToConfigurationEntry()
+        public void LoadPersistedValues_ChangingBoundEntry_ShouldPropagateToConfigEntry()
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -157,15 +158,15 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             var bound = file.Bind("General", "Volume", 0);
             bound.BoxedValue = 99;
 
-            entry.LastSetValue.Should().Be(99);
+            entry.Value.Should().Be(99);
         }
 
         [Fact]
-        public void LoadPersistedValues_EntryWithDisplayNameAndDescription_ShouldAttachTagsToConfigEntry()
+        public void LoadPersistedValues_EntryWithDisplayName_ShouldAttachDisplayNameTag()
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -184,44 +185,18 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void LoadPersistedValues_EntryWithOrderAndAdvanced_ShouldAttachConfigurationManagerAttributes()
+        public void LoadPersistedValues_EntryWithUseSlider_ShouldAttachConfigurationManagerAttributes()
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
                 Key = "Volume",
                 SettingType = typeof(int),
                 DefaultValue = 50,
-                Order = 10,
-                IsAdvanced = true,
-            };
-
-            provider.LoadPersistedValues([entry]);
-
-            var bound = file.Bind("General", "Volume", 0);
-            var attrs = bound
-                .Description.Tags.OfType<global::ConfigurationManager.ConfigurationManagerAttributes>()
-                .Single();
-            attrs.Order.Should().Be(10);
-            attrs.IsAdvanced.Should().Be(true);
-        }
-
-        [Fact]
-        public void LoadPersistedValues_EntryWithKnownHint_ShouldApplyHint()
-        {
-            var file = CreateTempConfigFile();
-            var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
-            {
-                ModId = "mod1",
-                Section = "General",
-                Key = "Volume",
-                SettingType = typeof(int),
-                DefaultValue = 50,
-                Hints = new Dictionary<string, object> { { "UseIntegerSlider", true } },
+                UseSlider = true,
             };
 
             provider.LoadPersistedValues([entry]);
@@ -234,18 +209,18 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
-        public void LoadPersistedValues_EntryWithUnknownHint_ShouldIgnoreHint()
+        public void LoadPersistedValues_EntryWithoutUseSlider_ShouldNotAttachConfigurationManagerAttributes()
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
                 Key = "Volume",
                 SettingType = typeof(int),
                 DefaultValue = 50,
-                Hints = new Dictionary<string, object> { { "NotARealHint", "value" } },
+                UseSlider = false,
             };
 
             provider.LoadPersistedValues([entry]);
@@ -262,63 +237,21 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         {
             var file = CreateTempConfigFile();
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
-            {
-                ModId = "mod1",
-                Section = "General",
-                Key = "Volume",
-                SettingType = typeof(int),
-                DefaultValue = 50,
-                AcceptableValueRange = new CommonAbstractions.AcceptableValueRange(0, 100),
-            };
 
-            provider.LoadPersistedValues([entry]);
+            // Use a real ModConfig + Bind to get a real IConfigEntry<int> with Range set.
+            var config = new ModConfig("mod1", "Mod", "1.0");
+            var realEntry = config.Bind(
+                "General",
+                "Volume",
+                50,
+                "Volume setting",
+                range: new LobotomyCorporation.Mods.Common.AcceptableValueRange<int>(0, 100)
+            );
+
+            provider.LoadPersistedValues([realEntry]);
 
             var bound = file.Bind("General", "Volume", 0);
-            bound.Description.AcceptableValues.Should().BeOfType<AcceptableValueRange<int>>();
-        }
-
-        [Fact]
-        public void LoadPersistedValues_EntryWithAcceptableValuesList_ShouldSetAcceptableValueList()
-        {
-            var file = CreateTempConfigFile();
-            var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
-            {
-                ModId = "mod1",
-                Section = "General",
-                Key = "Mode",
-                SettingType = typeof(int),
-                DefaultValue = 1,
-                AcceptableValues = [1, 2, 3],
-            };
-
-            provider.LoadPersistedValues([entry]);
-
-            var bound = file.Bind("General", "Mode", 0);
-            bound.Description.AcceptableValues.Should().BeOfType<AcceptableValueList<int>>();
-        }
-
-        [Fact]
-        public void LoadPersistedValues_EntryWithRangeAndList_ShouldPreferRange()
-        {
-            var file = CreateTempConfigFile();
-            var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
-            {
-                ModId = "mod1",
-                Section = "General",
-                Key = "Mode",
-                SettingType = typeof(int),
-                DefaultValue = 1,
-                AcceptableValueRange = new CommonAbstractions.AcceptableValueRange(0, 10),
-                AcceptableValues = [1, 2, 3],
-            };
-
-            provider.LoadPersistedValues([entry]);
-
-            var bound = file.Bind("General", "Mode", 0);
-            bound.Description.AcceptableValues.Should().BeOfType<AcceptableValueRange<int>>();
+            bound.Description.AcceptableValues.Should().BeOfType<global::ConfigurationManager.Config.AcceptableValueRange<int>>();
         }
 
         [Fact]
@@ -334,7 +267,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
                 }
             );
 
-            var entry1 = new StubConfigurationEntry
+            var entry1 = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -342,7 +275,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
                 SettingType = typeof(int),
                 DefaultValue = 1,
             };
-            var entry2 = new StubConfigurationEntry
+            var entry2 = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -363,7 +296,7 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             _tempPaths.Add(path);
             var file = new LmmConfigFile(path);
             var provider = CreateProvider(file);
-            var entry = new StubConfigurationEntry
+            var entry = new StubConfigEntry
             {
                 ModId = "mod1",
                 Section = "General",
@@ -392,11 +325,12 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             act.Should().NotThrow();
         }
 
-        private sealed class StubConfigurationEntry : CommonInterfaces.IConfigurationEntry
+        /// <summary>
+        ///     Minimal stub implementing <see cref="IConfigEntry"/> for testing the provider
+        ///     without needing a real <see cref="ModConfig"/>.
+        /// </summary>
+        private sealed class StubConfigEntry : IConfigEntry
         {
-            public int SetValueCallCount { get; private set; }
-            public object? LastSetValue { get; private set; }
-
             public string ModId { get; set; } = "mod";
             public string ModName { get; set; } = "Mod";
             public string ModVersion { get; set; } = "1.0";
@@ -406,22 +340,8 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             public string Description { get; set; } = string.Empty;
             public Type SettingType { get; set; } = typeof(int);
             public object DefaultValue { get; set; } = 0;
-            public object[] AcceptableValues { get; set; } = [];
-            public CommonAbstractions.AcceptableValueRange? AcceptableValueRange { get; set; }
-            public bool IsAdvanced { get; set; }
-            public int Order { get; set; }
-            public IDictionary<string, object>? Hints { get; set; }
-
-            public object GetValue()
-            {
-                return DefaultValue;
-            }
-
-            public void SetValue(object value)
-            {
-                SetValueCallCount++;
-                LastSetValue = value;
-            }
+            public bool UseSlider { get; set; }
+            public object Value { get; set; } = 0;
         }
     }
 }

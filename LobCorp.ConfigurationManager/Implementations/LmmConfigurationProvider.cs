@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using ConfigurationManager.Config;
-using LobotomyCorporation.Mods.Common.Interfaces;
+using LobotomyCorporation.Mods.Common;
 
 namespace ConfigurationManager.Implementations
 {
     /// <summary>
-    ///     Bridges Common's <see cref="IConfigurationEntry" /> abstractions to ConfigurationManager's
+    ///     Bridges Common's <see cref="IConfigEntry" /> abstractions to ConfigurationManager's
     ///     <see cref="LmmConfigFile" /> persistence and settings UI.
     /// </summary>
-    public sealed class LmmConfigurationProvider : IConfigurationProvider
+    public sealed class LmmConfigurationProvider : IConfigProvider
     {
         private static readonly MethodInfo s_bindMethod = FindBindMethod();
 
@@ -37,7 +37,7 @@ namespace ConfigurationManager.Implementations
         }
 
         /// <inheritdoc />
-        public void LoadPersistedValues(IEnumerable<IConfigurationEntry> entries)
+        public void LoadPersistedValues(IEnumerable<IConfigEntry> entries)
         {
             if (entries == null)
             {
@@ -75,7 +75,7 @@ namespace ConfigurationManager.Implementations
             }
         }
 
-        private void LoadEntry(IConfigurationEntry entry)
+        private void LoadEntry(IConfigEntry entry)
         {
             var configFile = GetOrCreateConfigFile(entry.ModId, entry.ModName, entry.ModVersion);
             var description = BuildDescription(entry);
@@ -92,15 +92,15 @@ namespace ConfigurationManager.Implementations
                 return;
             }
 
-            // Sync persisted value → IConfigurationEntry
+            // Sync persisted value → IConfigEntry
             var persistedValue = lmmEntry.BoxedValue;
             if (persistedValue?.Equals(entry.DefaultValue) == false)
             {
-                entry.SetValue(persistedValue);
+                entry.Value = persistedValue;
             }
 
-            // Sync live UI changes → IConfigurationEntry
-            lmmEntry.SettingChanged += (sender, args) => entry.SetValue(lmmEntry.BoxedValue);
+            // Sync live UI changes → IConfigEntry
+            lmmEntry.SettingChanged += (sender, args) => entry.Value = lmmEntry.BoxedValue;
         }
 
         private LmmConfigFile GetOrCreateConfigFile(string modId, string modName, string modVersion)
@@ -116,7 +116,7 @@ namespace ConfigurationManager.Implementations
             return configFile;
         }
 
-        private static LmmConfigDescription BuildDescription(IConfigurationEntry entry)
+        private static LmmConfigDescription BuildDescription(IConfigEntry entry)
         {
             var tags = new List<object>();
 
@@ -130,27 +130,10 @@ namespace ConfigurationManager.Implementations
             var attrs = new ConfigurationManagerAttributes();
             var hasAttrs = false;
 
-            if (entry.Order != 0)
+            if (entry.UseSlider)
             {
-                attrs.Order = entry.Order;
+                attrs.UseIntegerSlider = true;
                 hasAttrs = true;
-            }
-
-            if (entry.IsAdvanced)
-            {
-                attrs.IsAdvanced = true;
-                hasAttrs = true;
-            }
-
-            if (entry.Hints != null)
-            {
-                foreach (var hint in entry.Hints)
-                {
-                    if (ApplyHint(attrs, hint.Key, hint.Value))
-                    {
-                        hasAttrs = true;
-                    }
-                }
             }
 
             if (hasAttrs)
@@ -158,21 +141,16 @@ namespace ConfigurationManager.Implementations
                 tags.Add(attrs);
             }
 
-            // Acceptable value constraints. Range takes precedence over list if both are set.
+            // Acceptable value constraints from the generic Range property.
+            // IConfigEntry (non-generic) doesn't expose Range, so we use reflection
+            // to read it from the concrete IConfigEntry<T> implementation.
             IAcceptableValue acceptableValues = null;
-            if (entry.AcceptableValueRange != null)
+            if (TryGetRangeViaReflection(entry, out var rangeMin, out var rangeMax))
             {
                 acceptableValues = CreateAcceptableValueRange(
                     entry.SettingType,
-                    entry.AcceptableValueRange.Min,
-                    entry.AcceptableValueRange.Max
-                );
-            }
-            else if (entry.AcceptableValues?.Length > 0)
-            {
-                acceptableValues = CreateAcceptableValueList(
-                    entry.SettingType,
-                    entry.AcceptableValues
+                    rangeMin,
+                    rangeMax
                 );
             }
 
@@ -183,20 +161,41 @@ namespace ConfigurationManager.Implementations
             );
         }
 
-        private static bool ApplyHint(
-            ConfigurationManagerAttributes attrs,
-            string key,
-            object value
+        private static bool TryGetRangeViaReflection(
+            IConfigEntry entry,
+            out object min,
+            out object max
         )
         {
-            switch (key)
+            min = null;
+            max = null;
+
+            // IConfigEntry<T>.Range is AcceptableValueRange<T> with Min/Max properties.
+            var entryType = entry.GetType();
+            var rangeProp = entryType.GetProperty("Range");
+            if (rangeProp == null)
             {
-                case "UseIntegerSlider":
-                    attrs.UseIntegerSlider = value as bool?;
-                    return true;
-                default:
-                    return false;
+                return false;
             }
+
+            var rangeValue = rangeProp.GetValue(entry, null);
+            if (rangeValue == null)
+            {
+                return false;
+            }
+
+            var rangeType = rangeValue.GetType();
+            var minProp = rangeType.GetProperty("Min");
+            var maxProp = rangeType.GetProperty("Max");
+            if (minProp == null || maxProp == null)
+            {
+                return false;
+            }
+
+            min = minProp.GetValue(rangeValue, null);
+            max = maxProp.GetValue(rangeValue, null);
+
+            return min != null && max != null;
         }
 
         private static IAcceptableValue CreateAcceptableValueRange(
@@ -205,25 +204,10 @@ namespace ConfigurationManager.Implementations
             object max
         )
         {
-            var openType = typeof(AcceptableValueRange<>);
+            var openType = typeof(Config.AcceptableValueRange<>);
             var closedType = openType.MakeGenericType(settingType);
 
             return (IAcceptableValue)Activator.CreateInstance(closedType, new[] { min, max });
-        }
-
-        private static IAcceptableValue CreateAcceptableValueList(Type settingType, object[] values)
-        {
-            var typedArray = Array.CreateInstance(settingType, values.Length);
-            for (var i = 0; i < values.Length; i++)
-            {
-                typedArray.SetValue(values[i], i);
-            }
-
-            var openType = typeof(AcceptableValueList<>);
-            var closedType = openType.MakeGenericType(settingType);
-
-            return (IAcceptableValue)
-                Activator.CreateInstance(closedType, new object[] { typedArray });
         }
 
         private static MethodInfo FindBindMethod()
