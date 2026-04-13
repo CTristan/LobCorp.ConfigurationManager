@@ -16,12 +16,12 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Delegate that serializes a value of the given type to a string
         /// </summary>
-        public Func<object, Type, string> ConvertToString;
+        public Func<object, Type, string> ConvertToString { get; set; }
 
         /// <summary>
         /// Delegate that deserializes a string back into a value of the given type
         /// </summary>
-        public Func<string, Type, object> ConvertToObject;
+        public Func<string, Type, object> ConvertToObject { get; set; }
     }
 
     /// <summary>
@@ -319,11 +319,13 @@ namespace ConfigurationManager.Config
             // Handle enums generically
             if (type.IsEnum)
             {
-                return new TypeConverter
+                var enumConverter = new TypeConverter
                 {
                     ConvertToString = (o, _) => o.ToString(),
                     ConvertToObject = (s, _) => Enum.Parse(type, s),
                 };
+                Converters[type] = enumConverter;
+                return enumConverter;
             }
 
             return null;

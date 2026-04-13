@@ -28,7 +28,7 @@ namespace ConfigurationManager.Input
         /// <summary>
         /// All key codes except mouse buttons, used to detect unwanted modifier keys during shortcut matching
         /// </summary>
-        public static readonly KeyCode[] ModifierBlockKeyCodes = AllKeyCodes
+        internal static readonly KeyCode[] ModifierBlockKeyCodes = AllKeyCodes
             .Except(
                 new[]
                 {
@@ -203,6 +203,16 @@ namespace ConfigurationManager.Input
             return obj is KeyboardShortcut shortcut && Equals(shortcut);
         }
 
+        /// <summary>
+        /// Determine whether this shortcut matches another shortcut.
+        /// </summary>
+        /// <param name="other">The shortcut to compare against.</param>
+        /// <returns><see langword="true" /> when both shortcuts have the same main key and modifiers.</returns>
+        public bool Equals(KeyboardShortcut other)
+        {
+            return MainKey == other.MainKey && Modifiers.SequenceEqual(other.Modifiers);
+        }
+
         /// <inheritdoc />
         public override int GetHashCode()
         {
@@ -212,16 +222,6 @@ namespace ConfigurationManager.Input
                     (current, item) => unchecked((current * 31) + (int)item)
                 )
                 : 0;
-        }
-
-        /// <summary>
-        /// Determine whether this shortcut matches another shortcut.
-        /// </summary>
-        /// <param name="other">The shortcut to compare against.</param>
-        /// <returns><see langword="true" /> when both shortcuts have the same main key and modifiers.</returns>
-        public bool Equals(KeyboardShortcut other)
-        {
-            return MainKey == other.MainKey && Modifiers.SequenceEqual(other.Modifiers);
         }
 
         /// <summary>Compares two shortcuts for value equality by delegating to <see cref="Equals(KeyboardShortcut)" />.</summary>

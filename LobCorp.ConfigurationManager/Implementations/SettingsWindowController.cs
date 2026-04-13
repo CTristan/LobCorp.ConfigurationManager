@@ -29,7 +29,7 @@ namespace ConfigurationManager.Implementations
         /// </summary>
         public static SettingsWindowController Instance { get; private set; }
 
-        private static SettingFieldDrawer _fieldDrawer;
+        private readonly SettingFieldDrawer _fieldDrawer;
 
         private static readonly Color _advancedSettingColor = new Color(1f, 0.95f, 0.67f, 1f);
         private const int WindowId = -68;
@@ -46,7 +46,7 @@ namespace ConfigurationManager.Implementations
         /// <summary>
         /// Disable the hotkey check used by config manager.
         /// </summary>
-        public bool OverrideHotkey;
+        public bool OverrideHotkey { get; set; }
 
         private bool _displayingWindow;
         private bool _obsoleteCursor;
@@ -455,64 +455,66 @@ namespace ConfigurationManager.Implementations
             var scrollHeight = SettingWindowRect.height;
 
             GUILayout.BeginVertical();
+            if (string.IsNullOrEmpty(SearchString))
             {
-                if (string.IsNullOrEmpty(SearchString))
-                {
-                    DrawTips();
+                DrawTips();
 
-                    if (_tipsHeight == 0 && Event.current.type == EventType.Repaint)
-                    {
-                        _tipsHeight = (int)GUILayoutUtility.GetLastRect().height;
-                    }
+                if (_tipsHeight == 0 && Event.current.type == EventType.Repaint)
+                {
+                    _tipsHeight = (int)GUILayoutUtility.GetLastRect().height;
                 }
+            }
 
-                var currentHeight = _tipsHeight;
+            var currentHeight = _tipsHeight;
 
-                foreach (var plugin in _filteredSettings)
+            foreach (var plugin in _filteredSettings)
+            {
+                var visible =
+                    plugin.Height == 0
+                    || (
+                        currentHeight + plugin.Height >= scrollPosition
+                        && currentHeight <= scrollPosition + scrollHeight
+                    );
+
+                if (visible)
                 {
-                    var visible =
-                        plugin.Height == 0
-                        || (
-                            currentHeight + plugin.Height >= scrollPosition
-                            && currentHeight <= scrollPosition + scrollHeight
-                        );
-
-                    if (visible)
+                    try
                     {
-                        try
-                        {
-                            DrawSinglePlugin(plugin);
-                        }
-                        // Unity ImGUI throws ArgumentException on layout/repaint event mismatch — safe to ignore
-                        catch (ArgumentException) { }
-
-                        if (plugin.Height == 0 && Event.current.type == EventType.Repaint)
-                        {
-                            plugin.Height = (int)GUILayoutUtility.GetLastRect().height;
-                        }
+                        DrawSinglePlugin(plugin);
                     }
-                    else
+                    catch (ArgumentException)
                     {
-                        try
-                        {
-                            GUILayout.Space(plugin.Height);
-                        }
                         // Unity ImGUI throws ArgumentException on layout/repaint event mismatch — safe to ignore
-                        catch (ArgumentException) { }
                     }
 
-                    currentHeight += plugin.Height;
-                }
-
-                if (_showDebug)
-                {
-                    GUILayout.Space(10);
-                    GUILayout.Label("Plugins with no options available: " + _modsWithoutSettings);
+                    if (plugin.Height == 0 && Event.current.type == EventType.Repaint)
+                    {
+                        plugin.Height = (int)GUILayoutUtility.GetLastRect().height;
+                    }
                 }
                 else
                 {
-                    GUILayout.Space(70);
+                    try
+                    {
+                        GUILayout.Space(plugin.Height);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // Unity ImGUI throws ArgumentException on layout/repaint event mismatch — safe to ignore
+                    }
                 }
+
+                currentHeight += plugin.Height;
+            }
+
+            if (_showDebug)
+            {
+                GUILayout.Space(10);
+                GUILayout.Label("Plugins with no options available: " + _modsWithoutSettings);
+            }
+            else
+            {
+                GUILayout.Space(70);
             }
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
@@ -546,9 +548,7 @@ namespace ConfigurationManager.Implementations
             if (tip != null)
             {
                 GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label(tip);
-                }
+                GUILayout.Label(tip);
                 GUILayout.EndHorizontal();
             }
         }
@@ -556,102 +556,98 @@ namespace ConfigurationManager.Implementations
         private void DrawWindowHeader()
         {
             GUILayout.BeginHorizontal(GUI.skin.box);
+            GUI.enabled = string.IsNullOrEmpty(SearchString);
+
+            var newVal = GUILayout.Toggle(_showSettings.Value, "Normal settings");
+            if (_showSettings.Value != newVal)
             {
-                GUI.enabled = string.IsNullOrEmpty(SearchString);
+                _showSettings.Value = newVal;
+                BuildFilteredSettingList();
+            }
 
-                var newVal = GUILayout.Toggle(_showSettings.Value, "Normal settings");
-                if (_showSettings.Value != newVal)
+            newVal = GUILayout.Toggle(_showKeybinds.Value, "Keyboard shortcuts");
+            if (_showKeybinds.Value != newVal)
+            {
+                _showKeybinds.Value = newVal;
+                BuildFilteredSettingList();
+            }
+
+            var origColor = GUI.color;
+            GUI.color = _advancedSettingColor;
+            newVal = GUILayout.Toggle(_showAdvanced.Value, "Advanced settings");
+            if (_showAdvanced.Value != newVal)
+            {
+                _showAdvanced.Value = newVal;
+                BuildFilteredSettingList();
+            }
+            GUI.color = origColor;
+
+            GUI.enabled = true;
+
+            GUILayout.Space(8);
+
+            newVal = GUILayout.Toggle(_showDebug, "Debug info");
+            if (_showDebug != newVal)
+            {
+                _showDebug = newVal;
+                BuildSettingList();
+            }
+
+            if (GUILayout.Button("Open Log"))
+            {
+                try
                 {
-                    _showSettings.Value = newVal;
-                    BuildFilteredSettingList();
+                    CommonHelpers.OpenLog();
                 }
-
-                newVal = GUILayout.Toggle(_showKeybinds.Value, "Keyboard shortcuts");
-                if (_showKeybinds.Value != newVal)
+                catch (SystemException ex)
                 {
-                    _showKeybinds.Value = newVal;
-                    BuildFilteredSettingList();
+                    SimpleLogger.LogError(ex.Message);
                 }
+            }
 
-                var origColor = GUI.color;
-                GUI.color = _advancedSettingColor;
-                newVal = GUILayout.Toggle(_showAdvanced.Value, "Advanced settings");
-                if (_showAdvanced.Value != newVal)
-                {
-                    _showAdvanced.Value = newVal;
-                    BuildFilteredSettingList();
-                }
-                GUI.color = origColor;
+            GUILayout.Space(8);
 
-                GUI.enabled = true;
-
-                GUILayout.Space(8);
-
-                newVal = GUILayout.Toggle(_showDebug, "Debug info");
-                if (_showDebug != newVal)
-                {
-                    _showDebug = newVal;
-                    BuildSettingList();
-                }
-
-                if (GUILayout.Button("Open Log"))
-                {
-                    try
-                    {
-                        CommonHelpers.OpenLog();
-                    }
-                    catch (SystemException ex)
-                    {
-                        SimpleLogger.LogError(ex.Message);
-                    }
-                }
-
-                GUILayout.Space(8);
-
-                if (GUILayout.Button("Close"))
-                {
-                    DisplayingWindow = false;
-                }
+            if (GUILayout.Button("Close"))
+            {
+                DisplayingWindow = false;
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal(GUI.skin.box);
+            GUILayout.Label("Search: ", GUILayout.ExpandWidth(false));
+
+            GUI.SetNextControlName(SearchBoxName);
+            SearchString = GUILayout.TextField(SearchString, GUILayout.ExpandWidth(true));
+
+            if (_focusSearchBox)
             {
-                GUILayout.Label("Search: ", GUILayout.ExpandWidth(false));
+                GUI.FocusWindow(WindowId);
+                GUI.FocusControl(SearchBoxName);
+                _focusSearchBox = false;
+            }
 
-                GUI.SetNextControlName(SearchBoxName);
-                SearchString = GUILayout.TextField(SearchString, GUILayout.ExpandWidth(true));
+            if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
+            {
+                SearchString = string.Empty;
+            }
 
-                if (_focusSearchBox)
-                {
-                    GUI.FocusWindow(WindowId);
-                    GUI.FocusControl(SearchBoxName);
-                    _focusSearchBox = false;
-                }
+            GUILayout.Space(8);
 
-                if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
-                {
-                    SearchString = string.Empty;
-                }
-
-                GUILayout.Space(8);
-
-                if (
-                    GUILayout.Button(
-                        _pluginConfigCollapsedDefault.Value ? "Expand All" : "Collapse All",
-                        GUILayout.ExpandWidth(false)
-                    )
+            if (
+                GUILayout.Button(
+                    _pluginConfigCollapsedDefault.Value ? "Expand All" : "Collapse All",
+                    GUILayout.ExpandWidth(false)
                 )
+            )
+            {
+                var newValue = !_pluginConfigCollapsedDefault.Value;
+                _pluginConfigCollapsedDefault.Value = newValue;
+                foreach (var plugin in _filteredSettings)
                 {
-                    var newValue = !_pluginConfigCollapsedDefault.Value;
-                    _pluginConfigCollapsedDefault.Value = newValue;
-                    foreach (var plugin in _filteredSettings)
-                    {
-                        plugin.Collapsed = newValue;
-                    }
-
-                    _tipsPluginHeaderWasClicked = true;
+                    plugin.Collapsed = newValue;
                 }
+
+                _tipsPluginHeaderWasClicked = true;
             }
             GUILayout.EndHorizontal();
         }
@@ -696,55 +692,53 @@ namespace ConfigurationManager.Implementations
 
             var isSearching = !string.IsNullOrEmpty(SearchString);
 
+            var hasWebsite = plugin.Website != null;
+            if (hasWebsite)
             {
-                var hasWebsite = plugin.Website != null;
-                if (hasWebsite)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Space(29);
-                }
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(29);
+            }
 
+            if (
+                SettingFieldDrawer.DrawPluginHeader(
+                    categoryHeader,
+                    plugin.Collapsed && !isSearching
+                ) && !isSearching
+            )
+            {
+                _tipsPluginHeaderWasClicked = true;
+                plugin.Collapsed = !plugin.Collapsed;
+            }
+
+            if (hasWebsite)
+            {
+                var origColor = GUI.color;
+                GUI.color = Color.gray;
                 if (
-                    SettingFieldDrawer.DrawPluginHeader(
-                        categoryHeader,
-                        plugin.Collapsed && !isSearching
-                    ) && !isSearching
+                    GUILayout.Button(
+                        new GUIContent("URL", null, plugin.Website),
+                        GUI.skin.label,
+                        GUILayout.ExpandWidth(false)
+                    )
                 )
                 {
-                    _tipsPluginHeaderWasClicked = true;
-                    plugin.Collapsed = !plugin.Collapsed;
+                    CommonHelpers.OpenWebsite(plugin.Website);
                 }
 
-                if (hasWebsite)
-                {
-                    var origColor = GUI.color;
-                    GUI.color = Color.gray;
-                    if (
-                        GUILayout.Button(
-                            new GUIContent("URL", null, plugin.Website),
-                            GUI.skin.label,
-                            GUILayout.ExpandWidth(false)
-                        )
-                    )
-                    {
-                        CommonHelpers.OpenWebsite(plugin.Website);
-                    }
-
-                    GUI.color = origColor;
-                    GUILayout.EndHorizontal();
-                }
+                GUI.color = origColor;
+                GUILayout.EndHorizontal();
             }
 
             if (isSearching || !plugin.Collapsed)
             {
                 foreach (var category in plugin.Categories)
                 {
-                    if (!string.IsNullOrEmpty(category.Name))
+                    if (
+                        !string.IsNullOrEmpty(category.Name)
+                        && (plugin.Categories.Count > 1 || !_hideSingleSection.Value)
+                    )
                     {
-                        if (plugin.Categories.Count > 1 || !_hideSingleSection.Value)
-                        {
-                            SettingFieldDrawer.DrawCategoryHeader(category.Name);
-                        }
+                        SettingFieldDrawer.DrawCategoryHeader(category.Name);
                     }
 
                     foreach (var setting in category.Settings)
@@ -761,20 +755,16 @@ namespace ConfigurationManager.Implementations
         private void DrawSingleSetting(SettingEntryBase setting)
         {
             GUILayout.BeginHorizontal();
+            try
             {
-                try
-                {
-                    DrawSettingName(setting);
-                    _fieldDrawer.DrawSettingValue(setting);
-                    DrawDefaultButton(setting);
-                }
-                catch (Exception ex)
-                {
-                    SimpleLogger.LogError(
-                        "Failed to draw setting " + setting.DispName + " - " + ex
-                    );
-                    GUILayout.Label("Failed to draw this field, check log for details.");
-                }
+                DrawSettingName(setting);
+                _fieldDrawer.DrawSettingValue(setting);
+                DrawDefaultButton(setting);
+            }
+            catch (Exception ex)
+            {
+                SimpleLogger.LogError("Failed to draw setting " + setting.DispName + " - " + ex);
+                GUILayout.Label("Failed to draw this field, check log for details.");
             }
             GUILayout.EndHorizontal();
         }

@@ -2,7 +2,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using ConfigurationManager.Implementations;
 using Harmony;
+using LobotomyCorporation.Mods.Common;
 
 namespace ConfigurationManager
 {
@@ -36,6 +38,18 @@ namespace ConfigurationManager
             {
                 var harmony = HarmonyInstance.Create("com.lobcorp.configurationmanager");
                 harmony.PatchAll(typeof(Harmony_Patch).Assembly);
+
+                var provider = new LmmConfigurationProvider();
+
+                // Attach to every ModConfig that has already been created.
+                foreach (var config in ModConfig.RegisteredConfigs)
+                {
+                    config.AttachProvider(provider);
+                }
+
+                // Attach to any ModConfig created after this point.
+                ModConfig.ConfigRegistered += (sender, args) =>
+                    args.Config.AttachProvider(provider);
             }
             catch (Exception ex)
             {
@@ -45,9 +59,10 @@ namespace ConfigurationManager
                         "[ConfigurationManager] Failed to apply Harmony patches: " + ex
                     );
                 }
-                catch
+                catch (Exception)
                 {
-                    // Unity logging unavailable (e.g. running in unit tests)
+                    // Unity logging is unavailable; no alternative output target exists
+                    _ = ex;
                 }
             }
         }

@@ -18,7 +18,7 @@ namespace ConfigurationManager.Config
         /// <summary>
         /// Optional constraint on valid values (range or list)
         /// </summary>
-        public AcceptableValueBase AcceptableValues { get; }
+        public IAcceptableValue AcceptableValues { get; }
 
         /// <summary>
         /// Attribute objects applied to the entry (e.g. <see cref="ConfigurationManagerAttributes"/>)
@@ -33,7 +33,7 @@ namespace ConfigurationManager.Config
         /// <param name="tags">Attribute objects that control UI display behavior</param>
         public LmmConfigDescription(
             string description,
-            AcceptableValueBase acceptableValues = null,
+            IAcceptableValue acceptableValues = null,
             params object[] tags
         )
         {

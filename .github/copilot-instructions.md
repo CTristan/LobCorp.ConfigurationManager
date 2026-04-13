@@ -36,17 +36,20 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - `LmmConfigFile` — file I/O and parsing for `config.cfg` files
 - `LmmConfigEntry<T>` — generic typed entries with change events and auto-save
 - `LmmConfigDefinition` — section + key identity
-- `AcceptableValueRange<T>` / `AcceptableValueList<T>` — value constraints
+- `AcceptableValueRange<T>` / `AcceptableValueList<T>` — value constraints implementing `IAcceptableValue`
 
 **UI rendering (`Implementations/SettingFieldDrawer.cs`):**
 - ImGUI immediate-mode rendering
 - Type-specific controls: checkboxes, sliders, dropdowns, color pickers, hotkey capture
 - `ConfigurationManagerAttributes` controls display (order, visibility, custom drawers)
 
+**`ConfigurationManagerAttributes` is a copy-paste template, not a referenced API.** Each plugin bundles its own copy of the class and assigns values to instances that get passed as tags to setting descriptions. `SettingEntryBase.SetFromAttributes()` reads these via reflection (`Type.GetProperties`, matching by simple type name — not assembly identity). This fork uses **public auto-properties**; upstream BepInEx.ConfigurationManager uses **public fields**, so upstream's template is not directly compatible — if copying from upstream, convert the fields to auto-properties.
+
 ## Key Constraints
 
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
-- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This makes the fork a drop-in replacement: the identical DLL name prevents both from loading simultaneously, and the shared namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). Do not change either without accounting for these implications.
+- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape (e.g. `ConfigurationManagerAttributes` was moved from fields to properties). Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
+- **`Harmony_Patch` class name is load-bearing** — every LMM mod must expose an entry type named `Harmony_Patch`. The analyzer package (`LobotomyCorporation.Mods.Analyzers` globalconfig) suppresses S101 and CA1707 repo-wide so this pattern doesn't trip naming rules.
 - **All references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime.
 - **Implicit usings and nullable are disabled.**
 - `Microsoft.NETFramework.ReferenceAssemblies` is pulled in implicitly by the SDK for net35 — do not add it to `Directory.Packages.props`.
@@ -57,4 +60,4 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) packs and pushes to Illusio
 
 ## Analyzers
 
-Global analyzers (`LobotomyCorporation.Mods.Analyzers`, `OpenLobotomy.Standards`) are configured in `Directory.Packages.props`. There is existing analyzer debt (~117 style warnings) that needs a separate cleanup pass.
+Global analyzers (`LobotomyCorporation.Mods.Analyzers`, `OpenLobotomy.Standards`) are configured in `Directory.Packages.props`. All Sonar rules run at their default severity — there are no global suppressions in `.editorconfig`. Rule exceptions that apply to all LMM mods (e.g. S101/CA1707 for the `Harmony_Patch` entry point) live in the shared `LobotomyCorporation.Mods.Analyzers` globalconfig, not here. Fix violations rather than suppressing them; if a suppression is truly needed, scope it as narrowly as possible (file-local `#pragma` or per-member `[SuppressMessage]`).

@@ -37,11 +37,26 @@ namespace ConfigurationManager.Utilities
 
         public GUIContent ButtonContent { get; set; }
 
+        private static void ClearForceUnShow()
+        {
+            forceToUnShow = false;
+        }
+
+        private static void TakeControl(int controlID)
+        {
+            useControlID = controlID;
+        }
+
+        private static void RequestForceUnShow()
+        {
+            forceToUnShow = true;
+        }
+
         public void Show(Action<int> onItemSelected)
         {
             if (forceToUnShow)
             {
-                forceToUnShow = false;
+                ClearForceUnShow();
                 isClickedComboButton = false;
             }
 
@@ -62,14 +77,14 @@ namespace ConfigurationManager.Utilities
             {
                 if (useControlID == -1)
                 {
-                    useControlID = controlID;
+                    TakeControl(controlID);
                     isClickedComboButton = false;
                 }
 
                 if (useControlID != controlID)
                 {
-                    forceToUnShow = true;
-                    useControlID = controlID;
+                    RequestForceUnShow();
+                    TakeControl(controlID);
                 }
                 isClickedComboButton = true;
             }
@@ -125,20 +140,18 @@ namespace ConfigurationManager.Utilities
                         false,
                         false
                     );
+                    const int initialSelectedItem = -1;
+                    var newSelectedItemIndex = GUI.SelectionGrid(
+                        innerRect,
+                        initialSelectedItem,
+                        listContent,
+                        1,
+                        listStyle
+                    );
+                    if (newSelectedItemIndex != initialSelectedItem)
                     {
-                        const int initialSelectedItem = -1;
-                        var newSelectedItemIndex = GUI.SelectionGrid(
-                            innerRect,
-                            initialSelectedItem,
-                            listContent,
-                            1,
-                            listStyle
-                        );
-                        if (newSelectedItemIndex != initialSelectedItem)
-                        {
-                            onItemSelected(newSelectedItemIndex);
-                            isClickedComboButton = false;
-                        }
+                        onItemSelected(newSelectedItemIndex);
+                        isClickedComboButton = false;
                     }
                     GUI.EndScrollView(true);
                 };

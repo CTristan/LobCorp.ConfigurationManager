@@ -22,31 +22,23 @@ namespace ConfigurationManager.Implementations
         private static bool _initialized;
         private static bool _bepInExAvailable;
 
-        private static Assembly _bepInExAssembly;
-        private static Type _chainloaderType;
         private static PropertyInfo _pluginInfosProperty;
-        private static Type _pluginInfoType;
         private static PropertyInfo _pluginInfoInstanceProperty;
         private static PropertyInfo _pluginInfoMetadataProperty;
-        private static Type _bepInPluginType;
         private static PropertyInfo _bepInPluginGuidProperty;
         private static PropertyInfo _bepInPluginNameProperty;
         private static PropertyInfo _bepInPluginVersionProperty;
 
-        private static Type _baseUnityPluginType;
         private static PropertyInfo _configProperty;
 
-        private static Type _configEntryBaseType;
         private static PropertyInfo _configEntryDefinitionProperty;
         private static PropertyInfo _configEntrySettingTypeProperty;
         private static PropertyInfo _configEntryDefaultValueProperty;
         private static PropertyInfo _configEntryDescriptionProperty;
 
-        private static Type _configDefinitionType;
         private static PropertyInfo _configDefinitionSectionProperty;
         private static PropertyInfo _configDefinitionKeyProperty;
 
-        private static Type _configDescriptionType;
         private static PropertyInfo _configDescriptionDescriptionProperty;
 
         private static void Initialize()
@@ -60,83 +52,82 @@ namespace ConfigurationManager.Implementations
 
             try
             {
-                _bepInExAssembly = AppDomain
+                var bepInExAssembly = AppDomain
                     .CurrentDomain.GetAssemblies()
                     .FirstOrDefault(a => a.GetName().Name == "BepInEx");
 
-                if (_bepInExAssembly == null)
+                if (bepInExAssembly == null)
                 {
                     _bepInExAvailable = false;
                     return;
                 }
 
-                _chainloaderType = _bepInExAssembly.GetType("BepInEx.Bootstrap.Chainloader");
-                if (_chainloaderType == null)
+                var chainloaderType = bepInExAssembly.GetType("BepInEx.Bootstrap.Chainloader");
+                if (chainloaderType == null)
                 {
                     _bepInExAvailable = false;
                     return;
                 }
 
-                _pluginInfosProperty = _chainloaderType.GetProperty(
+                _pluginInfosProperty = chainloaderType.GetProperty(
                     "PluginInfos",
                     BindingFlags.Static | BindingFlags.Public
                 );
 
-                _pluginInfoType = _bepInExAssembly.GetType("BepInEx.PluginInfo");
-                if (_pluginInfoType != null)
+                var pluginInfoType = bepInExAssembly.GetType("BepInEx.PluginInfo");
+                if (pluginInfoType != null)
                 {
-                    _pluginInfoInstanceProperty = _pluginInfoType.GetProperty("Instance");
-                    _pluginInfoMetadataProperty = _pluginInfoType.GetProperty("Metadata");
+                    _pluginInfoInstanceProperty = pluginInfoType.GetProperty("Instance");
+                    _pluginInfoMetadataProperty = pluginInfoType.GetProperty("Metadata");
                 }
 
-                _bepInPluginType = _bepInExAssembly.GetType("BepInEx.BepInPlugin");
-                if (_bepInPluginType != null)
+                var bepInPluginType = bepInExAssembly.GetType("BepInEx.BepInPlugin");
+                if (bepInPluginType != null)
                 {
-                    _bepInPluginGuidProperty = _bepInPluginType.GetProperty("GUID");
-                    _bepInPluginNameProperty = _bepInPluginType.GetProperty("Name");
-                    _bepInPluginVersionProperty = _bepInPluginType.GetProperty("Version");
+                    _bepInPluginGuidProperty = bepInPluginType.GetProperty("GUID");
+                    _bepInPluginNameProperty = bepInPluginType.GetProperty("Name");
+                    _bepInPluginVersionProperty = bepInPluginType.GetProperty("Version");
                 }
 
-                _baseUnityPluginType = _bepInExAssembly.GetType("BepInEx.BaseUnityPlugin");
-                if (_baseUnityPluginType != null)
+                var baseUnityPluginType = bepInExAssembly.GetType("BepInEx.BaseUnityPlugin");
+                if (baseUnityPluginType != null)
                 {
-                    _configProperty = _baseUnityPluginType.GetProperty("Config");
+                    _configProperty = baseUnityPluginType.GetProperty("Config");
                 }
 
-                var configAssembly = _bepInExAssembly;
-                _configEntryBaseType = configAssembly.GetType(
+                var configEntryBaseType = bepInExAssembly.GetType(
                     "BepInEx.Configuration.ConfigEntryBase"
                 );
 
-                if (_configEntryBaseType != null)
+                if (configEntryBaseType != null)
                 {
-                    _configEntryDefinitionProperty = _configEntryBaseType.GetProperty("Definition");
-                    _configEntrySettingTypeProperty = _configEntryBaseType.GetProperty(
+                    _configEntryDefinitionProperty = configEntryBaseType.GetProperty("Definition");
+                    _configEntrySettingTypeProperty = configEntryBaseType.GetProperty(
                         "SettingType"
                     );
-                    _configEntryDefaultValueProperty = _configEntryBaseType.GetProperty(
+                    _configEntryDefaultValueProperty = configEntryBaseType.GetProperty(
                         "DefaultValue"
                     );
-                    _configEntryDescriptionProperty = _configEntryBaseType.GetProperty(
+                    _configEntryDescriptionProperty = configEntryBaseType.GetProperty(
                         "Description"
                     );
                 }
 
-                _configDefinitionType = configAssembly.GetType(
+                var configDefinitionType = bepInExAssembly.GetType(
                     "BepInEx.Configuration.ConfigDefinition"
                 );
-                if (_configDefinitionType != null)
+                if (configDefinitionType != null)
                 {
-                    _configDefinitionSectionProperty = _configDefinitionType.GetProperty("Section");
-                    _configDefinitionKeyProperty = _configDefinitionType.GetProperty("Key");
+                    _configDefinitionSectionProperty = configDefinitionType.GetProperty("Section");
+                    _configDefinitionKeyProperty = configDefinitionType.GetProperty("Key");
                 }
 
-                _configDescriptionType = configAssembly.GetType(
+                var configDescriptionType = bepInExAssembly.GetType(
                     "BepInEx.Configuration.ConfigDescription"
                 );
-                if (_configDescriptionType != null)
+                if (configDescriptionType != null)
                 {
-                    _configDescriptionDescriptionProperty = _configDescriptionType.GetProperty(
+                    _configDescriptionDescriptionProperty = configDescriptionType.GetProperty(
                         "Description"
                     );
                 }
@@ -152,7 +143,7 @@ namespace ConfigurationManager.Implementations
 
         /// <summary>
         /// Collect settings from BepInEx plugins via reflection.
-        /// Returns null if BepInEx is not available.
+        /// Returns an empty sequence if BepInEx is not available.
         /// </summary>
         public static IEnumerable<SettingEntryBase> CollectBepInExSettings()
         {
@@ -160,7 +151,7 @@ namespace ConfigurationManager.Implementations
 
             if (!_bepInExAvailable)
             {
-                return null;
+                return Enumerable.Empty<SettingEntryBase>();
             }
 
             var results = new List<SettingEntryBase>();

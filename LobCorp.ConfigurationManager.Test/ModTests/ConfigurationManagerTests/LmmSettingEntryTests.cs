@@ -253,5 +253,30 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             act.Should().Throw<ArgumentNullException>();
         }
+
+        /// <summary>
+        /// Stand-in for a plugin that bundles its own copy of ConfigurationManagerAttributes.
+        /// SetFromAttributes matches by simple type name, not assembly identity, so this
+        /// property-shape stub should populate the entry exactly like the real class.
+        /// </summary>
+        private sealed class ConfigurationManagerAttributes
+        {
+            public bool? IsAdvanced { get; set; }
+            public int? Order { get; set; }
+        }
+
+        [Fact]
+        public void Constructor_ForeignConfigurationManagerAttributesStub_ShouldPopulateFromProperties()
+        {
+            var stub = new ConfigurationManagerAttributes { IsAdvanced = true, Order = 7 };
+            var desc = new LmmConfigDescription("test", null, stub);
+            var entry = _configFile.Bind("General", "ForeignAttrs", 0, desc);
+            var pluginInfo = new PluginInfo("test", "TestMod", "1.0");
+
+            var setting = new LmmSettingEntry(entry, pluginInfo, null);
+
+            setting.IsAdvanced.Should().BeTrue();
+            setting.Order.Should().Be(7);
+        }
     }
 }

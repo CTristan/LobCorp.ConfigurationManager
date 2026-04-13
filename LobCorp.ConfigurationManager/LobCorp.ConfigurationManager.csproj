@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net35</TargetFramework>
-		<!--
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <!--
 			RootNamespace and AssemblyName intentionally match upstream BepInEx.ConfigurationManager.
 			Same AssemblyName produces ConfigurationManager.dll, preventing both from loading
 			simultaneously (DLL collision acts as a mutual-exclusion mechanism).
@@ -10,55 +10,59 @@
 			Changing either would risk dual-load conflicts: double UI entries and duplicate
 			attribute processing via the name-based ConfigurationManagerAttributes detection.
 		-->
-		<RootNamespace>ConfigurationManager</RootNamespace>
-    	<AssemblyName>ConfigurationManager</AssemblyName>
-	</PropertyGroup>
+    <RootNamespace>ConfigurationManager</RootNamespace>
+    <AssemblyName>ConfigurationManager</AssemblyName>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Reference Include="0Harmony">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\0Harmony.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.CoreModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.IMGUIModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.InputModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.InputModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.UIModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.ImageConversionModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="UnityEngine.TextRenderingModule">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Assembly-CSharp">
-			<HintPath>..\external\LobotomyCorp_Data\Managed\Assembly-CSharp.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LobotomyCorporation.Mods.Common" ExcludeAssets="runtime" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="Info\GlobalInfo.xml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Info\en\Info.xml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\external\LobotomyCorp_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Info\GlobalInfo.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Info\en\Info.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

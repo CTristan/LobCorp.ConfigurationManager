@@ -13,30 +13,22 @@ namespace ConfigurationManager.Implementations
     [ExcludeFromCodeCoverage(Justification = "ImGUI field drawing")]
     internal sealed class SettingFieldDrawer
     {
-        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers { get; }
-
-        private static SettingsWindowController _instance;
-
-        public static bool SettingKeyboardShortcut =>
-            KeyboardShortcutDrawer.SettingKeyboardShortcut;
-
-        static SettingFieldDrawer()
-        {
-            SettingDrawHandlers = new Dictionary<Type, Action<SettingEntryBase>>
+        public static Dictionary<Type, Action<SettingEntryBase>> SettingDrawHandlers { get; } =
+            new Dictionary<Type, Action<SettingEntryBase>>
             {
                 { typeof(bool), DrawBoolField },
                 { typeof(KeyboardShortcut), KeyboardShortcutDrawer.DrawKeyboardShortcut },
-                {
-                    typeof(KeyCode),
-                    s => KeyboardShortcutDrawer.DrawKeyCode(s, _instance.SettingWindowRect.yMax)
-                },
                 { typeof(Color), ColorFieldDrawer.DrawColor },
                 { typeof(Vector2), DrawVector2 },
                 { typeof(Vector3), DrawVector3 },
                 { typeof(Vector4), DrawVector4 },
                 { typeof(Quaternion), DrawQuaternion },
             };
-        }
+
+        private readonly SettingsWindowController _instance;
+
+        public static bool SettingKeyboardShortcut =>
+            KeyboardShortcutDrawer.SettingKeyboardShortcut;
 
         public SettingFieldDrawer(SettingsWindowController instance)
         {
@@ -71,9 +63,13 @@ namespace ConfigurationManager.Implementations
             {
                 ComboboxDrawer.DrawListField(setting, _instance.SettingWindowRect.yMax);
             }
+            else if (setting.SettingType == typeof(KeyCode))
+            {
+                KeyboardShortcutDrawer.DrawKeyCode(setting, _instance.SettingWindowRect.yMax);
+            }
             else if (DrawFieldBasedOnValueType(setting))
             {
-                return;
+                // Handled by type-specific drawer
             }
             else if (setting.SettingType.IsEnum)
             {
@@ -230,8 +226,10 @@ namespace ConfigurationManager.Implementations
                             )
                         );
                     }
-                    // User may type partial/invalid numeric input — keep previous value until valid
-                    catch (FormatException) { }
+                    catch (FormatException)
+                    {
+                        // User may type partial/invalid numeric input — keep previous value until valid
+                    }
                 }
             }
         }

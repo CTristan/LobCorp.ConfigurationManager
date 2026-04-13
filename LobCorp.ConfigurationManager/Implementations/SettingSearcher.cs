@@ -113,11 +113,7 @@ namespace ConfigurationManager.Implementations
             // 3. Optionally collect BepInEx plugins via reflection
             try
             {
-                var bepInExSettings = BepInExInterop.CollectBepInExSettings();
-                if (bepInExSettings != null)
-                {
-                    results = results.Concat(bepInExSettings);
-                }
+                results = results.Concat(BepInExInterop.CollectBepInExSettings());
             }
             catch (Exception ex)
             {

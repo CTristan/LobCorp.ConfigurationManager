@@ -137,5 +137,19 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
 
             obj.ReadOnlyValue.Should().Be("original");
         }
+
+        [Fact]
+        public void SetFromAttributes_UnrecognizedAttributeBeforeKnownOne_ShouldNotSkipRemaining()
+        {
+            var obj = new PlainPropertyHolder();
+            var prop = typeof(PlainPropertyHolder).GetProperty("Plain");
+
+            object[] attribs = [new object(), new DescriptionAttribute("Should still be applied")];
+
+            var entry = new PropertySettingEntry(obj, prop, null);
+            entry.SetFromAttributes(attribs, null);
+
+            entry.Description.Should().Be("Should still be applied");
+        }
     }
 }

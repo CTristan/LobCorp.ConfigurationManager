@@ -17,6 +17,10 @@ namespace LobCorp.ConfigurationManager.Test.Attributes
     ///     any test that takes longer than the specified duration will fail with a
     ///     descriptive timeout message.
     /// </summary>
+    [AttributeUsage(
+        AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Assembly,
+        AllowMultiple = true
+    )]
     public sealed class GlobalTimeoutAttribute : BeforeAfterTestAttribute
     {
         private Stopwatch? _stopwatch;

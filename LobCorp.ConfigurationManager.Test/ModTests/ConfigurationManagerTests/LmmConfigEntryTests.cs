@@ -102,6 +102,54 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         }
 
         [Fact]
+        public void Value_WithAcceptableValueRange_ShouldClampToMaximum()
+        {
+            var range = new AcceptableValueRange<int>(0, 100);
+            var desc = new LmmConfigDescription("Volume", range);
+            var entry = _configFile.Bind("General", "Volume", 50, desc);
+
+            entry.Value = 150;
+
+            entry.Value.Should().Be(100);
+        }
+
+        [Fact]
+        public void Value_WithAcceptableValueRange_ShouldClampToMinimum()
+        {
+            var range = new AcceptableValueRange<int>(0, 100);
+            var desc = new LmmConfigDescription("Volume", range);
+            var entry = _configFile.Bind("General", "Volume", 50, desc);
+
+            entry.Value = -10;
+
+            entry.Value.Should().Be(0);
+        }
+
+        [Fact]
+        public void Value_WithAcceptableValueList_ShouldRejectInvalidValue()
+        {
+            var list = new AcceptableValueList<string>("Low", "Medium", "High");
+            var desc = new LmmConfigDescription("Quality", list);
+            var entry = _configFile.Bind("General", "Quality", "Medium", desc);
+
+            entry.Value = "Ultra";
+
+            entry.Value.Should().Be("Medium");
+        }
+
+        [Fact]
+        public void Value_WithAcceptableValueList_ShouldAcceptValidValue()
+        {
+            var list = new AcceptableValueList<string>("Low", "Medium", "High");
+            var desc = new LmmConfigDescription("Quality", list);
+            var entry = _configFile.Bind("General", "Quality", "Medium", desc);
+
+            entry.Value = "High";
+
+            entry.Value.Should().Be("High");
+        }
+
+        [Fact]
         public void BeginBatchSave_ShouldSuppressSavesDuringScope()
         {
             var entry = _configFile.Bind("General", "Volume", 50);
