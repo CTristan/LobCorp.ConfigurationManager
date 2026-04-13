@@ -94,7 +94,7 @@ namespace ConfigurationManager.Implementations
 
             // Sync persisted value → IConfigEntry
             var persistedValue = lmmEntry.BoxedValue;
-            if (persistedValue?.Equals(entry.DefaultValue) == false)
+            if (!object.Equals(persistedValue, entry.DefaultValue))
             {
                 entry.Value = persistedValue;
             }

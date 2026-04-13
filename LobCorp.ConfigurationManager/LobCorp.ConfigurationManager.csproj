@@ -15,9 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LobotomyCorporation.Mods.Common">
-      <Private>false</Private>
-    </PackageReference>
+    <PackageReference Include="LobotomyCorporation.Mods.Common" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
