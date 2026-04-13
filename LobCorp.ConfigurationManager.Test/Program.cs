@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 // Custom entry point for xUnit v3. Auto-generation is disabled because
-// ConfigurationManager.dll (net35) contains an ExcludeFromCodeCoverageAttribute
-// polyfill that conflicts with the BCL type, causing CS0433 in auto-generated code.
+// Common's net35 assembly contains an ExcludeFromCodeCoverageAttribute polyfill
+// that conflicts with the BCL type, causing CS0433 in auto-generated code.
 
 using System.Linq;
 
