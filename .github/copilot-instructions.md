@@ -50,13 +50,16 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
 - **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape (e.g. `ConfigurationManagerAttributes` was moved from fields to properties). Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
 - **`Harmony_Patch` class name is load-bearing** — every LMM mod must expose an entry type named `Harmony_Patch`. The analyzer package (`LobotomyCorporation.Mods.Analyzers` globalconfig) suppresses S101 and CA1707 repo-wide so this pattern doesn't trip naming rules.
-- **All references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime.
+- **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. The `LobotomyCorporation.Mods.Common` PackageReference does copy to output, as it must be deployed alongside the mod.
 - **Implicit usings and nullable are disabled.**
 - `Microsoft.NETFramework.ReferenceAssemblies` is pulled in implicitly by the SDK for net35 — do not add it to `Directory.Packages.props`.
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) packs and pushes to IllusionMods Azure DevOps NuGet feed on release publish.
+- **CI** (`.github/workflows/ci.yml`) — builds and tests on push to `main` and PRs.
+- **Release** (`.github/workflows/release.yml`) — triggered when a GitHub Release is published. Builds, tests, packages the mod as a zip (matching the `BaseMods/ConfigurationManager/` folder structure), and uploads it as a release asset.
+
+NuGet package publishing is planned for v1.0.0 but not yet implemented.
 
 ## Analyzers
 

@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+
+      - name: Checkout private references
+        if: ${{ vars.PRIVATE_REFERENCES_REPO != '' }}
+        uses: actions/checkout@v4
+        with:
+          path: external/LobotomyCorp_Data
+          persist-credentials: false
+          repository: ${{ vars.PRIVATE_REFERENCES_REPO }}
+          token: ${{ secrets.PRIVATE_REFERENCES_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
+
+      - name: Authenticate GitHub Packages
+        run: dotnet nuget update source github --username open-lobotomy --password ${{ secrets.PACKAGES_TOKEN }} --store-password-in-clear-text || true
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore dependencies
+        run: dotnet restore --ignore-failed-sources ConfigurationManager.slnx
+
+      - name: Build
+        run: dotnet build --no-restore -p:Version=${{ steps.version.outputs.VERSION }} ConfigurationManager.slnx
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal --blame-hang-timeout 10s ConfigurationManager.slnx
+
+      - name: Stage release artifacts
+        run: |
+          mkdir -p staging/ConfigurationManager/Info/en
+          cp LobCorp.ConfigurationManager/bin/net35/ConfigurationManager.dll staging/ConfigurationManager/
+          cp LobCorp.ConfigurationManager/bin/net35/LobotomyCorporation.Mods.Common.*.dll staging/ConfigurationManager/
+          cp LobCorp.ConfigurationManager/bin/net35/Info/GlobalInfo.xml staging/ConfigurationManager/Info/
+          cp LobCorp.ConfigurationManager/bin/net35/Info/en/Info.xml staging/ConfigurationManager/Info/en/
+
+      - name: Create zip
+        working-directory: staging
+        run: zip -r ../ConfigurationManager-${{ github.event.release.tag_name }}.zip ConfigurationManager/
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload --clobber "${{ github.event.release.tag_name }}" "ConfigurationManager-${{ github.event.release.tag_name }}.zip"
