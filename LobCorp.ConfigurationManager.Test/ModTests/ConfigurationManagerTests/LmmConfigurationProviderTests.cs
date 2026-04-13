@@ -251,7 +251,9 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             provider.LoadPersistedValues([realEntry]);
 
             var bound = file.Bind("General", "Volume", 0);
-            bound.Description.AcceptableValues.Should().BeOfType<global::ConfigurationManager.Config.AcceptableValueRange<int>>();
+            bound
+                .Description.AcceptableValues.Should()
+                .BeOfType<global::ConfigurationManager.Config.AcceptableValueRange<int>>();
         }
 
         [Fact]

@@ -17,14 +17,18 @@
     <PackageReference Include="AutoFixture.AutoMoq" />
     <PackageReference Include="AutoFixture.Xunit3" />
     <PackageReference Include="Moq" />
-    <PackageReference Include="LobotomyCorporation.Mods.Common" GeneratePathProperty="true" ExcludeAssets="All" />
+    <PackageReference
+      Include="LobotomyCorporation.Mods.Common"
+      GeneratePathProperty="true"
+      ExcludeAssets="All"
+    />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LobCorp.ConfigurationManager\LobCorp.ConfigurationManager.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LobotomyCorporation.Mods.Common">
-      <HintPath>$(PkgLobotomyCorporation_Mods_Common)\lib\net35\LobotomyCorporation.Mods.Common..dll</HintPath>
+      <HintPath>$(PkgLobotomyCorporation_Mods_Common)\lib\net35\LobotomyCorporation.Mods.Common.$(LobotomyCorporationModsCommonVersion).dll</HintPath>
     </Reference>
     <Reference Include="0Harmony">
       <HintPath>..\external\LobotomyCorp_Data\Managed\0Harmony.dll</HintPath>
