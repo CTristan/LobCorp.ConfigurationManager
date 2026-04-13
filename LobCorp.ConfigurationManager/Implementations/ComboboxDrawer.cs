@@ -83,7 +83,7 @@ namespace ConfigurationManager.Implementations
 
         public static void DrawComboboxField(SettingEntryBase setting, IList list, float windowYmax)
         {
-            var buttonText = ObjectToGuiContent(setting.GetValue());
+            var buttonText = ObjectToGuiContent(setting.GetValue(), setting.ValueDisplayNames);
             var dispRect = GUILayoutUtility.GetRect(
                 buttonText,
                 GUI.skin.button,
@@ -95,7 +95,9 @@ namespace ConfigurationManager.Implementations
                 box = new ComboBox(
                     dispRect,
                     buttonText,
-                    list.Cast<object>().Select(ObjectToGuiContent).ToArray(),
+                    list.Cast<object>()
+                        .Select(v => ObjectToGuiContent(v, setting.ValueDisplayNames))
+                        .ToArray(),
                     GUI.skin.button,
                     windowYmax
                 );
@@ -134,7 +136,7 @@ namespace ConfigurationManager.Implementations
             var allValues = enumValues
                 .Cast<Enum>()
                 .Select(x => new FlagEntry(
-                    x.ToString(),
+                    GetValueDisplayName(x, setting.ValueDisplayNames),
                     Convert.ToInt64(x, CultureInfo.InvariantCulture)
                 ))
                 .ToArray();
@@ -202,8 +204,19 @@ namespace ConfigurationManager.Implementations
             }
         }
 
-        private static GUIContent ObjectToGuiContent(object x)
+        private static GUIContent ObjectToGuiContent(
+            object x,
+            IDictionary<string, string> valueDisplayNames = null
+        )
         {
+            if (
+                valueDisplayNames != null
+                && valueDisplayNames.TryGetValue(x.ToString(), out var displayName)
+            )
+            {
+                return new GUIContent(displayName);
+            }
+
             if (x is Enum)
             {
                 var enumType = x.GetType();
@@ -220,6 +233,22 @@ namespace ConfigurationManager.Implementations
                 return new GUIContent(x.ToString().ToProperCase());
             }
             return new GUIContent(x.ToString());
+        }
+
+        private static string GetValueDisplayName(
+            Enum x,
+            IDictionary<string, string> valueDisplayNames
+        )
+        {
+            if (
+                valueDisplayNames != null
+                && valueDisplayNames.TryGetValue(x.ToString(), out var displayName)
+            )
+            {
+                return displayName;
+            }
+
+            return x.ToString();
         }
     }
 }

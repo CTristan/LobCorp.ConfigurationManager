@@ -327,6 +327,81 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             act.Should().NotThrow();
         }
 
+        [Fact]
+        public void LoadPersistedValues_EntryWithSectionDisplayName_ShouldAttachCategoryAttribute()
+        {
+            var file = CreateTempConfigFile();
+            var provider = CreateProvider(file);
+            var entry = new StubConfigEntry
+            {
+                ModId = "mod1",
+                Section = "General",
+                Key = "Volume",
+                SettingType = typeof(int),
+                DefaultValue = 50,
+                SectionDisplayName = "Localized General",
+            };
+
+            provider.LoadPersistedValues([entry]);
+
+            var bound = file.Bind("General", "Volume", 0);
+            var attrs = bound
+                .Description.Tags.OfType<global::ConfigurationManager.ConfigurationManagerAttributes>()
+                .Single();
+            attrs.Category.Should().Be("Localized General");
+        }
+
+        [Fact]
+        public void LoadPersistedValues_EntryWithValueDisplayNames_ShouldAttachValueDisplayNames()
+        {
+            var file = CreateTempConfigFile();
+            var provider = CreateProvider(file);
+            var displayNames = new Dictionary<string, string>
+            {
+                { "Normalized", "Localized Normalized" },
+            };
+            var entry = new StubConfigEntry
+            {
+                ModId = "mod1",
+                Section = "General",
+                Key = "Mode",
+                SettingType = typeof(int),
+                DefaultValue = 0,
+                ValueDisplayNames = displayNames,
+            };
+
+            provider.LoadPersistedValues([entry]);
+
+            var bound = file.Bind("General", "Mode", 0);
+            var attrs = bound
+                .Description.Tags.OfType<global::ConfigurationManager.ConfigurationManagerAttributes>()
+                .Single();
+            attrs.ValueDisplayNames.Should().BeSameAs(displayNames);
+        }
+
+        [Fact]
+        public void LoadPersistedValues_EntryWithoutSectionDisplayName_ShouldNotAttachCategoryAttribute()
+        {
+            var file = CreateTempConfigFile();
+            var provider = CreateProvider(file);
+            var entry = new StubConfigEntry
+            {
+                ModId = "mod1",
+                Section = "General",
+                Key = "Volume",
+                SettingType = typeof(int),
+                DefaultValue = 50,
+            };
+
+            provider.LoadPersistedValues([entry]);
+
+            var bound = file.Bind("General", "Volume", 0);
+            bound
+                .Description.Tags.OfType<global::ConfigurationManager.ConfigurationManagerAttributes>()
+                .Should()
+                .BeEmpty();
+        }
+
         /// <summary>
         ///     Minimal stub implementing <see cref="IConfigEntry"/> for testing the provider
         ///     without needing a real <see cref="ModConfig"/>.
@@ -343,6 +418,8 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
             public Type SettingType { get; set; } = typeof(int);
             public object DefaultValue { get; set; } = 0;
             public bool UseSlider { get; set; }
+            public string? SectionDisplayName { get; set; }
+            public IDictionary<string, string>? ValueDisplayNames { get; set; }
             public object Value { get; set; } = 0;
         }
     }

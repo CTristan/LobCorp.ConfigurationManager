@@ -128,5 +128,19 @@ namespace ConfigurationManager
         /// Custom converter from string to setting type for the built-in editor textboxes.
         /// </summary>
         public System.Func<string, object> StrToObj { get; set; }
+
+        /// <summary>
+        /// Maps value.ToString() keys to localized display names for combobox/flags UI rendering.
+        /// When set, these override [Description] attributes on enum members.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Usage",
+            "CA2227:Collection properties should be read only",
+            Justification = "DTO assigned by mods via object initializer"
+        )]
+        public System.Collections.Generic.IDictionary<
+            string,
+            string
+        > ValueDisplayNames { get; set; }
     }
 }

@@ -136,6 +136,26 @@ namespace ConfigurationManager.Implementations
                 hasAttrs = true;
             }
 
+            var sectionDisplayName = TryGetPropertyViaReflection<string>(
+                entry,
+                "SectionDisplayName"
+            );
+            if (sectionDisplayName != null)
+            {
+                attrs.Category = sectionDisplayName;
+                hasAttrs = true;
+            }
+
+            var valueDisplayNames = TryGetPropertyViaReflection<IDictionary<string, string>>(
+                entry,
+                "ValueDisplayNames"
+            );
+            if (valueDisplayNames != null)
+            {
+                attrs.ValueDisplayNames = valueDisplayNames;
+                hasAttrs = true;
+            }
+
             if (hasAttrs)
             {
                 tags.Add(attrs);
@@ -196,6 +216,14 @@ namespace ConfigurationManager.Implementations
             max = maxProp.GetValue(rangeValue, null);
 
             return min != null && max != null;
+        }
+
+        private static T TryGetPropertyViaReflection<T>(IConfigEntry entry, string propertyName)
+            where T : class
+        {
+            var prop = entry.GetType().GetProperty(propertyName);
+
+            return prop != null ? prop.GetValue(entry, null) as T : null;
         }
 
         private static IAcceptableValue CreateAcceptableValueRange(
