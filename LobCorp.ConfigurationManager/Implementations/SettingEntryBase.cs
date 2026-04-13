@@ -91,6 +91,16 @@ namespace ConfigurationManager.Implementations
         public virtual string DispName { get; protected internal set; }
 
         /// <summary>
+        /// Maps value.ToString() keys to localized display names for combobox/flags UI rendering.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Usage",
+            "CA2227:Collection properties should be read only",
+            Justification = "Set via reflection from ConfigurationManagerAttributes"
+        )]
+        public IDictionary<string, string> ValueDisplayNames { get; protected set; }
+
+        /// <summary>
         /// Plugin this setting belongs to.
         /// </summary>
         public PluginInfo PluginInfo { get; protected internal set; }
