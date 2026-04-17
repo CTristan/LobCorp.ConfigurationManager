@@ -55,7 +55,12 @@ jobs:
         working-directory: staging
         run: zip -r ../ConfigurationManager-${{ github.event.release.tag_name }}.zip ConfigurationManager/
 
+      - name: Pack Integration NuGet
+        run: dotnet pack LobotomyCorporation.Mods.ConfigurationManager.Integration/LobotomyCorporation.Mods.ConfigurationManager.Integration.csproj --no-build -p:Version=${{ steps.version.outputs.VERSION }} -o nupkg-out
+
       - name: Upload release asset
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload --clobber "${{ github.event.release.tag_name }}" "ConfigurationManager-${{ github.event.release.tag_name }}.zip"
+        run: |
+          gh release upload --clobber "${{ github.event.release.tag_name }}" "ConfigurationManager-${{ github.event.release.tag_name }}.zip"
+          gh release upload --clobber "${{ github.event.release.tag_name }}" nupkg-out/LobotomyCorporation.Mods.ConfigurationManager.Integration.*.nupkg

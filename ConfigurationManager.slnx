@@ -4,5 +4,7 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="LobCorp.ConfigurationManager/LobCorp.ConfigurationManager.csproj" />
+  <Project Path="LobotomyCorporation.Mods.ConfigurationManager.Integration/LobotomyCorporation.Mods.ConfigurationManager.Integration.csproj" />
+  <Project Path="LobotomyCorporation.Mods.ConfigurationManager.Integration.Tests/LobotomyCorporation.Mods.ConfigurationManager.Integration.Tests.csproj" />
   <Project Path="LobCorp.ConfigurationManager.Test/LobCorp.ConfigurationManager.Test.csproj" />
 </Solution>

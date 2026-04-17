@@ -10,9 +10,59 @@ Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods folder. The 
 
 ## How to make my mod compatible
 
-### Registering settings
+The recommended integration path is the **Integration package**, which lets your mod work with ConfigurationManager as an _optional_ dependency — your mod compiles and runs whether or not `ConfigurationManager.dll` is installed at runtime.
 
-Use `LmmConfigRegistration` to register your mod's settings. ConfigurationManager will display them automatically, including any metadata (descriptions, value ranges, acceptable value lists).
+### Option 1 — Integration package (recommended, ships one DLL, optional at runtime)
+
+Install [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobCorp.ConfigurationManager) with `PrivateAssets="all"` so the generator stays at build time and does not flow to your mod's own consumers:
+
+```xml
+<PackageReference Include="LobotomyCorporation.Mods.ConfigurationManager.Integration"
+                  Version="1.0.0"
+                  PrivateAssets="all" />
+```
+
+Declare your settings with a fluent `Config.Bind` API:
+
+```c#
+using LobotomyCorporation.Mods.ConfigurationManager;
+
+[assembly: ConfigManagerMod(
+    ModId = "com.example.mymod",
+    ModName = "My Mod",
+    ModVersion = "1.0.0")]
+
+internal static class MyConfig
+{
+    public static readonly IConfigValue<int> Damage = Config.Bind(
+        "Combat", "Damage", 100,
+        description: "Damage per hit", minValue: 1, maxValue: 1000, order: 10);
+
+    public static readonly IConfigValue<bool> GodMode = Config.Bind(
+        "Cheats", "GodMode", false, isAdvanced: true);
+}
+
+public class Harmony_Patch
+{
+    static Harmony_Patch()
+    {
+        HarmonyInstance.Create("com.example.mymod").PatchAll();
+        Config.RegisterAll();
+    }
+}
+```
+
+The Integration package emits all runtime glue — reflection-based interop with ConfigurationManager, a local `ConfigurationManagerAttributes` copy, and a `Config.RegisterAll()` method — directly into your mod's own assembly. You ship one DLL. When `ConfigurationManager.dll` is present, settings appear in the F1 menu and persist to disk. When it is absent, `Config.Bind` values fall back to an in-memory store and your mod still runs.
+
+A few things to know:
+
+- **Aliased uses (`using X = Config;`) are intentionally not supported.** The scanner matches on the literal identifier `Config`.
+- **If your mod already has a class named `Config`, rename it.** The `using LobotomyCorporation.Mods.ConfigurationManager;` directive brings the Integration package's own `Config` class into scope. Two classes with the same name cause a compile error. Aliasing does not help here because of the rule above.
+- **This package is a build-time companion to `ConfigurationManager.dll`, which is a fork of [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager).** Both share the DLL name `ConfigurationManager.dll` on purpose — only one can be loaded at a time. If a user installs BepInEx.ConfigurationManager instead of this fork, your mod still runs, but settings fall back to in-memory and do not appear in the F1 menu. Install LobCorp.ConfigurationManager to see them.
+
+### Option 2 — Direct dependency (requires `ConfigurationManager.dll` at runtime)
+
+Use `LmmConfigRegistration` directly. This is a harder dependency — your mod will fail to load if ConfigurationManager is not installed.
 
 ```c#
 using ConfigurationManager.Config;

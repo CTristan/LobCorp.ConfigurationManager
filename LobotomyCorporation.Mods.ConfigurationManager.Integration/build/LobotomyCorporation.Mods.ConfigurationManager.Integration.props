@@ -1,0 +1,8 @@
+<Project>
+  <!--
+    Marker props file — lets the generator appear as a build-time dependency even
+    when packaged with IncludeBuildOutput=false. Consumers should reference this
+    package with PrivateAssets="all" so the generator is not flowed to transitive
+    consumers of their mod.
+  -->
+</Project>
