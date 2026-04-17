@@ -31,6 +31,7 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - LMM mods register via `Config/LmmConfigRegistration.cs` static API
 - Auto-scans `BaseMods/{modId}/config.cfg` files
 - Discovers BepInEx plugins via reflection (`Implementations/BepInExInterop.cs`) — no hard dependency
+- Source-gen-based optional-dependency path for mod authors is planned (see `/Users/chris/.claude/plans/cheeky-cooking-puzzle.md`); this repo no longer carries a `LobotomyCorporation.Mods.Common`-based bridge.
 
 **Configuration model (`Config/`):**
 - `LmmConfigFile` — file I/O and parsing for `config.cfg` files
@@ -50,7 +51,7 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
 - **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape (e.g. `ConfigurationManagerAttributes` was moved from fields to properties). Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
 - **`Harmony_Patch` class name is load-bearing** — every LMM mod must expose an entry type named `Harmony_Patch`. The analyzer package (`LobotomyCorporation.Mods.Analyzers` globalconfig) suppresses S101 and CA1707 repo-wide so this pattern doesn't trip naming rules.
-- **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. The `LobotomyCorporation.Mods.Common` PackageReference does copy to output, as it must be deployed alongside the mod.
+- **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. No other runtime DLLs are copied alongside `ConfigurationManager.dll` today (the previous `LobotomyCorporation.Mods.Common` bridge has been removed).
 - **Implicit usings and nullable are disabled.**
 - `Microsoft.NETFramework.ReferenceAssemblies` is pulled in implicitly by the SDK for net35 — do not add it to `Directory.Packages.props`.
 

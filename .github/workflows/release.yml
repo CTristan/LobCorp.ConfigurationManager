@@ -48,7 +48,6 @@ jobs:
         run: |
           mkdir -p staging/ConfigurationManager/Info/en
           cp LobCorp.ConfigurationManager/bin/net35/ConfigurationManager.dll staging/ConfigurationManager/
-          cp LobCorp.ConfigurationManager/bin/net35/LobotomyCorporation.Mods.Common.*.dll staging/ConfigurationManager/
           cp LobCorp.ConfigurationManager/bin/net35/Info/GlobalInfo.xml staging/ConfigurationManager/Info/
           cp LobCorp.ConfigurationManager/bin/net35/Info/en/Info.xml staging/ConfigurationManager/Info/en/
 
