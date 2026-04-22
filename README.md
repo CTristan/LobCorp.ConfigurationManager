@@ -14,13 +14,7 @@ Harmony 1 (the patching library LMM mods use).
 ## Who this page is for
 
 - **Players**: see [Installation](#installation).
-- **Mod authors**: see
-  [Adding settings to your mod](#adding-settings-to-your-mod).
-
-If you have never written a Lobotomy Corporation mod before, the
-[`samples/SampleMod/`](samples/SampleMod/) folder in this repository
-walks through the integration step by step and includes a complete
-working example.
+- **Mod authors**: see [Adding settings to your mod](#adding-settings-to-your-mod).
 
 ## Installation
 
@@ -29,88 +23,23 @@ folder. LMM loads it automatically the next time you start the game.
 
 ## Adding settings to your mod
 
-The **Integration package**
-(`LobotomyCorporation.Mods.ConfigurationManager.Integration`) is the
-recommended way to add settings to your mod.
+The recommended path is the **Integration package**, which lives in its
+own repository:
+[open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration).
 
-Your mod is distributed as one DLL. If the player has
-ConfigurationManager installed, your settings appear in the F1 menu.
-If not, your mod still runs and your settings keep their default
-values in memory. You never copy `ConfigurationManager.dll` into your
-mod's folder, and you never add a runtime reference to it.
+That package is a build-time source generator. Your mod references it
+with `PrivateAssets="all"` and ships as a single DLL. If the player
+installs ConfigurationManager, your settings appear in the F1 menu; if
+not, the mod still runs and settings fall back to in-memory defaults.
 
-→ For a four-step walkthrough with a working example, see
-**[samples/SampleMod/README.md](samples/SampleMod/)**.
+The Integration repo has the full walkthrough, a sample mod, and the
+NuGet installation instructions.
 
-A short version follows for readers already familiar with the pattern.
+### Direct dependency (alternative — requires `ConfigurationManager.dll` at runtime)
 
-### Short version — Integration package
-
-Add the package to your `.csproj` with `PrivateAssets="all"`
-(build-time-only, so the package does not ship inside your mod):
-
-```xml
-<PackageReference Include="LobotomyCorporation.Mods.ConfigurationManager.Integration"
-                  Version="1.0.0"
-                  PrivateAssets="all" />
-```
-
-Mark your assembly and declare your settings:
-
-```c#
-using LobotomyCorporation.Mods.ConfigurationManager;
-
-[assembly: ConfigManagerMod(
-    ModId = "com.example.mymod",
-    ModName = "My Mod",
-    ModVersion = "1.0.0",
-    Fallback = ConfigFallback.InMemory)]
-
-internal static class MyConfig
-{
-    public static readonly IConfigValue<int> Damage = Config.Bind(
-        "Combat", "Damage", 100,
-        description: "Damage per hit", minValue: 1, maxValue: 1000, order: 10);
-
-    public static readonly IConfigValue<bool> GodMode = Config.Bind(
-        "Cheats", "GodMode", false, isAdvanced: true);
-}
-
-public sealed class Harmony_Patch
-{
-    static Harmony_Patch()
-    {
-        var harmony = HarmonyInstance.Create("com.example.mymod");
-        harmony.PatchAll(typeof(Harmony_Patch).Assembly);
-
-        Config.RegisterAll();
-    }
-}
-```
-
-The Integration package writes the supporting runtime code — a local
-`ConfigurationManagerAttributes` copy and a `Config.RegisterAll()`
-method that probes for ConfigurationManager at runtime — directly
-into your mod's own DLL. The output is a single DLL.
-
-A few things to know:
-
-- **Do not alias `Config`.** `using X = Config;` breaks the scanner,
-  which matches the literal identifier `Config`.
-- **If your mod already has a class named `Config`, rename it.** The
-  `using LobotomyCorporation.Mods.ConfigurationManager;` directive
-  brings the Integration package's own `Config` class into scope. Two
-  classes with the same name cause a compile error.
-- **`ConfigurationManager.dll` is a fork of
-  [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager).**
-  Both share the same DLL name on purpose — only one can load at a
-  time. If a player installs BepInEx.ConfigurationManager instead of
-  this fork, your mod still runs, but the F1 menu does not show your
-  settings. Install LobCorp.ConfigurationManager to see them.
-
-### Option 2 — Direct dependency (requires `ConfigurationManager.dll` at runtime)
-
-Use `LmmConfigRegistration` directly. This is a harder dependency — your mod will fail to load if ConfigurationManager is not installed.
+If you prefer a hard runtime dependency on ConfigurationManager, use
+`LmmConfigRegistration` directly. Your mod will fail to load if
+ConfigurationManager is not installed.
 
 ```c#
 using ConfigurationManager.Config;
@@ -211,3 +140,13 @@ static void MyDrawer(LmmConfigEntryBase entry)
 ## BepInEx plugin compatibility
 
 ConfigurationManager also discovers BepInEx plugins via reflection — no hard dependency is required. BepInEx plugins using `Config.Bind` will have their settings shown automatically.
+
+## License
+
+LGPL-3.0-or-later. See [LICENSE](LICENSE).
+
+## Related
+
+- [LobotomyCorporation.Mods.ConfigurationManager.Integration](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration)
+  — MIT-licensed NuGet package for mod authors who want optional-dependency settings
+  without bundling `ConfigurationManager.dll`.

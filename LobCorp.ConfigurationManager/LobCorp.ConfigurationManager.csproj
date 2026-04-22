@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
+    <IsPackable>false</IsPackable>
     <!--
 			RootNamespace and AssemblyName intentionally match upstream BepInEx.ConfigurationManager.
 			Same AssemblyName produces ConfigurationManager.dll, preventing both from loading

@@ -8,9 +8,9 @@
     <!-- Sets the 'File description' field on the dll file -->
     <AssemblyTitle>In-game configuration manager for LMM and BepInEx mods</AssemblyTitle>
     <!-- Sets the 'Company' field on the dll file -->
-    <Authors>https://github.com/BepInEx/BepInEx.ConfigurationManager</Authors>
+    <Authors>BepInEx contributors, Open Lobotomy</Authors>
     <!-- Sets the 'Copyright' field on the dll file -->
-    <Copyright>Copyright 2019 / LGPL-3.0</Copyright>
+    <Copyright>Copyright 2019 BepInEx contributors; Copyright 2026 Open Lobotomy</Copyright>
 
     <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
     <OutputPath>bin\</OutputPath>
