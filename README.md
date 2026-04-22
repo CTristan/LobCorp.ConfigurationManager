@@ -1,20 +1,53 @@
-# In-game configuration manager for Lobotomy Corporation (LMM)
+# In-game settings menu for Lobotomy Corporation mods
 
-Fork of [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager) adapted for Lobotomy Corporation's mod loader (LMM) and Harmony 1. Provides an in-game ImGUI settings window for LMM and BepInEx mods. Press **F1** to open. Hover over setting names to see their descriptions.
+ConfigurationManager is a Lobotomy Corporation mod that adds an in-game
+settings window for other mods. Players press **F1** to open the
+window, change values, and save them.
+
+It is a fork of
+[BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager)
+adapted for Lobotomy Mod Manager (LMM — the base game's mod loader) and
+Harmony 1 (the patching library LMM mods use).
 
 ![Configuration manager](Screenshot.PNG)
 
+## Who this page is for
+
+- **Players**: see [Installation](#installation).
+- **Mod authors**: see
+  [Adding settings to your mod](#adding-settings-to-your-mod).
+
+If you have never written a Lobotomy Corporation mod before, the
+[`samples/SampleMod/`](samples/SampleMod/) folder in this repository
+walks through the integration step by step and includes a complete
+working example.
+
 ## Installation
 
-Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods folder. The configuration manager will load automatically via LMM.
+Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods
+folder. LMM loads it automatically the next time you start the game.
 
-## How to make my mod compatible
+## Adding settings to your mod
 
-The recommended integration path is the **Integration package**, which lets your mod work with ConfigurationManager as an _optional_ dependency — your mod compiles and runs whether or not `ConfigurationManager.dll` is installed at runtime.
+The **Integration package**
+(`LobotomyCorporation.Mods.ConfigurationManager.Integration`) is the
+recommended way to add settings to your mod.
 
-### Option 1 — Integration package (recommended, ships one DLL, optional at runtime)
+Your mod is distributed as one DLL. If the player has
+ConfigurationManager installed, your settings appear in the F1 menu.
+If not, your mod still runs and your settings keep their default
+values in memory. You never copy `ConfigurationManager.dll` into your
+mod's folder, and you never add a runtime reference to it.
 
-Install [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobCorp.ConfigurationManager) with `PrivateAssets="all"` so the generator stays at build time and does not flow to your mod's own consumers:
+→ For a four-step walkthrough with a working example, see
+**[samples/SampleMod/README.md](samples/SampleMod/)**.
+
+A short version follows for readers already familiar with the pattern.
+
+### Short version — Integration package
+
+Add the package to your `.csproj` with `PrivateAssets="all"`
+(build-time-only, so the package does not ship inside your mod):
 
 ```xml
 <PackageReference Include="LobotomyCorporation.Mods.ConfigurationManager.Integration"
@@ -22,7 +55,7 @@ Install [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://gi
                   PrivateAssets="all" />
 ```
 
-Declare your settings with a fluent `Config.Bind` API:
+Mark your assembly and declare your settings:
 
 ```c#
 using LobotomyCorporation.Mods.ConfigurationManager;
@@ -30,7 +63,8 @@ using LobotomyCorporation.Mods.ConfigurationManager;
 [assembly: ConfigManagerMod(
     ModId = "com.example.mymod",
     ModName = "My Mod",
-    ModVersion = "1.0.0")]
+    ModVersion = "1.0.0",
+    Fallback = ConfigFallback.InMemory)]
 
 internal static class MyConfig
 {
@@ -42,23 +76,37 @@ internal static class MyConfig
         "Cheats", "GodMode", false, isAdvanced: true);
 }
 
-public class Harmony_Patch
+public sealed class Harmony_Patch
 {
     static Harmony_Patch()
     {
-        HarmonyInstance.Create("com.example.mymod").PatchAll();
+        var harmony = HarmonyInstance.Create("com.example.mymod");
+        harmony.PatchAll(typeof(Harmony_Patch).Assembly);
+
         Config.RegisterAll();
     }
 }
 ```
 
-The Integration package emits all runtime glue — reflection-based interop with ConfigurationManager, a local `ConfigurationManagerAttributes` copy, and a `Config.RegisterAll()` method — directly into your mod's own assembly. You ship one DLL. When `ConfigurationManager.dll` is present, settings appear in the F1 menu and persist to disk. When it is absent, `Config.Bind` values fall back to an in-memory store and your mod still runs.
+The Integration package writes the supporting runtime code — a local
+`ConfigurationManagerAttributes` copy and a `Config.RegisterAll()`
+method that probes for ConfigurationManager at runtime — directly
+into your mod's own DLL. The output is a single DLL.
 
 A few things to know:
 
-- **Aliased uses (`using X = Config;`) are intentionally not supported.** The scanner matches on the literal identifier `Config`.
-- **If your mod already has a class named `Config`, rename it.** The `using LobotomyCorporation.Mods.ConfigurationManager;` directive brings the Integration package's own `Config` class into scope. Two classes with the same name cause a compile error. Aliasing does not help here because of the rule above.
-- **This package is a build-time companion to `ConfigurationManager.dll`, which is a fork of [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager).** Both share the DLL name `ConfigurationManager.dll` on purpose — only one can be loaded at a time. If a user installs BepInEx.ConfigurationManager instead of this fork, your mod still runs, but settings fall back to in-memory and do not appear in the F1 menu. Install LobCorp.ConfigurationManager to see them.
+- **Do not alias `Config`.** `using X = Config;` breaks the scanner,
+  which matches the literal identifier `Config`.
+- **If your mod already has a class named `Config`, rename it.** The
+  `using LobotomyCorporation.Mods.ConfigurationManager;` directive
+  brings the Integration package's own `Config` class into scope. Two
+  classes with the same name cause a compile error.
+- **`ConfigurationManager.dll` is a fork of
+  [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager).**
+  Both share the same DLL name on purpose — only one can load at a
+  time. If a player installs BepInEx.ConfigurationManager instead of
+  this fork, your mod still runs, but the F1 menu does not show your
+  settings. Install LobCorp.ConfigurationManager to see them.
 
 ### Option 2 — Direct dependency (requires `ConfigurationManager.dll` at runtime)
 

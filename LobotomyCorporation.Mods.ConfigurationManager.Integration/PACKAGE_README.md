@@ -29,11 +29,13 @@ public static class MyConfig
         "Cheats", "GodMode", false, isAdvanced: true);
 }
 
-public class Harmony_Patch
+public sealed class Harmony_Patch
 {
     static Harmony_Patch()
     {
-        HarmonyInstance.Create("com.example.mymod").PatchAll();
+        var harmony = HarmonyInstance.Create("com.example.mymod");
+        harmony.PatchAll(typeof(Harmony_Patch).Assembly);
+
         Config.RegisterAll();
     }
 }
