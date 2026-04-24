@@ -118,8 +118,8 @@ config.Bind("X", "2", 2, new LmmConfigDescription("", null,
 Important notes about the attributes class:
 
 - You do **not** need to reference ConfigurationManager.dll for this to work — it is read via reflection.
-- This fork uses **public auto-properties** (not public fields). If copying from upstream BepInEx.ConfigurationManager, convert fields to auto-properties.
-- Keep the class name `ConfigurationManagerAttributes` unchanged. You can remove properties you don't use.
+- This fork uses **public fields**, matching upstream BepInEx.ConfigurationManager. You can copy the template from either source without changes.
+- Keep the class name `ConfigurationManagerAttributes` unchanged. You can remove fields you don't use.
 - Avoid making the class public to prevent conflicts with other mods.
 
 ### Custom setting editors

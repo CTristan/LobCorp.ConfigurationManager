@@ -29,9 +29,9 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 
 **Settings discovery (`Implementations/SettingSearcher.cs`):**
 - LMM mods register via `Config/LmmConfigRegistration.cs` static API
-- Auto-scans `BaseMods/{modId}/config.cfg` files
+- Auto-scans `{persistentDataPath}/LobotomyBaseMod/{modId}/config.cfg` files
 - Discovers BepInEx plugins via reflection (`Implementations/BepInExInterop.cs`) — no hard dependency
-- Source-gen-based optional-dependency path for mod authors is planned (see `/Users/chris/.claude/plans/cheeky-cooking-puzzle.md`); this repo no longer carries a `LobotomyCorporation.Mods.Common`-based bridge.
+- Mod authors who want an optional-dependency path (settings UI when ConfigurationManager is installed, in-memory fallback otherwise) use the separately published [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration) source-generator package. That repo owns the generator, the sample mod, and the author-facing docs.
 
 **Configuration model (`Config/`):**
 - `LmmConfigFile` — file I/O and parsing for `config.cfg` files
@@ -44,12 +44,12 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - Type-specific controls: checkboxes, sliders, dropdowns, color pickers, hotkey capture
 - `ConfigurationManagerAttributes` controls display (order, visibility, custom drawers)
 
-**`ConfigurationManagerAttributes` is a copy-paste template, not a referenced API.** Each plugin bundles its own copy of the class and assigns values to instances that get passed as tags to setting descriptions. `SettingEntryBase.SetFromAttributes()` reads these via reflection (`Type.GetProperties`, matching by simple type name — not assembly identity). This fork uses **public auto-properties**; upstream BepInEx.ConfigurationManager uses **public fields**, so upstream's template is not directly compatible — if copying from upstream, convert the fields to auto-properties.
+**`ConfigurationManagerAttributes` is a copy-paste template, not a referenced API.** Each plugin bundles its own copy of the class and assigns values to instances that get passed as tags to setting descriptions. `SettingEntryBase.SetFromAttributes()` reads these via reflection (`Type.GetFields`, matching by simple type name — not assembly identity). This fork uses **public fields**, matching upstream BepInEx.ConfigurationManager, so a template copied from either source works unchanged.
 
 ## Key Constraints
 
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
-- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape (e.g. `ConfigurationManagerAttributes` was moved from fields to properties). Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
+- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape. Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
 - **`Harmony_Patch` class name is load-bearing** — every LMM mod must expose an entry type named `Harmony_Patch`. The analyzer package (`LobotomyCorporation.Mods.Analyzers` globalconfig) suppresses S101 and CA1707 repo-wide so this pattern doesn't trip naming rules.
 - **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. No other runtime DLLs are copied alongside `ConfigurationManager.dll` today (the previous `LobotomyCorporation.Mods.Common` bridge has been removed).
 - **Implicit usings and nullable are disabled.**
@@ -68,18 +68,18 @@ Global analyzers (`LobotomyCorporation.Mods.Analyzers`, `OpenLobotomy.Standards`
 
 ## Audience & Language
 
-**Assume the reader is a first-time mod author whose first language is not English.** Most consumers of this repo — both the `ConfigurationManager.dll` end-user install and the `Integration` NuGet package — are Korean-speaking modders reading English as a second language or through machine translation, and many have no prior professional development experience. Every error message, diagnostic, README, and code comment that an author will see must pass that bar before shipping.
+This repo ships two audience-facing surfaces:
+
+- **`ConfigurationManager.dll`** — installed by players as an LMM BaseMod. End-user audience (installers, not coders); release notes and the in-game UI should be readable without developer vocabulary.
+- **Mod-author docs in this repo** (primarily `README.md`) — for authors who take a **direct runtime dependency** on `ConfigurationManager.dll` via `LmmConfigRegistration`. This is the "hard dependency" path.
+
+The **optional-dependency** path — settings UI when ConfigurationManager is installed, in-memory fallback when not — is owned by the separate [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration) repo, along with the sample mod. Author-facing docs, NuGet packaging, and analyzer diagnostics for that path live there, not here.
+
+**Assume the reader is a first-time mod author whose first language is not English.** Most consumers are Korean-speaking modders reading English as a second language or through machine translation, and many have no prior professional development experience. Every error message, README, and code comment that an author will see must pass that bar before shipping.
 
 ### Project facts that shape documentation
 
 - **Lobotomy Corporation itself will never update.** The base game is final. Do not pitch wrappers, adapters, or analyzers on "survives game updates" or "keeps working when the game changes" — those claims are factually wrong and will mislead readers. The honest value props for typed wrappers over reflection are: (a) the compiler checks names and types at build time, so typos fail before you run the game; (b) typed code is shorter and easier to read; (c) the package is community-maintained, so fixes land once for everyone. What *does* still change is LMM (the mod loader) and other mods that patch the same game code via Harmony — if a doc needs to explain why a wrapper helps mods coexist, that is the real reason, not game updates.
-- **The Integration package exists so authors can hook into ConfigurationManager *if it is installed*, without bundling or redistributing `ConfigurationManager.dll` themselves.** The mod ships as a single DLL. If the player has ConfigurationManager, settings appear in the F1 menu. If not, the mod still runs and bindings serve defaults from an in-memory store. Never write docs, diagnostics, or examples that imply the mod author has to ship `ConfigurationManager.dll`, reference it at compile time, or detect its presence by hand — the generator's emitted reflection probe handles that. If a reader walks away thinking they need to copy a DLL into their mod folder or add a hard `Reference Include="ConfigurationManager"`, the doc has failed.
-
-### Package Audiences
-
-- **`ConfigurationManager.dll`** — shipped to players as a BaseMod. End-user audience (installers, not coders); release notes and the in-game UI should be readable without developer vocabulary.
-- **`LobotomyCorporation.Mods.ConfigurationManager.Integration`** — consumed by mod authors via a single NuGet reference. The optional-dependency story above is the central value proposition: assume the author found this package because they want settings UI *when available* but are not willing to take a hard runtime dependency. Error messages, analyzer diagnostics, README samples, and generated-code comments should all reinforce that. Explain *why*, not just *what*. Do not assume knowledge of dependency injection, mocking, reflection, source generators, Roslyn analyzers, or build-system internals like `PrivateAssets`/`ReferenceOutputAssembly` — when those terms are unavoidable, define them inline or link to a one-paragraph explainer. Surface failures as clear, actionable messages, not stack traces.
-- **`samples/` directory (e.g. `samples/SampleMod/`)** — this bar applies here too. Samples are copy-paste reference material for mod authors; every comment, naming choice, and implicit convention must be readable in isolation on GitHub by someone who has never opened the rest of this repo. Expand acronyms the first time they appear (LMM → Lobotomy Mod Manager), add inline comments on any assembly attribute or pattern that a first-timer would not recognize (e.g. `Fallback = ConfigFallback.InMemory`, the static-initializer entry-point idiom), and ship a README in each sample that states the optional-dependency promise upfront.
 
 ### Writing Style
 
