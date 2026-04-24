@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
+    <IsPackable>false</IsPackable>
     <!--
 			RootNamespace and AssemblyName intentionally match upstream BepInEx.ConfigurationManager.
 			Same AssemblyName produces ConfigurationManager.dll, preventing both from loading
@@ -13,10 +14,6 @@
     <RootNamespace>ConfigurationManager</RootNamespace>
     <AssemblyName>ConfigurationManager</AssemblyName>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LobotomyCorporation.Mods.Common" />
-  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="0Harmony">

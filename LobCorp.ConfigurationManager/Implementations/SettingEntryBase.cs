@@ -222,12 +222,12 @@ namespace ConfigurationManager.Implementations
                         var attrType = attrib.GetType();
                         if (attrType.Name == "ConfigurationManagerAttributes")
                         {
-                            var otherProperties = attrType.GetProperties(
+                            var otherFields = attrType.GetFields(
                                 BindingFlags.Instance | BindingFlags.Public
                             );
                             foreach (
-                                var propertyPair in _myProperties.Join(
-                                    otherProperties,
+                                var memberPair in _myProperties.Join(
+                                    otherFields,
                                     my => my.Name,
                                     other => other.Name,
                                     (my, other) => new { my, other }
@@ -236,32 +236,31 @@ namespace ConfigurationManager.Implementations
                             {
                                 try
                                 {
-                                    var val = propertyPair.other.GetValue(attrib, null);
+                                    var val = memberPair.other.GetValue(attrib);
                                     if (val != null)
                                     {
                                         if (
-                                            propertyPair.my.PropertyType
-                                                != propertyPair.other.PropertyType
+                                            memberPair.my.PropertyType != memberPair.other.FieldType
                                             && typeof(Delegate).IsAssignableFrom(
-                                                propertyPair.my.PropertyType
+                                                memberPair.my.PropertyType
                                             )
                                         )
                                         {
                                             val = Delegate.CreateDelegate(
-                                                propertyPair.my.PropertyType,
+                                                memberPair.my.PropertyType,
                                                 ((Delegate)val).Target,
                                                 ((Delegate)val).Method
                                             );
                                         }
 
-                                        propertyPair.my.SetValue(this, val, null);
+                                        memberPair.my.SetValue(this, val, null);
                                     }
                                 }
                                 catch (Exception ex)
                                 {
                                     SimpleLogger.LogWarning(
                                         "Failed to copy value "
-                                            + propertyPair.my.Name
+                                            + memberPair.my.Name
                                             + " from provided tag object "
                                             + attrType.FullName
                                             + " - "

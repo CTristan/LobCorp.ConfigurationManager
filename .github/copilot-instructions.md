@@ -29,8 +29,9 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 
 **Settings discovery (`Implementations/SettingSearcher.cs`):**
 - LMM mods register via `Config/LmmConfigRegistration.cs` static API
-- Auto-scans `BaseMods/{modId}/config.cfg` files
+- Auto-scans `{persistentDataPath}/LobotomyBaseMod/{modId}/config.cfg` files
 - Discovers BepInEx plugins via reflection (`Implementations/BepInExInterop.cs`) — no hard dependency
+- Mod authors who want an optional-dependency path (settings UI when ConfigurationManager is installed, in-memory fallback otherwise) use the separately published [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration) source-generator package. That repo owns the generator, the sample mod, and the author-facing docs.
 
 **Configuration model (`Config/`):**
 - `LmmConfigFile` — file I/O and parsing for `config.cfg` files
@@ -43,14 +44,14 @@ Tests live in `LobCorp.ConfigurationManager.Test` (xunit.v3, Moq, AwesomeAsserti
 - Type-specific controls: checkboxes, sliders, dropdowns, color pickers, hotkey capture
 - `ConfigurationManagerAttributes` controls display (order, visibility, custom drawers)
 
-**`ConfigurationManagerAttributes` is a copy-paste template, not a referenced API.** Each plugin bundles its own copy of the class and assigns values to instances that get passed as tags to setting descriptions. `SettingEntryBase.SetFromAttributes()` reads these via reflection (`Type.GetProperties`, matching by simple type name — not assembly identity). This fork uses **public auto-properties**; upstream BepInEx.ConfigurationManager uses **public fields**, so upstream's template is not directly compatible — if copying from upstream, convert the fields to auto-properties.
+**`ConfigurationManagerAttributes` is a copy-paste template, not a referenced API.** Each plugin bundles its own copy of the class and assigns values to instances that get passed as tags to setting descriptions. `SettingEntryBase.SetFromAttributes()` reads these via reflection (`Type.GetFields`, matching by simple type name — not assembly identity). This fork uses **public fields**, matching upstream BepInEx.ConfigurationManager, so a template copied from either source works unchanged.
 
 ## Key Constraints
 
 - **net35 target**: no LINQ extensions beyond what's available, no `System.ValueTuple`, limited BCL. `LangVersion` is set to `latest` so C# syntax features work but BCL APIs are restricted.
-- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape (e.g. `ConfigurationManagerAttributes` was moved from fields to properties). Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
+- **RootNamespace and AssemblyName are both `ConfigurationManager`** (not `LobCorp.ConfigurationManager`) — intentionally matches upstream BepInEx.ConfigurationManager. This is a **DLL-name / namespace collision prevention** mechanism only: the identical DLL name stops both from loading simultaneously, and the shared root namespace avoids dual-load conflicts (double UI entries, duplicate `ConfigurationManagerAttributes` processing). This is **not** a public-API-compatibility contract — the fork can freely change its internal shape. Do not change `RootNamespace` or `AssemblyName` without accounting for the loader-collision implications.
 - **`Harmony_Patch` class name is load-bearing** — every LMM mod must expose an entry type named `Harmony_Patch`. The analyzer package (`LobotomyCorporation.Mods.Analyzers` globalconfig) suppresses S101 and CA1707 repo-wide so this pattern doesn't trip naming rules.
-- **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. The `LobotomyCorporation.Mods.Common` PackageReference does copy to output, as it must be deployed alongside the mod.
+- **Game assembly references are `Private=false`** — none are copied to output since they exist in the game's managed folder at runtime. No other runtime DLLs are copied alongside `ConfigurationManager.dll` today (the previous `LobotomyCorporation.Mods.Common` bridge has been removed).
 - **Implicit usings and nullable are disabled.**
 - `Microsoft.NETFramework.ReferenceAssemblies` is pulled in implicitly by the SDK for net35 — do not add it to `Directory.Packages.props`.
 
@@ -64,3 +65,24 @@ NuGet package publishing is planned for v1.0.0 but not yet implemented.
 ## Analyzers
 
 Global analyzers (`LobotomyCorporation.Mods.Analyzers`, `OpenLobotomy.Standards`) are configured in `Directory.Packages.props`. All Sonar rules run at their default severity — there are no global suppressions in `.editorconfig`. Rule exceptions that apply to all LMM mods (e.g. S101/CA1707 for the `Harmony_Patch` entry point) live in the shared `LobotomyCorporation.Mods.Analyzers` globalconfig, not here. Fix violations rather than suppressing them; if a suppression is truly needed, scope it as narrowly as possible (file-local `#pragma` or per-member `[SuppressMessage]`).
+
+## Audience & Language
+
+This repo ships two audience-facing surfaces:
+
+- **`ConfigurationManager.dll`** — installed by players as an LMM BaseMod. End-user audience (installers, not coders); release notes and the in-game UI should be readable without developer vocabulary.
+- **Mod-author docs in this repo** (primarily `README.md`) — for authors who take a **direct runtime dependency** on `ConfigurationManager.dll` via `LmmConfigRegistration`. This is the "hard dependency" path.
+
+The **optional-dependency** path — settings UI when ConfigurationManager is installed, in-memory fallback when not — is owned by the separate [`LobotomyCorporation.Mods.ConfigurationManager.Integration`](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration) repo, along with the sample mod. Author-facing docs, NuGet packaging, and analyzer diagnostics for that path live there, not here.
+
+**Assume the reader is a first-time mod author whose first language is not English.** Most consumers are Korean-speaking modders reading English as a second language or through machine translation, and many have no prior professional development experience. Every error message, README, and code comment that an author will see must pass that bar before shipping.
+
+### Project facts that shape documentation
+
+- **Lobotomy Corporation itself will never update.** The base game is final. Do not pitch wrappers, adapters, or analyzers on "survives game updates" or "keeps working when the game changes" — those claims are factually wrong and will mislead readers. The honest value props for typed wrappers over reflection are: (a) the compiler checks names and types at build time, so typos fail before you run the game; (b) typed code is shorter and easier to read; (c) the package is community-maintained, so fixes land once for everyone. What *does* still change is LMM (the mod loader) and other mods that patch the same game code via Harmony — if a doc needs to explain why a wrapper helps mods coexist, that is the real reason, not game updates.
+
+### Writing Style
+
+**User-facing text** (README, error messages, release notes): use short sentences with active voice and explicit subjects. Avoid idioms, slang, and culturally specific references. Define technical terms inline or use simpler words. Write in a style that survives machine translation — no ambiguous pronouns, no noun stacking.
+
+**Developer-facing text** (code comments, commit messages): technical terminology is fine, but prefer direct, concise phrasing over unnecessarily complex language.

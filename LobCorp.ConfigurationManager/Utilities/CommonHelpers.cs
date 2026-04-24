@@ -270,11 +270,6 @@ namespace ConfigurationManager.Utilities
         /// </summary>
         /// <param name="url">The URL to open</param>
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Process.Start")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Design",
-            "CA1054",
-            Justification = "URL is a string from game metadata"
-        )]
         public static void OpenWebsite(string url)
         {
             if (string.IsNullOrEmpty(url))

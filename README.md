@@ -1,18 +1,45 @@
-# In-game configuration manager for Lobotomy Corporation (LMM)
+# In-game settings menu for Lobotomy Corporation mods
 
-Fork of [BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager) adapted for Lobotomy Corporation's mod loader (LMM) and Harmony 1. Provides an in-game ImGUI settings window for LMM and BepInEx mods. Press **F1** to open. Hover over setting names to see their descriptions.
+ConfigurationManager is a Lobotomy Corporation mod that adds an in-game
+settings window for other mods. Players press **F1** to open the
+window, change values, and save them.
+
+It is a fork of
+[BepInEx.ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager)
+adapted for Lobotomy Mod Manager (LMM — the base game's mod loader) and
+Harmony 1 (the patching library LMM mods use).
 
 ![Configuration manager](Screenshot.PNG)
 
+## Who this page is for
+
+- **Players**: see [Installation](#installation).
+- **Mod authors**: see [Adding settings to your mod](#adding-settings-to-your-mod).
+
 ## Installation
 
-Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods folder. The configuration manager will load automatically via LMM.
+Copy `ConfigurationManager.dll` into your Lobotomy Corporation mods
+folder. LMM loads it automatically the next time you start the game.
 
-## How to make my mod compatible
+## Adding settings to your mod
 
-### Registering settings
+The recommended path is the **Integration package**, which lives in its
+own repository:
+[open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration).
 
-Use `LmmConfigRegistration` to register your mod's settings. ConfigurationManager will display them automatically, including any metadata (descriptions, value ranges, acceptable value lists).
+That package is a build-time source generator. Your mod references it
+with `PrivateAssets="all"` and ships as a single DLL. If the player
+installs ConfigurationManager, your settings appear in the F1 menu; if
+not, the mod still runs and settings fall back to in-memory defaults.
+
+The Integration repo has the full walkthrough, a sample mod, and the
+NuGet installation instructions.
+
+### Direct dependency (alternative — requires `ConfigurationManager.dll` at runtime)
+
+If you prefer a hard runtime dependency on ConfigurationManager, use
+`LmmConfigRegistration` directly. Your mod will fail to load if
+ConfigurationManager is not installed.
 
 ```c#
 using ConfigurationManager.Config;
@@ -91,8 +118,8 @@ config.Bind("X", "2", 2, new LmmConfigDescription("", null,
 Important notes about the attributes class:
 
 - You do **not** need to reference ConfigurationManager.dll for this to work — it is read via reflection.
-- This fork uses **public auto-properties** (not public fields). If copying from upstream BepInEx.ConfigurationManager, convert fields to auto-properties.
-- Keep the class name `ConfigurationManagerAttributes` unchanged. You can remove properties you don't use.
+- This fork uses **public fields**, matching upstream BepInEx.ConfigurationManager. You can copy the template from either source without changes.
+- Keep the class name `ConfigurationManagerAttributes` unchanged. You can remove fields you don't use.
 - Avoid making the class public to prevent conflicts with other mods.
 
 ### Custom setting editors
@@ -113,3 +140,13 @@ static void MyDrawer(LmmConfigEntryBase entry)
 ## BepInEx plugin compatibility
 
 ConfigurationManager also discovers BepInEx plugins via reflection — no hard dependency is required. BepInEx plugins using `Config.Bind` will have their settings shown automatically.
+
+## License
+
+LGPL-3.0-or-later. See [LICENSE](LICENSE).
+
+## Related
+
+- [LobotomyCorporation.Mods.ConfigurationManager.Integration](https://github.com/open-lobotomy/LobotomyCorporation.Mods.ConfigurationManager.Integration)
+  — MIT-licensed NuGet package for mod authors who want optional-dependency settings
+  without bundling `ConfigurationManager.dll`.

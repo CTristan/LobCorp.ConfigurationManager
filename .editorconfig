@@ -2,3 +2,60 @@ root = true
 
 [*.cs]
 file_header_template = SPDX-License-Identifier: LGPL-3.0-or-later
+
+# ---------------------------------------------------------------------------
+# Path-scoped analyzer suppressions
+#
+# Each section below suppresses a specific rule ID in a specific file. The
+# scope is deliberately file-level so that the exception cannot silently
+# leak to unrelated code. If you add a new suppression, document *why* the
+# rule is wrong for that file, not just what is being turned off.
+# ---------------------------------------------------------------------------
+
+# ConfigurationManagerAttributes.cs is the copy-paste template that every
+# LMM/BepInEx plugin bundles into its own project. The class is discovered
+# by simple type name from each plugin's bundled copy, and both this fork
+# and upstream BepInEx.ConfigurationManager read values via
+# Type.GetFields(BindingFlags.Instance | BindingFlags.Public). Encapsulating
+# the fields as properties would break the reflection contract with every
+# plugin that has already copied this template. Public fields are the
+# deliberate wire format, not an oversight.
+[ConfigurationManagerAttributes.cs]
+dotnet_diagnostic.S1104.severity = none
+
+# LmmSettingEntryTests.cs contains a nested stub type that intentionally
+# mirrors the public-field shape of ConfigurationManagerAttributes to
+# exercise SetFromAttributes' reflection path. The stub's fields are
+# populated via object-initializer syntax inside the test body, but because
+# the enclosing type is private, the net35 compiler does not credit that
+# assignment and emits CS0649 ("field is never assigned to"). The whole
+# point of the test is to simulate a foreign plugin's copy of the
+# template, so rewriting the stub to silence the warning would defeat the
+# test.
+[LmmSettingEntryTests.cs]
+dotnet_diagnostic.CS0649.severity = none
+
+# CommonHelpers.OpenWebsite takes a URL as a plain string because the URL
+# arrives as string metadata read out of the game (plugin info, mod config,
+# etc.) where there is no System.Uri available. CA1054 ("URI parameters
+# should not be strings") correctly flags that pattern in general, but the
+# source here is already string-shaped and conversion would just push the
+# same unvalidated data through an extra round-trip. Scope note: this is
+# slightly wider than the previous per-member suppression — every method
+# in CommonHelpers.cs is now exempt from CA1054. OpenWebsite is the only
+# URL-shaped signature in the file today; if a future helper introduces a
+# genuinely validatable URI parameter, prefer fixing that site over
+# leaning on this scope.
+[CommonHelpers.cs]
+dotnet_diagnostic.CA1054.severity = none
+
+# ExcludeFromCodeCoverageAttribute.cs is a net35 BCL polyfill: the real
+# System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute was
+# added in .NET 4.0, so this project ships its own copy under the BCL
+# namespace. IDE0130 ("namespace should match folder structure") fires
+# because the file lives under Polyfills/ but declares
+# namespace System.Diagnostics.CodeAnalysis — that mismatch is the whole
+# point of a polyfill and matching the folder name would break the
+# compatibility story.
+[ExcludeFromCodeCoverageAttribute.cs]
+dotnet_diagnostic.IDE0130.severity = none
