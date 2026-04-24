@@ -257,16 +257,16 @@ namespace LobCorp.ConfigurationManager.Test.ModTests.ConfigurationManagerTests
         /// <summary>
         /// Stand-in for a plugin that bundles its own copy of ConfigurationManagerAttributes.
         /// SetFromAttributes matches by simple type name, not assembly identity, so this
-        /// property-shape stub should populate the entry exactly like the real class.
+        /// field-shape stub should populate the entry exactly like the real class.
         /// </summary>
         private sealed class ConfigurationManagerAttributes
         {
-            public bool? IsAdvanced { get; set; }
-            public int? Order { get; set; }
+            public bool? IsAdvanced;
+            public int? Order;
         }
 
         [Fact]
-        public void Constructor_ForeignConfigurationManagerAttributesStub_ShouldPopulateFromProperties()
+        public void Constructor_ForeignConfigurationManagerAttributesStub_ShouldPopulateFromFields()
         {
             var stub = new ConfigurationManagerAttributes { IsAdvanced = true, Order = 7 };
             var desc = new LmmConfigDescription("test", null, stub);

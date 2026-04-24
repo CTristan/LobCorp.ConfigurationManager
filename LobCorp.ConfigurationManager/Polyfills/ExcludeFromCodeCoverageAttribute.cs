@@ -5,9 +5,7 @@
 // rest of the codebase annotate coverage-excluded members without pulling in a dependency
 // solely for this attribute.
 
-#pragma warning disable IDE0130 // Namespace must match BCL location, not folder path
 namespace System.Diagnostics.CodeAnalysis
-#pragma warning restore IDE0130
 {
     [AttributeUsage(
         AttributeTargets.Class

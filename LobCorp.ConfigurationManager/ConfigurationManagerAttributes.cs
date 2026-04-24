@@ -7,11 +7,11 @@ namespace ConfigurationManager
     /// <para>
     /// Usage:
     /// This class template has to be copied inside the plugin's project and referenced by its code directly.
-    /// Make a new instance, assign any properties that you want to override, and pass it as a tag for your setting.
+    /// Make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.
     /// </para>
     /// <para>
-    /// If a property is null (default), it will be ignored and won't change how the setting is displayed.
-    /// If a property is non-null (you assigned a value to it), it will override default behavior.
+    /// If a field is null (default), it will be ignored and won't change how the setting is displayed.
+    /// If a field is non-null (you assigned a value to it), it will override default behavior.
     /// </para>
     /// </summary>
     ///
@@ -27,9 +27,9 @@ namespace ConfigurationManager
     ///
     /// <remarks>
     /// This fork of ConfigurationManager reads attribute values from a plugin's copy of this class via public
-    /// properties (<c>Type.GetProperties</c>). Upstream BepInEx.ConfigurationManager uses public fields, so its
-    /// template is not directly compatible — if copying from upstream, convert the fields to auto-properties.
-    /// You can optionally remove properties that you won't use from this class, it's the same as leaving them null.
+    /// fields (<c>Type.GetFields</c>), aligned with upstream BepInEx.ConfigurationManager so that a template
+    /// copied from either source works without modification. You can optionally remove fields that you won't
+    /// use from this class, it's the same as leaving them null.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(
         Justification = "Data holder class for plugin configuration attributes"
@@ -39,24 +39,24 @@ namespace ConfigurationManager
         /// <summary>
         /// Should the setting be shown as a percentage (only use with value range settings).
         /// </summary>
-        public bool? ShowRangeAsPercent { get; set; }
+        public bool? ShowRangeAsPercent;
 
         /// <summary>
         /// If true, the slider snaps to whole numbers while the text field still accepts decimals.
         /// </summary>
-        public bool? UseIntegerSlider { get; set; }
+        public bool? UseIntegerSlider;
 
         /// <summary>
         /// Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).
         /// See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing.
         /// </summary>
-        public System.Action<Config.LmmConfigEntryBase> CustomDrawer { get; set; }
+        public System.Action<Config.LmmConfigEntryBase> CustomDrawer;
 
         /// <summary>
         /// Custom setting editor that allows polling keyboard input with the Input class.
         /// Use either CustomDrawer or CustomHotkeyDrawer, using both at the same time leads to undefined behaviour.
         /// </summary>
-        public CustomHotkeyDrawerFunc CustomHotkeyDrawer { get; set; }
+        public CustomHotkeyDrawerFunc CustomHotkeyDrawer;
 
         /// <summary>
         /// Custom setting draw action that allows polling keyboard input with the Input class.
@@ -71,62 +71,62 @@ namespace ConfigurationManager
         /// <summary>
         /// Show this setting in the settings screen at all? If false, don't show.
         /// </summary>
-        public bool? Browsable { get; set; }
+        public bool? Browsable;
 
         /// <summary>
         /// Category the setting is under. Null to be directly under the plugin.
         /// </summary>
-        public string Category { get; set; }
+        public string Category;
 
         /// <summary>
         /// If set, a "Default" button will be shown next to the setting to allow resetting to default.
         /// </summary>
-        public object DefaultValue { get; set; }
+        public object DefaultValue;
 
         /// <summary>
         /// Force the "Reset" button to not be displayed, even if a valid DefaultValue is available.
         /// </summary>
-        public bool? HideDefaultButton { get; set; }
+        public bool? HideDefaultButton;
 
         /// <summary>
         /// Force the setting name to not be displayed.
         /// </summary>
-        public bool? HideSettingName { get; set; }
+        public bool? HideSettingName;
 
         /// <summary>
         /// Optional description shown when hovering over the setting.
         /// </summary>
-        public string Description { get; set; }
+        public string Description;
 
         /// <summary>
         /// Name of the setting.
         /// </summary>
-        public string DispName { get; set; }
+        public string DispName;
 
         /// <summary>
         /// Order of the setting on the settings list relative to other settings in a category.
         /// 0 by default, higher number is higher on the list.
         /// </summary>
-        public int? Order { get; set; }
+        public int? Order;
 
         /// <summary>
         /// Only show the value, don't allow editing it.
         /// </summary>
-        public bool? ReadOnly { get; set; }
+        public bool? ReadOnly;
 
         /// <summary>
         /// If true, don't show the setting by default. User has to turn on showing advanced settings or search for it.
         /// </summary>
-        public bool? IsAdvanced { get; set; }
+        public bool? IsAdvanced;
 
         /// <summary>
         /// Custom converter from setting type to string for the built-in editor textboxes.
         /// </summary>
-        public System.Func<object, string> ObjToStr { get; set; }
+        public System.Func<object, string> ObjToStr;
 
         /// <summary>
         /// Custom converter from string to setting type for the built-in editor textboxes.
         /// </summary>
-        public System.Func<string, object> StrToObj { get; set; }
+        public System.Func<string, object> StrToObj;
     }
 }
